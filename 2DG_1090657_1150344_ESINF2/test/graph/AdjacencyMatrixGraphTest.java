@@ -201,13 +201,35 @@ public class AdjacencyMatrixGraphTest {
 
     @Test
     public void testDirectConnections() {
-        fail("Not implemented yet");
+        System.out.println("Test of Direct Connections");
+
+        AdjacencyMatrixGraph<String, String> instance = new AdjacencyMatrixGraph<>();
+
+        for (int i = 1; i <= 5; i++) {
+            instance.insertVertex("Vert " + i);
+        }
+
+        instance.insertEdge("Vert 1", "Vert 2", "Edge 1");
+        instance.insertEdge("Vert 2", "Vert 4", "Edge 2");
+        instance.insertEdge("Vert 1", "Vert 5", "Edge 3");
+        instance.insertEdge("Vert 2", "Vert 3", "Edge 4");
+        instance.insertEdge("Vert 3", "Vert 1", "Edge 5");
+
+        Iterator<String> itVert = instance.directConnections("Vert 2").iterator();
+        assertTrue("fist vertex should be Vert 1", (itVert.next().equals("Vert 1")));
+        assertTrue("second vertex should be Vert 3", (itVert.next().equals("Vert 3")));
+        assertTrue("second vertex should be Vert 4", (itVert.next().equals("Vert 4")));
+
+        itVert = instance.directConnections("Vert 3").iterator();
+        assertTrue("fist vertex should be Vert 1", (itVert.next().equals("Vert 1")));
+        assertTrue("second vertex should be Vert 2", (itVert.next().equals("Vert 2")));
+
     }
 
     @Test
     public void testOutgoingEdges() {
         System.out.println("Test of Outgoing Edges");
-        AdjacencyMatrixGraph<String, Integer> instance = new AdjacencyMatrixGraph<String, Integer>();
+        AdjacencyMatrixGraph<String, Integer> instance = new AdjacencyMatrixGraph<>();
 
         for (int i = 1; i < 5; i++) {
             instance.insertVertex("Vert " + i);
@@ -219,6 +241,10 @@ public class AdjacencyMatrixGraphTest {
 
         assertTrue("fist edge should be 12", (itEdge.next() == 12));
         assertTrue("second edge should be 11", (itEdge.next() == 11));
+
+        itEdge = instance.outgoingEdges("Vert 4").iterator();
+
+        assertTrue("first edge of Vertex 4 should be 11", (itEdge.next() == 11));
 
     }
 
