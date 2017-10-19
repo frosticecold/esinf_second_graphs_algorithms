@@ -203,7 +203,17 @@ public class AdjacencyMatrixGraph<V, E> implements BasicGraph<V, E>, Cloneable {
      * in the graph
      */
     public Iterable<E> outgoingEdges(V vertex) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        int index = toIndex(vertex);
+        if (index == -1) {
+            return null;
+        }
+        ArrayList<E> edgeList = new ArrayList<>();
+        for (int i = 0; i < numVertices; i++) {
+            if (edgeMatrix[index][i] != null) {
+                edgeList.add(edgeMatrix[index][i]);
+            }
+        }
+        return edgeList;
     }
 
     /**
