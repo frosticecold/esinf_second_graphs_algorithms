@@ -84,20 +84,37 @@ public class GraphAlgorithms {
         if (index == -1) {
             return null;
         }
-        LinkedList<V> queueBfs = new LinkedList<>();
-        LinkedList<V> qAux = new LinkedList<>();
-        
-        queueBfs.add(vertex);
 
+        LinkedList<V> queueBfs = new LinkedList<>();
+        LinkedList<Integer> qAux = new LinkedList<>();
+        boolean[] verticesVisitados = new boolean[graph.numVertices()];
+
+        queueBfs.add(vertex);
+        qAux.add(index);
+
+        verticesVisitados[index] = true;
+
+        while (!qAux.isEmpty()) {
+            index = qAux.remove();
+            for (int i = 0; i < graph.numVertices; i++) {
+                if (graph.edgeMatrix[index][i] != null) {
+                    if (!verticesVisitados[i]) {
+                        queueBfs.add(graph.vertices.get(i));
+                        qAux.add(i);
+                        verticesVisitados[i] = true;
+                    }
+                }
+            }
+        }
+
+        return queueBfs;
     }
 
-    static <V,E>
     /**
-     * All paths between two vertices 
-     * Calls recursive version of the method.
+     * All paths between two vertices Calls recursive version of the method.
      *
      * @param graph Graph object
-     * @param source Source vertex of path 
+     * @param source Source vertex of path
      * @param dest Destination vertex of path
      * @param path LinkedList with paths (queues)
      * @return false if vertices not in the graph
