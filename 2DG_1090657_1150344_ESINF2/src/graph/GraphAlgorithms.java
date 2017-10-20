@@ -121,7 +121,23 @@ public class GraphAlgorithms {
      *
      */
     public static <V, E> boolean allPaths(AdjacencyMatrixGraph<V, E> graph, V source, V dest, LinkedList<LinkedList<V>> paths) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        int sourceIdx = graph.toIndex(source);
+        if (sourceIdx == -1) {
+            return false;
+        }
+
+        int destIdx = graph.toIndex(dest);
+        if (destIdx == -1) {
+            return false;
+        }
+
+        paths.clear();
+        boolean[] knownVertices = new boolean[graph.numVertices];
+        LinkedList<V> auxStack = new LinkedList<>();
+
+        allPaths(graph, sourceIdx, destIdx, knownVertices, auxStack, paths);
+        return true;
+
     }
 
     /**
@@ -138,7 +154,23 @@ public class GraphAlgorithms {
      *
      */
     static <V, E> void allPaths(AdjacencyMatrixGraph<V, E> graph, int sourceIdx, int destIdx, boolean[] knownVertices, LinkedList<V> auxStack, LinkedList<LinkedList<V>> paths) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        auxStack.add(graph.vertices.get(sourceIdx));
+        knownVertices[sourceIdx] = true;
+        for (int i = 0; i < graph.numVertices; i++) {
+            if (graph.edgeMatrix[sourceIdx][i] != null) {
+                if (i == destIdx) {
+                    auxStack.push(graph.vertices.get(i));
+                    paths.add(auxStack);
+                    auxStack.pop();
+                } else {
+                    if (knownVertices[i] == false) {
+                        allPaths(graph, i, destIdx, knownVertices, auxStack, paths);
+                    }
+                }
+            }
+        }
+        knownVertices[sourceIdx] = false;
+        auxStack.pop();
     }
 
     /**
@@ -150,7 +182,21 @@ public class GraphAlgorithms {
      * @return the new graph
      */
     public static <V, E> AdjacencyMatrixGraph<V, E> transitiveClosure(AdjacencyMatrixGraph<V, E> graph, E dummyEdge) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        AdjacencyMatrixGraph<V, E> ng = (AdjacencyMatrixGraph<V, E>) graph.clone();
+        for (int k = 0; k < ng.numVertices; k++) {
+            for (int i = 0; i < ng.numVertices; i++) {
+                if (i != k && ng.edgeMatrix[i][k] != null) {
+                    for (int j = 0; j < ng.numVertices; j++) {
+                        if (i != j && j != k && ng.edgeMatrix[k][j] != null) {
+                            if (ng.edgeMatrix[i][j] == null) {
+                                graph.insertEdge(i, j, dummyEdge);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return ng;
     }
 
 }
