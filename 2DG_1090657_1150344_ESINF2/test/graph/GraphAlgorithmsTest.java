@@ -198,7 +198,36 @@ public class GraphAlgorithmsTest {
 
     @Test
     public void testTransitiveClosure() {
-        fail("Not implemented yet.");
+
+        AdjacencyMatrixGraph<String, Integer> matrizAdj = new AdjacencyMatrixGraph<>();
+        matrizAdj.insertVertex("A");
+        matrizAdj.insertVertex("B");
+        matrizAdj.insertVertex("C");
+        matrizAdj.insertVertex("D");
+        matrizAdj.insertVertex("E");
+
+        matrizAdj.insertEdge("A", "B", 1);
+        matrizAdj.insertEdge("B", "C", 1);
+        matrizAdj.insertEdge("C", "D", 1);
+        matrizAdj.insertEdge("D", "E", 1);
+        matrizAdj.insertEdge("E", "A", 1);
+
+        Integer dummy = 1;
+        AdjacencyMatrixGraph<String, Integer> matrizTransitivaResult = GraphAlgorithms.transitiveClosure(matrizAdj, dummy);
+
+        boolean valid = true;
+        for (String v1 : matrizTransitivaResult.vertices()) {
+            for (String v2 : matrizTransitivaResult.vertices()) {
+                if (!v1.equals(v2)) {
+                    if (matrizTransitivaResult.getEdge(v1, v2) != null && !matrizTransitivaResult.getEdge(v1, v2).equals(dummy)) {
+                        valid = false;
+                    }
+                }
+            }
+        }
+
+        assertTrue("MatrizTransitivaExpected == matrizTrasitivaResult", valid);
+
     }
 
 }
