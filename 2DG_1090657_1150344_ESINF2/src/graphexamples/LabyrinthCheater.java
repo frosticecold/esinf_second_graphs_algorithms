@@ -50,7 +50,12 @@ public class LabyrinthCheater {
      * @return false if city exists in the map
      */
     public boolean insertRoom(String name, boolean hasExit) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Room r = new Room(name, hasExit);
+        if (!map.checkVertex(r)) {
+            return map.insertVertex(r);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -63,7 +68,19 @@ public class LabyrinthCheater {
      * rooms
      */
     public boolean insertDoor(String from, String to) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Room rfrom = new Room(from, false);
+        Room rto = new Room(to, false);
+        if (!map.checkVertex(rfrom)) {
+            return false;
+        }
+        if (!map.checkVertex(rto)) {
+            return false;
+        }
+
+        if (map.getEdge(rfrom, rto) == null) {
+            return map.insertEdge(rfrom, rto, new Door());
+        }
+        return false;
     }
 
     /**
@@ -117,7 +134,28 @@ public class LabyrinthCheater {
      * is no reachable exit
      */
     public LinkedList<String> pathToExit(String from) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        LinkedList<Room> listaRooms = new LinkedList<>();
+        if (!map.checkVertex(new Room(from, false))) {
+            return null;
+        }
+        Room r = new Room(from, false);
+
+        boolean foundExit = false;
+        LinkedList<String> listaNomes = new LinkedList<>();
+        listaRooms = GraphAlgorithms.DFS(map, r);
+        for (Room room : listaRooms) {
+            if (!room.hasExits) {
+                listaNomes.add(room.name);
+            } else {
+                foundExit = true;
+                listaNomes.add(room.name);
+                break;
+            }
+        }
+        if (!foundExit) {
+            return null;
+        }
+        return listaNomes;
     }
 
 }
