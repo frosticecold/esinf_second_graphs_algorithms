@@ -164,7 +164,7 @@ public class LabyrinthCheaterTest {
 
         tempMap.insertRoom("A", false);
         tempMap.insertRoom("B", false);
-        tempMap.insertRoom("C", true);
+        tempMap.insertRoom("C", false);
         tempMap.insertRoom("D", false);
         tempMap.insertRoom("E", false);
         tempMap.insertRoom("F", false);
@@ -180,8 +180,11 @@ public class LabyrinthCheaterTest {
 
         LinkedList<String> expectedResult = new LinkedList<>();
         expectedResult.add("A");
-        expectedResult.add("B");
-        expectedResult.add("C");
+        expectedResult.add("D");
+        expectedResult.add("E");
+        expectedResult.add("F");
+        expectedResult.add("G");
+        
         LinkedList<String> result = tempMap.pathToExit("A");
 
         assertEquals(expectedResult, result);

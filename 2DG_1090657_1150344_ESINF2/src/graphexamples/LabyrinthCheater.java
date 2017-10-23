@@ -135,27 +135,32 @@ public class LabyrinthCheater {
      */
     public LinkedList<String> pathToExit(String from) {
         LinkedList<Room> listaRooms = new LinkedList<>();
+        LinkedList<String> listaNomes = new LinkedList<>();
         if (!map.checkVertex(new Room(from, false))) {
             return null;
         }
         Room r = new Room(from, false);
+        String dest = nearestExit(from);
+        if (dest == null) {
+            return null;
+        }
 
-        boolean foundExit = false;
-        LinkedList<String> listaNomes = new LinkedList<>();
-        listaRooms = GraphAlgorithms.DFS(map, r);
-        for (Room room : listaRooms) {
-            if (!room.hasExits) {
-                listaNomes.add(room.name);
-            } else {
-                foundExit = true;
-                listaNomes.add(room.name);
-                break;
+        listaRooms = GraphAlgorithms.BFS(map, r);
+
+        Room currentSrc = listaRooms.removeLast();
+        LinkedList<Room> listashortestpath = new LinkedList<>();
+        listashortestpath.push(currentSrc);
+        while (!listaRooms.isEmpty()) {
+            Room currentroom = listaRooms.removeLast();
+            if (map.getEdge(currentSrc, currentroom) != null) {
+                listashortestpath.push(currentroom);
+                currentSrc = currentroom;
+
             }
         }
-        if (!foundExit) {
-            return null;
+        while (!listashortestpath.isEmpty()) {
+            listaNomes.add(listashortestpath.pop().name);
         }
         return listaNomes;
     }
-
 }
