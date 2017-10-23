@@ -5,6 +5,7 @@
  */
 package model;
 
+import graph.AdjacencyMatrixGraph;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -16,6 +17,9 @@ import java.util.Scanner;
  * @author Raúl Correia <1090657@isep.ipp.pt>
  */
 public class Ficheiro {
+
+    static final String LOCAIS = "LOCAIS";
+    static final String CAMINHOS = "CAMINHOS";
 
     /**
      * Método que lê um ficheiro de texto génerico e retorna uma lista com o
@@ -40,5 +44,61 @@ public class Ficheiro {
             }
         }
         return lista;                                                           //O(1)
+    }
+
+    public void lerLocais(String nomeFicheiro, AdjacencyMatrixGraph<Local, Estrada> map) {
+        List<String> conteudoFich = lerFicheiro(nomeFicheiro);
+        boolean lerLocais = false;
+        boolean lerCaminhos = false;
+
+        String linhaSplit[] = null;
+        for (String linha : conteudoFich) {
+            if (linha.equals(LOCAIS)) {
+                lerLocais = true;
+                continue;
+            }
+            if (linha.equals(CAMINHOS)) {
+                lerLocais = false;
+                lerCaminhos = true;
+                continue;
+            }
+            if (lerLocais == true) {
+                linhaSplit = linha.split(",");
+                Local l = new Local(linhaSplit[0], Integer.parseInt(linhaSplit[1]));
+                map.insertVertex(l);
+                continue;
+            }
+            if (lerCaminhos == true) {
+                final int CAMPO_LOCAL_A = 0;
+                final int CAMPO_LOCAL_B = 1;
+
+                final int CAMPO_DIF_ESTRADA = 2;
+                linhaSplit = linha.split(",");
+
+                String local_a = linhaSplit[CAMPO_LOCAL_A];
+                String local_b = linhaSplit[CAMPO_LOCAL_B];
+
+                Local locala = null, localb = null;
+                for (Local l : map.vertices()) {
+                    if (local_a.equals(l.getNome())) {
+                        locala = l;
+                        continue;
+                    }
+                    if (local_b.equals(l.getNome())) {
+                        localb = l;
+                        continue;
+                    }
+                    if (locala != null && localb != null) {
+                        break;
+                    }
+                }
+
+                if (locala != null && localb != null) {
+                    Estrada e = new Estrada(Integer.parseInt(linhaSplit[CAMPO_DIF_ESTRADA]));
+                    map.insertEdge(locala, localb, e);
+                }
+            }
+        }
+
     }
 }

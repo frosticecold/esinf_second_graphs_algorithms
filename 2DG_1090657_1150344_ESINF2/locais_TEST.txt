@@ -1,0 +1,12 @@
+LOCAIS
+Local0,27
+Local1,28
+Local2,38
+Local3,37
+Local4,24
+CAMINHOS
+Local0,Local1,20
+Local0,Local4,50
+Local1,Local2,30
+Local2,Local3,10
+Local3,Local4,20

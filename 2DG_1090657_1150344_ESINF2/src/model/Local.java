@@ -36,6 +36,14 @@ public class Local implements Cloneable {
         this.dificuldade = local.dificuldade;
     }
 
+    public String getNome() {
+        return nome;
+    }
+
+    public int getDificuldade() {
+        return dificuldade;
+    }
+
     public Personagem getDono() {
         return personagem;
     }

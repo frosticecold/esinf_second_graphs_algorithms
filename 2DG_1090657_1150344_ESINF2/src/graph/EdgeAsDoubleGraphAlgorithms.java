@@ -58,7 +58,6 @@ public class EdgeAsDoubleGraphAlgorithms {
         }
         
         LinkedList<V> caminhoMaisCurto = new LinkedList<>();
-        
 
         return custoMinimo;
     }
