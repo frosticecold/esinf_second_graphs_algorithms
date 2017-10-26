@@ -15,18 +15,18 @@ public class Alianca {
 
     private Personagem pers_b;
 
-    private int tipoalianca;
+    private boolean tipoalianca;
 
     private float fator_compatibilidade;
 
-    public Alianca(Personagem pers_a, Personagem pers_b, int tipoalianca, float compatibilidade) {
+    public Alianca(Personagem pers_a, Personagem pers_b, boolean tipoalianca, float compatibilidade) {
         this.pers_a = pers_a;
         this.pers_b = pers_b;
         this.tipoalianca = tipoalianca;
         this.fator_compatibilidade = compatibilidade;
     }
 
-    public Alianca(Personagem pers_a, Personagem pers_b, int tipoalianca) {
+    public Alianca(Personagem pers_a, Personagem pers_b, boolean tipoalianca) {
         this.pers_a = pers_a;
         this.pers_b = pers_b;
         this.tipoalianca = tipoalianca;
@@ -41,7 +41,7 @@ public class Alianca {
         return pers_b;
     }
 
-    public int getTipoalianca() {
+    public boolean getTipoalianca() {
         return tipoalianca;
     }
 

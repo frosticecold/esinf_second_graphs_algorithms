@@ -6,7 +6,6 @@
 package model;
 
 import graph.AdjacencyMatrixGraph;
-import graph.EdgeAsDoubleGraphAlgorithms;
 
 /**
  *
@@ -16,6 +15,7 @@ public class Jogo {
 
     
     AdjacencyMatrixGraph<Local, Estrada> mapEstradas;
+    AdjacencyMatrixGraph<Personagem, Alianca> mapAliancas;
     
     
     

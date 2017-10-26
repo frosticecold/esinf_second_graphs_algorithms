@@ -1,5 +1,6 @@
 package graph;
 
+import java.util.Collections;
 import java.util.LinkedList;
 
 /**
@@ -20,7 +21,29 @@ public class EdgeAsDoubleGraphAlgorithms {
      *
      */
     private static <V> void shortestPath(AdjacencyMatrixGraph<V, Double> graph, int sourceIdx, boolean[] knownVertices, int[] verticesIndex, double[] minDist) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        minDist[sourceIdx] = 0;
+        while (sourceIdx != -1) {
+            knownVertices[sourceIdx] = true;
+            for (V vx : graph.vertices()) {
+                int vAdj = graph.toIndex(vx);
+                Double edge = graph.privateGet(sourceIdx, vAdj);
+                if (edge != null) {
+                    if (!knownVertices[vAdj] && minDist[vAdj] > minDist[sourceIdx] + edge) {
+                        minDist[vAdj] = minDist[sourceIdx] + edge;
+                        verticesIndex[vAdj] = sourceIdx;
+                    }
+                }
+            }
+
+            Double min = Double.MAX_VALUE;
+            sourceIdx = -1;
+            for (int i = 0; i < graph.numVertices; i++) {
+                if (!knownVertices[i] && minDist[i] < min) {
+                    min = minDist[i];
+                    sourceIdx = i;
+                }
+            }
+        }
     }
 
     /**
@@ -51,15 +74,22 @@ public class EdgeAsDoubleGraphAlgorithms {
 
         path.clear();
 
-        shortestPath(graph, sourceIdx, knownVertices, verticesIndex, minDist);
-        double custoMinimo = 0;
-        for (int i = 0; i < minDist.length; i++) {
-            custoMinimo += minDist[i];
+        for (V v : graph.vertices()) {
+            minDist[graph.toIndex(v)] = Double.MAX_VALUE;
+            verticesIndex[graph.toIndex(v)] = -1;
+            knownVertices[graph.toIndex(v)] = false;
         }
-        
-        LinkedList<V> caminhoMaisCurto = new LinkedList<>();
 
-        return custoMinimo;
+        shortestPath(graph, sourceIdx, knownVertices, verticesIndex, minDist);
+        LinkedList<V> listavertices = new LinkedList<>();
+
+        if (knownVertices[destIdx] == false) {
+            return -1;
+        }
+
+        recreatePath(graph, sourceIdx, destIdx, verticesIndex, path);
+        Collections.reverse(path);
+        return minDist[destIdx];
     }
 
     /**
@@ -89,7 +119,7 @@ public class EdgeAsDoubleGraphAlgorithms {
      * @return the new graph
      */
     public static <V> AdjacencyMatrixGraph<V, Double> minDistGraph(AdjacencyMatrixGraph<V, Double> graph) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        AdjacencyMatrixGraph<V, Double> newgraph = (AdjacencyMatrixGraph<V, Double>) graph.clone();
     }
 
 }
