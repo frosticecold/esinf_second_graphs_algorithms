@@ -45,8 +45,16 @@ public class ControloDoJogo {
         return false;
     }
 
+    public boolean adicionarLocal(Local local) {
+        if (!mapLocais.checkVertex(local)) {
+            mapCustoEstradas.insertVertex(local);
+            return mapLocais.insertVertex(local);
+        }
+        return false;
+    }
+
     public boolean adicionarEstrada(Local a, Local b, Estrada e) {
-        if (mapLocais.getEdge(a, b) != null) {
+        if (mapLocais.getEdge(a, b) == null) {
             mapCustoEstradas.insertEdge(a, b, (double) e.getDificuldade());
             return mapLocais.insertEdge(a, b, e);
         }

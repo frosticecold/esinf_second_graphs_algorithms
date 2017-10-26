@@ -15,3 +15,7 @@ Local0,Local4,50
 Local1,Local2,30
 Local2,Local3,10
 Local3,Local4,20
+Local5,Local6,10
+Local6,Local7,10
+Local5,Local8,15
+Local8,Local9,5
