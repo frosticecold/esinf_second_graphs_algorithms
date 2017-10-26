@@ -119,7 +119,23 @@ public class EdgeAsDoubleGraphAlgorithms {
      * @return the new graph
      */
     public static <V> AdjacencyMatrixGraph<V, Double> minDistGraph(AdjacencyMatrixGraph<V, Double> graph) {
-        AdjacencyMatrixGraph<V, Double> newgraph = (AdjacencyMatrixGraph<V, Double>) graph.clone();
+        AdjacencyMatrixGraph<V, Double> newGraph = (AdjacencyMatrixGraph<V, Double>) graph.clone();
+        for (int k = 0; k < newGraph.numVertices; k++) {
+            for (int i = 0; i < newGraph.numVertices; i++) {
+                if (i != k && newGraph.privateGet(i, k) != null) {
+                    for (int j = 0; j < newGraph.numVertices; j++) {
+                        if (i != j && j != k && newGraph.privateGet(k, j) != null) {
+                            if (newGraph.privateGet(i, j) == null) {
+                                newGraph.insertEdge(i, j, newGraph.privateGet(i, k) + newGraph.privateGet(k, j));
+                            } else if (newGraph.privateGet(i, j) > newGraph.privateGet(i, k) + newGraph.privateGet(k, j)) {
+                                newGraph.privateSet(i, j, newGraph.privateGet(i, k) + newGraph.privateGet(k, j));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return newGraph;
     }
 
 }
