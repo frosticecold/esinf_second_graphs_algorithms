@@ -46,8 +46,9 @@ public class FicheiroIT {
         System.out.println("Teste lerLocais");
         final String nomeFicheiro = "locais_TEST.txt";
         AdjacencyMatrixGraph<Local, Estrada> map = new AdjacencyMatrixGraph<>();
+        AdjacencyMatrixGraph<Local, Double> mapaCustoEstradas = new AdjacencyMatrixGraph<>();
         Ficheiro f = new Ficheiro();
-        f.lerLocais(nomeFicheiro, map);
+        f.lerLocais(nomeFicheiro, map, mapaCustoEstradas);
 
         //Locais no ficheiro
         Local local0 = new Local("Local0", 27);

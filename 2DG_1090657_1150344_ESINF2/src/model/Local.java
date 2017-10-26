@@ -17,7 +17,7 @@ public class Local implements Cloneable {
     private Personagem personagem;
     private int dificuldade;
 
-    public Local(String nome, Personagem personagem, int dificuldade) {
+    public Local(String nome, int dificuldade, Personagem personagem) {
         this.nome = nome;
         this.personagem = personagem;
         this.dificuldade = dificuldade;

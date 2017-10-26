@@ -46,7 +46,7 @@ public class Ficheiro {
         return lista;                                                           //O(1)
     }
 
-    public void lerLocais(String nomeFicheiro, AdjacencyMatrixGraph<Local, Estrada> map) {
+    public void lerLocais(String nomeFicheiro, AdjacencyMatrixGraph<Local, Estrada> grafoEstradas, AdjacencyMatrixGraph<Local, Double> grafoCustoEstradas) {
         List<String> conteudoFich = lerFicheiro(nomeFicheiro);
         boolean lerLocais = false;
         boolean lerCaminhos = false;
@@ -65,7 +65,7 @@ public class Ficheiro {
             if (lerLocais == true) {
                 linhaSplit = linha.split(",");
                 Local l = new Local(linhaSplit[0], Integer.parseInt(linhaSplit[1]));
-                map.insertVertex(l);
+                grafoEstradas.insertVertex(l);
                 continue;
             }
             if (lerCaminhos == true) {
@@ -79,7 +79,7 @@ public class Ficheiro {
                 String local_b = linhaSplit[CAMPO_LOCAL_B];
 
                 Local locala = null, localb = null;
-                for (Local l : map.vertices()) {
+                for (Local l : grafoEstradas.vertices()) {
                     if (local_a.equals(l.getNome())) {
                         locala = l;
                         continue;
@@ -95,7 +95,8 @@ public class Ficheiro {
 
                 if (locala != null && localb != null) {
                     Estrada e = new Estrada(Integer.parseInt(linhaSplit[CAMPO_DIF_ESTRADA]));
-                    map.insertEdge(locala, localb, e);
+                    grafoEstradas.insertEdge(locala, localb, e);
+                    grafoCustoEstradas.insertEdge(locala, localb, (double) e.getDificuldade());
                 }
             }
         }

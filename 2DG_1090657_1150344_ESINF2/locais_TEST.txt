@@ -4,6 +4,11 @@ Local1,28
 Local2,38
 Local3,37
 Local4,24
+Local5,40
+Local6,45
+Local7,50
+Local8,30
+Local9,15
 CAMINHOS
 Local0,Local1,20
 Local0,Local4,50
