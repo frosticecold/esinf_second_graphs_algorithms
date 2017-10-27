@@ -136,7 +136,7 @@ public class GraphAlgorithms {
         LinkedList<V> auxStack = new LinkedList<>();
 
         allPaths(graph, sourceIdx, destIdx, knownVertices, auxStack, paths);
-        return true;
+        return !paths.isEmpty();
 
     }
 
