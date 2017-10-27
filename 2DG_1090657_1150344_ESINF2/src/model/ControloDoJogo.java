@@ -16,9 +16,8 @@ import java.util.LinkedList;
  */
 public class ControloDoJogo {
 
-    AdjacencyMatrixGraph<Local, Estrada> mapLocais;
+    AdjacencyMatrixGraph<Local, Double> mapLocais;
     AdjacencyMatrixGraph<Personagem, Alianca> mapAliancas;
-    AdjacencyMatrixGraph<Local, Double> mapCustoEstradas;
 
     private static String LOCAIS_S = "locais_S.txt";
     private static String LOCAIS_M = "locais_M.txt";
@@ -33,7 +32,6 @@ public class ControloDoJogo {
     ControloDoJogo() {
         mapLocais = new AdjacencyMatrixGraph<>();
         mapAliancas = new AdjacencyMatrixGraph<>();
-        mapCustoEstradas = new AdjacencyMatrixGraph<>();
 
     }
 
@@ -47,15 +45,13 @@ public class ControloDoJogo {
 
     public boolean adicionarLocal(Local local) {
         if (!mapLocais.checkVertex(local)) {
-            mapCustoEstradas.insertVertex(local);
             return mapLocais.insertVertex(local);
         }
         return false;
     }
 
-    public boolean adicionarEstrada(Local a, Local b, Estrada e) {
+    public boolean adicionarEstrada(Local a, Local b, double e) {
         if (mapLocais.getEdge(a, b) == null) {
-            mapCustoEstradas.insertEdge(a, b, (double) e.getDificuldade());
             return mapLocais.insertEdge(a, b, e);
         }
         return false;
@@ -64,7 +60,7 @@ public class ControloDoJogo {
     //1A
     public void lerLocais(String nomeFicheiro) {
         Ficheiro f = new Ficheiro();
-        f.lerLocais(nomeFicheiro, mapLocais, mapCustoEstradas);
+        f.lerLocais(nomeFicheiro, mapLocais);
 
     }
 
@@ -72,7 +68,7 @@ public class ControloDoJogo {
     public LinkedList<Local> caminhoComMenorDificuldade(Local source, Local target) {
 
         LinkedList<Local> path = new LinkedList<>();
-        EdgeAsDoubleGraphAlgorithms.shortestPath(mapCustoEstradas, source, target, path);
+        EdgeAsDoubleGraphAlgorithms.shortestPath(mapLocais, source, target, path);
 
         return path;
 
@@ -94,14 +90,14 @@ public class ControloDoJogo {
         while (it.hasNext()) {
             if (local_a == source && local_b == null) {
                 local_b = it.next();
-                dificuldade += mapCustoEstradas.getEdge(local_a, local_b) + local_b.getDificuldade();
+                dificuldade += mapLocais.getEdge(local_a, local_b) + local_b.getDificuldade();
                 if (local_b.getDono() != null) {
                     dificuldade += local_b.getDono().getForca();
                 }
             } else {
                 local_a = local_b;
                 local_b = it.next();
-                dificuldade += local_b.getDificuldade() + mapCustoEstradas.getEdge(local_a, local_b);
+                dificuldade += local_b.getDificuldade() + mapLocais.getEdge(local_a, local_b);
                 if (local_b.getDono() != null) {
                     dificuldade += local_b.getDono().getForca();
                 }

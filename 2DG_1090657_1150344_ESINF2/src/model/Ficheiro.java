@@ -46,7 +46,7 @@ public class Ficheiro {
         return lista;                                                           //O(1)
     }
 
-    public void lerLocais(String nomeFicheiro, AdjacencyMatrixGraph<Local, Estrada> grafoEstradas, AdjacencyMatrixGraph<Local, Double> grafoCustoEstradas) {
+    public void lerLocais(String nomeFicheiro, AdjacencyMatrixGraph<Local, Double> grafoEstradas) {
         List<String> conteudoFich = lerFicheiro(nomeFicheiro);
         boolean lerLocais = false;
         boolean lerCaminhos = false;
@@ -94,9 +94,8 @@ public class Ficheiro {
                 }
 
                 if (locala != null && localb != null) {
-                    Estrada e = new Estrada(Integer.parseInt(linhaSplit[CAMPO_DIF_ESTRADA]));
+                    double e = Double.parseDouble(linhaSplit[CAMPO_DIF_ESTRADA]);
                     grafoEstradas.insertEdge(locala, localb, e);
-                    grafoCustoEstradas.insertEdge(locala, localb, (double) e.getDificuldade());
                 }
             }
         }

@@ -83,17 +83,17 @@ public class ControloDoJogoIT {
         jg1.adicionarLocal(local9);
         jg1.adicionarLocal(local10);
 
-        jg1.adicionarEstrada(local1, local2, new Estrada(20));
-        jg1.adicionarEstrada(local2, local3, new Estrada(10));
-        jg1.adicionarEstrada(local3, local4, new Estrada(15));
-        jg1.adicionarEstrada(local4, local5, new Estrada(25));
-        jg1.adicionarEstrada(local5, local6, new Estrada(30));
-        jg1.adicionarEstrada(local6, local7, new Estrada(35));
-        jg1.adicionarEstrada(local7, local8, new Estrada(15));
-        jg1.adicionarEstrada(local9, local10, new Estrada(10));
+        jg1.adicionarEstrada(local1, local2, 20);
+        jg1.adicionarEstrada(local2, local3, 10);
+        jg1.adicionarEstrada(local3, local4, 15);
+        jg1.adicionarEstrada(local4, local5, 25);
+        jg1.adicionarEstrada(local5, local6, 30);
+        jg1.adicionarEstrada(local6, local7, 35);
+        jg1.adicionarEstrada(local7, local8, 15);
+        jg1.adicionarEstrada(local9, local10, 10);
 
-        jg1.adicionarEstrada(local2, local4, new Estrada(50));
-        jg1.adicionarEstrada(local1, local5, new Estrada(30));
+        jg1.adicionarEstrada(local2, local4, 50);
+        jg1.adicionarEstrada(local1, local5, 30);
 
         LinkedList<Local> lista1 = jg1.caminhoComMenorDificuldade(local1, local5);
         int tamanho = 2;

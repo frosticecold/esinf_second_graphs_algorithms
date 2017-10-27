@@ -45,10 +45,9 @@ public class FicheiroIT {
     public void testLerLocais() {
         System.out.println("Teste lerLocais");
         final String nomeFicheiro = "locais_TEST.txt";
-        AdjacencyMatrixGraph<Local, Estrada> map = new AdjacencyMatrixGraph<>();
-        AdjacencyMatrixGraph<Local, Double> mapaCustoEstradas = new AdjacencyMatrixGraph<>();
+        AdjacencyMatrixGraph<Local, Double> map = new AdjacencyMatrixGraph<>();
         Ficheiro f = new Ficheiro();
-        f.lerLocais(nomeFicheiro, map, mapaCustoEstradas);
+        f.lerLocais(nomeFicheiro, map);
 
         //Locais no ficheiro
         Local local0 = new Local("Local0", 27);
@@ -74,7 +73,7 @@ public class FicheiroIT {
         assertFalse("Local5", map.checkVertex(local5));
         assertFalse("Local6", map.checkVertex(local6));
 
-        Iterable<Estrada> itr = map.edges();
+        Iterable<Double> itr = map.edges();
         int custoEstrada[] = new int[5];
         custoEstrada[0] = 20;
         custoEstrada[1] = 50;
@@ -82,9 +81,9 @@ public class FicheiroIT {
         custoEstrada[3] = 10;
         custoEstrada[4] = 20;
         boolean visitado[] = new boolean[5];
-        for (Estrada e : itr) {
+        for (Double e : itr) {
             for (int i = 0; i < 5; i++) {
-                if (e.getDificuldade() == custoEstrada[i]) {
+                if (e == custoEstrada[i]) {
                     if (visitado[i] == false) {
                         visitado[i] = true;
                         break;
