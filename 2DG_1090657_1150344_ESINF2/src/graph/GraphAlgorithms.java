@@ -154,13 +154,17 @@ public class GraphAlgorithms {
      *
      */
     static <V, E> void allPaths(AdjacencyMatrixGraph<V, E> graph, int sourceIdx, int destIdx, boolean[] knownVertices, LinkedList<V> auxStack, LinkedList<LinkedList<V>> paths) {
-        auxStack.add(graph.vertices.get(sourceIdx));
+        auxStack.push(graph.vertices.get(sourceIdx));
         knownVertices[sourceIdx] = true;
         for (int i = 0; i < graph.numVertices; i++) {
             if (graph.edgeMatrix[sourceIdx][i] != null) {
                 if (i == destIdx) {
                     auxStack.push(graph.vertices.get(i));
-                    paths.add(auxStack);
+                    LinkedList<V> listaAdicionar = new LinkedList<>();
+                    for (V vtx : auxStack) {
+                        listaAdicionar.push(vtx);
+                    }
+                    paths.add(listaAdicionar);
                     auxStack.pop();
                 } else {
                     if (knownVertices[i] == false) {

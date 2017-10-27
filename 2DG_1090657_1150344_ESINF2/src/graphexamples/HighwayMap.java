@@ -96,9 +96,15 @@ public class HighwayMap implements Cloneable {
             return null;
         }
 
+        if (from == to) {
+            LinkedList<String> lista = new LinkedList<>();
+            lista.add(to);
+            return lista;
+        }
+
         LinkedList<LinkedList<String>> paths = new LinkedList<>();
         boolean allPaths = GraphAlgorithms.allPaths(map, from, to, paths);
-        if(allPaths) {
+        if (allPaths) {
             return paths.getFirst();
         }
         return null;
