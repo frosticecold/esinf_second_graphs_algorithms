@@ -16,18 +16,18 @@ import java.util.LinkedList;
  */
 public class ControloDoJogo {
 
-    AdjacencyMatrixGraph<Local, Double> mapLocaisEstradas;
-    AdjacencyMatrixGraph<Personagem, Alianca> mapPersonagensAliancas;
+    private AdjacencyMatrixGraph<Local, Double> mapLocaisEstradas;
+    private AdjacencyMatrixGraph<Personagem, Alianca> mapPersonagensAliancas;
 
-    private static String LOCAIS_S = "locais_S.txt";
-    private static String LOCAIS_M = "locais_M.txt";
-    private static String LOCAIS_L = "locais_L.txt";
-    private static String LOCAIS_XL = "locais_XL.txt";
+    public static String LOCAIS_S = "locais_S.txt";
+    public static String LOCAIS_M = "locais_M.txt";
+    public static String LOCAIS_L = "locais_L.txt";
+    public static String LOCAIS_XL = "locais_XL.txt";
 
-    private static String PERSONAGEM_S = "pers_S.txt";
-    private static String PERSONAGEM_M = "pers_M.txt";
-    private static String PERSONAGEM_L = "pers_L.txt";
-    private static String PERSONAGEM_XL = "pers_XL.txt";
+    public static String PERSONAGEM_S = "pers_S.txt";
+    public static String PERSONAGEM_M = "pers_M.txt";
+    public static String PERSONAGEM_L = "pers_L.txt";
+    public static String PERSONAGEM_XL = "pers_XL.txt";
 
     ControloDoJogo() {
         mapLocaisEstradas = new AdjacencyMatrixGraph<>();
@@ -57,6 +57,18 @@ public class ControloDoJogo {
         return false;
     }
 
+    public double obterEstrada(Local a, Local b) {
+        return mapLocaisEstradas.getEdge(a, b);
+    }
+
+    public int numEstradas() {
+        return mapLocaisEstradas.numEdges();
+    }
+
+    public int numLocais() {
+        return mapLocaisEstradas.numVertices();
+    }
+
     //1A
     public void lerLocais(String nomeFicheiro) {
         Ficheiro f = new Ficheiro();
@@ -77,46 +89,86 @@ public class ControloDoJogo {
     //1C
     public Conquista verificarConquista(Personagem pers, Local source, Local target) {
         LinkedList<Local> menorCaminho = caminhoComMenorDificuldade(source, target);
+        if (!menorCaminho.isEmpty()) {
+            LinkedList<Local> caminhointermedio = (LinkedList<Local>) menorCaminho.clone();
+            Local local_a = source;
+            Local local_b = null;
+            double dificuldade = 0;
 
-        Iterator<Local> it = menorCaminho.iterator();
-        Local local_a = source;
-        Local local_b = null;
-        double dificuldade = 0;
-
-        //Remover o caminho inicial
-        if (menorCaminho.peek() == source) {
-            menorCaminho.pop();
-        }
-        while (it.hasNext()) {
-            if (local_a == source && local_b == null) {
-                local_b = it.next();
-                dificuldade += mapLocaisEstradas.getEdge(local_a, local_b) + local_b.getDificuldade();
-                if (local_b.getDono() != null) {
-                    dificuldade += local_b.getDono().getForca();
+            //Remover o caminho inicial
+            if (menorCaminho.peek() == source) {
+                menorCaminho.pop();
+            }
+            while (!menorCaminho.isEmpty()) {
+                if (local_a == source && local_b == null) {
+                    local_b = menorCaminho.pop();
+                    dificuldade += mapLocaisEstradas.getEdge(local_a, local_b) + local_b.getDificuldade();
+                    if (local_b.getDono() != null) {
+                        dificuldade += local_b.getDono().getForca();
+                    }
+                } else {
+                    local_a = local_b;
+                    local_b = menorCaminho.pop();
+                    dificuldade += local_b.getDificuldade() + mapLocaisEstradas.getEdge(local_a, local_b);
+                    if (local_b.getDono() != null) {
+                        dificuldade += local_b.getDono().getForca();
+                    }
                 }
-            } else {
-                local_a = local_b;
-                local_b = it.next();
-                dificuldade += local_b.getDificuldade() + mapLocaisEstradas.getEdge(local_a, local_b);
-                if (local_b.getDono() != null) {
-                    dificuldade += local_b.getDono().getForca();
+
+            }
+            if (caminhointermedio.peekFirst() == source) {
+                caminhointermedio.pop();
+            }
+            if (caminhointermedio.peekLast() == target) {
+                caminhointermedio.removeLast();
+            }
+            boolean consegue_conquistar = false;
+            if (pers.getForca() >= dificuldade) {
+                consegue_conquistar = true;
+            }
+            Conquista cq = new Conquista(consegue_conquistar, dificuldade, caminhointermedio);
+            return cq;
+        }
+        return null;
+    }
+
+    //2a Construir o grafo  a partir de um ficheiro de texto
+    public void lerAlianca(String nomeFicheiro) {
+        Ficheiro f = new Ficheiro();
+        f.lerPersonagensAliancas(nomeFicheiro, mapLocaisEstradas, mapPersonagensAliancas);
+    }
+
+    //2b Devolver uma lista com todos os aliados de uma dada personagem.
+    public Iterable<Personagem> devolverTodosAliados(Personagem source) {
+        return mapPersonagensAliancas.directConnections(source);
+    }
+
+    //2c Determinar qual a aliança mais forte, retornando a força e as personagens dessa aliança
+    public void determinarAliancaMaisForte(AdjacencyMatrixGraph<Personagem, Alianca> graphorig) {
+    }
+
+    //2d Realizar uma nova aliança entre uma personagem A e uma personagem B.
+    public boolean novaAlianca(Personagem p_a, Personagem p_b, boolean tipoalianca) {
+        boolean added = false;
+        if (mapPersonagensAliancas.getEdge(p_a, p_b) == null) {
+            mapPersonagensAliancas.insertEdge(p_a, p_b, new Alianca(tipoalianca));
+            added = true;
+        }
+        return added;
+    }
+
+    //2e Criar um novo grafo representando todas as novas alianças que podem ser realizadas entre todas as personagens
+    //caso todas as alianças existentes fossem públicas
+    public AdjacencyMatrixGraph<Personagem, Alianca> possiveisNovasAliancas(AdjacencyMatrixGraph<Personagem, Alianca> mapOriginal) {
+        AdjacencyMatrixGraph<Personagem, Alianca> newgraph = graph.GraphAlgorithms.transitiveClosure(mapOriginal, new Alianca(true));
+        for (Personagem pOrig : mapOriginal.vertices()) {
+            for (Personagem pAdj : mapOriginal.directConnections(pOrig)) {
+                if (newgraph.getEdge(pOrig, pAdj) != null) {
+                    newgraph.removeEdge(pOrig, pAdj);
                 }
             }
-
         }
-        if (menorCaminho.peekLast() == target) {
-            menorCaminho.removeLast();
-        }
-        boolean consegue_conquistar = false;
-        if (pers.getForca() >= dificuldade) {
-            consegue_conquistar = true;
-        }
-        Conquista cq = new Conquista(consegue_conquistar, dificuldade, menorCaminho);
-        return cq;
+        return newgraph;
     }
 
-    //2B
-    public int numEstradas() {
-        return mapLocaisEstradas.numVertices();
-    }
 }

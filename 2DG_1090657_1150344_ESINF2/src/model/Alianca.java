@@ -9,7 +9,7 @@ package model;
  *
  * @author Raúl Correia <1090657@isep.ipp.pt>
  */
-public class Alianca {
+public class Alianca implements Cloneable {
 
     private boolean tipo_alianca;
     private float fator_compatibilidade;
@@ -19,6 +19,11 @@ public class Alianca {
         fator_compatibilidade = (float) Math.random();
     }
 
+    public Alianca(Alianca a) {
+        this.tipo_alianca = a.tipo_alianca;
+        fator_compatibilidade = a.fator_compatibilidade;
+    }
+
     public boolean getisPublic() {
         return tipo_alianca;
     }
@@ -26,4 +31,10 @@ public class Alianca {
     public float getFatorCompatibilidade() {
         return fator_compatibilidade;
     }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return new Alianca(this);
+    }
+
 }

@@ -84,11 +84,9 @@ public class Ficheiro {
                 for (Local l : grafoEstradas.vertices()) {
                     if (local_a.equals(l.getNome())) {
                         locala = l;
-                        continue;
                     }
                     if (local_b.equals(l.getNome())) {
                         localb = l;
-                        continue;
                     }
                     if (locala != null && localb != null) {
                         double e = Double.parseDouble(linhaSplit[CAMPO_DIF_ESTRADA]);

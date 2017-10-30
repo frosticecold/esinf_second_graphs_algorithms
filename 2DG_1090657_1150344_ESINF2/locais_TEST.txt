@@ -18,4 +18,4 @@ Local3,Local4,20
 Local5,Local6,10
 Local6,Local7,10
 Local5,Local8,15
-Local8,Local9,5
+Local8,Local9,15
