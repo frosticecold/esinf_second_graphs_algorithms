@@ -20,6 +20,8 @@ public class Ficheiro {
 
     static final String LOCAIS = "LOCAIS";
     static final String CAMINHOS = "CAMINHOS";
+    static final String PERSONAGENS = "PERSONAGENS";
+    static final String ALIANCAS = "ALIANÇAS";
 
     /**
      * Método que lê um ficheiro de texto génerico e retorna uma lista com o
@@ -89,16 +91,80 @@ public class Ficheiro {
                         continue;
                     }
                     if (locala != null && localb != null) {
+                        double e = Double.parseDouble(linhaSplit[CAMPO_DIF_ESTRADA]);
+                        grafoEstradas.insertEdge(locala, localb, e);
+                        break;
+                    }
+
+                }
+            }
+
+        }
+    }
+
+    public void lerPersonagensAliancas(String nomeFicheiro, AdjacencyMatrixGraph<Local, Double> mapLocaisEstradas, AdjacencyMatrixGraph<Personagem, Alianca> mapPersonagens) {
+        List<String> conteudoFich = lerFicheiro(nomeFicheiro);
+        boolean lerPersonagens = false;
+        boolean lerAliancas = false;
+
+        String linhaSplit[] = null;
+        for (String linha : conteudoFich) {
+            if (linha.equals(PERSONAGENS)) {
+                lerPersonagens = true;
+                continue;
+            }
+            if (linha.equals(ALIANCAS)) {
+                lerPersonagens = false;
+                lerAliancas = true;
+                continue;
+            }
+            if (lerPersonagens == true) {
+                linhaSplit = linha.split(",");
+                Personagem p = new Personagem(linhaSplit[0], Integer.parseInt(linhaSplit[1]));
+                mapPersonagens.insertVertex(p);
+                continue;
+            }
+            if (lerAliancas == true) {
+                final int CAMPO_PERS_A = 0;
+                final int CAMPO_PERS_B = 1;
+
+                final int CAMPO_TIPO_ALIANCA = 2;
+                linhaSplit = linha.split(",");
+
+                String pers_a = linhaSplit[CAMPO_PERS_A];
+                String pers_b = linhaSplit[CAMPO_PERS_B];
+                Alianca alianca = new Alianca(Boolean.parseBoolean(linhaSplit[CAMPO_TIPO_ALIANCA]));
+                Personagem persA = null, persB = null;
+                for (Personagem p : mapPersonagens.vertices()) {
+                    if (pers_a.equals(p.getNome())) {
+                        persA = p;
+                        atribuirPersonagemLocal(persA, mapLocaisEstradas);
+                        continue;
+                    }
+                    if (pers_b.equals(p.getNome())) {
+                        persB = p;
+                        atribuirPersonagemLocal(persB, mapLocaisEstradas);
+                        continue;
+                    }
+                    if (persA != null && persB != null) {
+                        mapPersonagens.insertEdge(persA, persB, alianca);
                         break;
                     }
                 }
 
-                if (locala != null && localb != null) {
-                    double e = Double.parseDouble(linhaSplit[CAMPO_DIF_ESTRADA]);
-                    grafoEstradas.insertEdge(locala, localb, e);
-                }
             }
         }
+    }
 
+    private void atribuirPersonagemLocal(Personagem p, AdjacencyMatrixGraph<Local, Double> mapLocaisEstradas) {
+        ArrayList<Local> locais = (ArrayList<Local>) mapLocaisEstradas.vertices();
+        for (int i = 0; i < mapLocaisEstradas.numVertices(); i++) {
+            int rnd = (int) (Math.random() * mapLocaisEstradas.numVertices());
+            Local l = locais.get(rnd);
+            if (l.getDono() == null) {
+                l.setDono(p);
+                break;
+            }
+        }
     }
 }

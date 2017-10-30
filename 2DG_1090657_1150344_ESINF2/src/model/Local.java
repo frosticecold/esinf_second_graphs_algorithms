@@ -48,6 +48,10 @@ public class Local implements Cloneable {
         return personagem;
     }
 
+    public void setDono(Personagem p) {
+        personagem = p;
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
