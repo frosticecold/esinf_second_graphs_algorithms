@@ -2,9 +2,7 @@ package graphbase;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
 /**
@@ -82,7 +80,17 @@ public class Graph<V, E> implements GraphInterface<V, E> {
 
     public Iterable<Edge<V, E>> edges() {
 
-        throw new UnsupportedOperationException("Not supported yet.");
+        ArrayList<Edge<V, E>> setEdges = new ArrayList<>();
+
+        for (V vertex : vertices.keySet()) {
+            Vertex<V, E> vx = vertices.get(vertex);
+            for (V vtx : vx.getAllAdjVerts()) {
+                setEdges.add(vx.getEdge(vtx));
+            }
+
+        }
+
+        return setEdges;
     }
 
     public Edge<V, E> getEdge(V vOrig, V vDest) {
@@ -165,8 +173,18 @@ public class Graph<V, E> implements GraphInterface<V, E> {
     }
 
     public Iterable<Edge<V, E>> incomingEdges(V vert) {
+        if (!validVertex(vert)) {
 
-        throw new UnsupportedOperationException("Not supported yet.");
+            return null;
+        }
+
+        ArrayList<Edge<V, E>> lista = new ArrayList<>();
+        for (V vx : vertices.keySet()) {
+            if (getEdge(vx, vert) != null) {
+                lista.add(getEdge(vx, vert));
+            }
+        }
+        return lista;
     }
 
     public boolean insertVertex(V vert) {
