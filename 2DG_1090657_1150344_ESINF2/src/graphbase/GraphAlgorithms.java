@@ -3,6 +3,7 @@
  */
 package graphbase;
 
+import static graph.GraphAlgorithms.DFS;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -58,9 +59,19 @@ public class GraphAlgorithms {
      * @param visited set of discovered vertices
      * @param qdfs queue with vertices of depth-first search
      */
-    private static <V, E> void DepthFirstSearch(Graph<V, E> g, V vOrig, boolean[] visited, LinkedList<V> qdfs) {
+    private static <V, E> void DepthFirstSearch(Graph<V, E> graph, V vOrig, boolean[] visited, LinkedList<V> qdfs) {
 
-        throw new UnsupportedOperationException("Not supported yet.");
+        visited[graph.getKey(vOrig)] = true;
+        int i = -1;
+        for (V vAdj : graph.vertices()) {
+            i++;
+            if (vOrig != vAdj) {
+                if (graph.getEdge(vOrig, vAdj) != null && visited[i] == false) {
+                    qdfs.add(vAdj);
+                    DepthFirstSearch(graph, vAdj, visited, qdfs);
+                }
+            }
+        }
     }
 
     /**
@@ -71,7 +82,15 @@ public class GraphAlgorithms {
      */
     public static <V, E> LinkedList<V> DepthFirstSearch(Graph<V, E> g, V vert) {
 
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (!g.validVertex(vert)) {
+            return null;
+        }
+        boolean[] knownVertices = new boolean[g.numVertices()];
+        LinkedList<V> resultQueue = new LinkedList<V>();
+        resultQueue.add(vert);
+
+        DepthFirstSearch(g, vert, knownVertices, resultQueue);
+        return resultQueue;
     }
 
     /**
