@@ -81,8 +81,7 @@ public class EdgeAsDoubleGraphAlgorithms {
         }
 
         shortestPath(graph, sourceIdx, knownVertices, verticesIndex, minDist);
-        LinkedList<V> listavertices = new LinkedList<>();
-
+       
         if (knownVertices[destIdx] == false) {
             return -1;
         }

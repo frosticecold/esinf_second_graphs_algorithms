@@ -14,6 +14,11 @@ public class Alianca implements Cloneable {
     private boolean tipo_alianca;
     private float fator_compatibilidade;
 
+    public Alianca(boolean tipo_alianca, float compatibilidade) {
+        this.tipo_alianca = tipo_alianca;
+        fator_compatibilidade = compatibilidade;
+    }
+
     public Alianca(boolean tipo_alianca) {
         this.tipo_alianca = tipo_alianca;
         fator_compatibilidade = (float) Math.random();
@@ -24,7 +29,7 @@ public class Alianca implements Cloneable {
         fator_compatibilidade = a.fator_compatibilidade;
     }
 
-    public boolean getisPublic() {
+    public boolean isPublic() {
         return tipo_alianca;
     }
 

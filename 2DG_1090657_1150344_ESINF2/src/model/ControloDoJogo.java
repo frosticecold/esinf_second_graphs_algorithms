@@ -7,7 +7,7 @@ package model;
 
 import graph.AdjacencyMatrixGraph;
 import graph.EdgeAsDoubleGraphAlgorithms;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -102,16 +102,20 @@ public class ControloDoJogo {
             while (!menorCaminho.isEmpty()) {
                 if (local_a == source && local_b == null) {
                     local_b = menorCaminho.pop();
-                    dificuldade += mapLocaisEstradas.getEdge(local_a, local_b) + local_b.getDificuldade();
-                    if (local_b.getDono() != null) {
-                        dificuldade += local_b.getDono().getForca();
+                    if (local_b.getDono() != pers) {
+                        dificuldade += mapLocaisEstradas.getEdge(local_a, local_b) + local_b.getDificuldade();
+                        if (local_b.getDono() != null) {
+                            dificuldade += local_b.getDono().getForca();
+                        }
                     }
                 } else {
                     local_a = local_b;
                     local_b = menorCaminho.pop();
-                    dificuldade += local_b.getDificuldade() + mapLocaisEstradas.getEdge(local_a, local_b);
-                    if (local_b.getDono() != null) {
-                        dificuldade += local_b.getDono().getForca();
+                    if (local_b.getDono() != pers) {
+                        dificuldade += local_b.getDificuldade() + mapLocaisEstradas.getEdge(local_a, local_b);
+                        if (local_b.getDono() != null) {
+                            dificuldade += local_b.getDono().getForca();
+                        }
                     }
                 }
 
@@ -123,7 +127,7 @@ public class ControloDoJogo {
                 caminhointermedio.removeLast();
             }
             boolean consegue_conquistar = false;
-            if (pers.getForca() >= dificuldade) {
+            if (pers.getForca() > dificuldade) {
                 consegue_conquistar = true;
             }
             Conquista cq = new Conquista(consegue_conquistar, dificuldade, caminhointermedio);
@@ -144,7 +148,32 @@ public class ControloDoJogo {
     }
 
     //2c Determinar qual a aliança mais forte, retornando a força e as personagens dessa aliança
-    public void determinarAliancaMaisForte(AdjacencyMatrixGraph<Personagem, Alianca> graphorig) {
+    public ForcaAlianca determinarAliancaMaisForte(AdjacencyMatrixGraph<Personagem, Alianca> mapAlianca) {
+        LinkedList<Personagem> listaPersonagens = new LinkedList<>();
+        LinkedList<ForcaAlianca> listaForcaAlianca = new LinkedList<>();
+
+        for (Personagem p : mapAlianca.vertices()) {
+            listaPersonagens.push(p);
+            double forca_alianca = 0;
+            for (Personagem padj : mapAlianca.directConnections(p)) {
+                forca_alianca += ((p.getForca() + padj.getForca()) * mapAlianca.getEdge(p, padj).getFatorCompatibilidade());
+                listaPersonagens.push(padj);
+            }
+            listaForcaAlianca.add(new ForcaAlianca(forca_alianca, listaPersonagens));
+            listaPersonagens = new LinkedList<>();
+        }
+        ForcaAlianca fa = null;
+        while (!listaForcaAlianca.isEmpty()) {
+            ForcaAlianca temp = listaForcaAlianca.pop();
+            if (fa == null) {
+                fa = temp;
+            } else {
+                if (fa.getForca() < temp.getForca()) {
+                    fa = temp;
+                }
+            }
+        }
+        return fa;
     }
 
     //2d Realizar uma nova aliança entre uma personagem A e uma personagem B.
@@ -153,6 +182,32 @@ public class ControloDoJogo {
         if (mapPersonagensAliancas.getEdge(p_a, p_b) == null) {
             mapPersonagensAliancas.insertEdge(p_a, p_b, new Alianca(tipoalianca));
             added = true;
+        } else {
+            if (tipoalianca == true) {
+                ArrayList<Personagem> arraylist = (ArrayList<Personagem>) mapPersonagensAliancas.directConnections(p_a);
+                int numAliancasPublicas = 0;
+                float compatibilidade = 0f;
+                for (Personagem p : arraylist) {
+                    if (mapPersonagensAliancas.getEdge(p_a, p).isPublic()) {
+                        numAliancasPublicas++;
+                        compatibilidade += mapPersonagensAliancas.getEdge(p_a, p).getFatorCompatibilidade();
+                    }
+                }
+                compatibilidade = compatibilidade / numAliancasPublicas;
+                mapPersonagensAliancas.insertEdge(p_a, p_b, new Alianca(tipoalianca, compatibilidade));
+            } else {
+
+                ArrayList<Personagem> arraylist = (ArrayList<Personagem>) mapPersonagensAliancas.directConnections(p_a);
+                int numAliancasPublicas = 0;
+                float compatibilidade = 0f;
+                for (Personagem p : arraylist) {
+                    numAliancasPublicas++;
+                    compatibilidade += mapPersonagensAliancas.getEdge(p_a, p).getFatorCompatibilidade();
+                }
+
+                compatibilidade = compatibilidade / numAliancasPublicas;
+                mapPersonagensAliancas.insertEdge(p_a, p_b, new Alianca(tipoalianca, compatibilidade));
+            }
         }
         return added;
     }
