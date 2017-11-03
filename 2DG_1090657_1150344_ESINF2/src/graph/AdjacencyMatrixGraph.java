@@ -477,19 +477,18 @@ public class AdjacencyMatrixGraph<V, E> implements BasicGraph<V, E>, Cloneable {
     @SuppressWarnings("unchecked")
     public Object clone() {
         AdjacencyMatrixGraph<V, E> newObject = new AdjacencyMatrixGraph<V, E>();
-
-        newObject.vertices = (ArrayList<V>) vertices.clone();
-
-        newObject.numVertices = numVertices;
-
-        newObject.edgeMatrix = (E[][]) new Object[edgeMatrix.length][edgeMatrix.length];
-
-        for (int i = 0; i < edgeMatrix.length; i++) {
-            newObject.edgeMatrix[i] = Arrays.copyOf(edgeMatrix[i], edgeMatrix.length);
+        for (V v : vertices) {
+            newObject.insertVertex(v);
         }
-
-        newObject.numEdges = numEdges;
-
+        for (int i = 0; i < edgeMatrix.length; i++) {
+            for (int j = 0; j < edgeMatrix.length; j++) {
+                if (edgeMatrix[i][j] != null) {
+                    if (newObject.privateGet(i, j) == null) {
+                        newObject.insertEdge(i, j, edgeMatrix[i][j]);
+                    }
+                }
+            }
+        }
         return newObject;
     }
 
