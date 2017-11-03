@@ -56,6 +56,13 @@ public class ControloDoJogo {
         }
         return false;
     }
+    
+    public boolean adicionarPersonagem(Personagem p) {
+        if (!mapPersonagensAliancas.checkVertex(p)) {
+            return mapPersonagensAliancas.insertVertex(p);
+        }
+        return false;
+    }
 
     public double obterEstrada(Local a, Local b) {
         return mapLocaisEstradas.getEdge(a, b);
@@ -148,15 +155,15 @@ public class ControloDoJogo {
     }
 
     //2c Determinar qual a aliança mais forte, retornando a força e as personagens dessa aliança
-    public ForcaAlianca determinarAliancaMaisForte(AdjacencyMatrixGraph<Personagem, Alianca> mapAlianca) {
+    public ForcaAlianca determinarAliancaMaisForte() {
         LinkedList<Personagem> listaPersonagens = new LinkedList<>();
         LinkedList<ForcaAlianca> listaForcaAlianca = new LinkedList<>();
 
-        for (Personagem p : mapAlianca.vertices()) {
+        for (Personagem p : mapPersonagensAliancas.vertices()) {
             listaPersonagens.push(p);
             double forca_alianca = 0;
-            for (Personagem padj : mapAlianca.directConnections(p)) {
-                forca_alianca += ((p.getForca() + padj.getForca()) * mapAlianca.getEdge(p, padj).getFatorCompatibilidade());
+            for (Personagem padj : mapPersonagensAliancas.directConnections(p)) {
+                forca_alianca += ((p.getForca() + padj.getForca()) * mapPersonagensAliancas.getEdge(p, padj).getFatorCompatibilidade());
                 listaPersonagens.push(padj);
             }
             listaForcaAlianca.add(new ForcaAlianca(forca_alianca, listaPersonagens));

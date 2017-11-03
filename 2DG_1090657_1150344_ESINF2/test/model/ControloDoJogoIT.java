@@ -7,10 +7,6 @@ package model;
 
 import graph.AdjacencyMatrixGraph;
 import java.util.LinkedList;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -21,25 +17,6 @@ import static org.junit.Assert.*;
 public class ControloDoJogoIT {
 
     private static String LOCAIS_TEST = "locais_TEST.txt";
-
-    public ControloDoJogoIT() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
 
     /**
      * Test of lerLocais method, of class Jogo.
@@ -161,7 +138,6 @@ public class ControloDoJogoIT {
         // dificuldade local 5 + dificuldade local 6 + estrada 1-5 + estrada 5-6
         double dificuldade = local5.getDificuldade() + local6.getDificuldade() + jg1.obterEstrada(local1, local5) + jg1.obterEstrada(local5, local6);
 
-        Conquista expResult = null;
         Conquista result = jg1.verificarConquista(persOrig, source, target);
         assertTrue("É possível conquistar", result.consegueConquistar());
         assertTrue("A dificuldade do caminho é 60:", result.forcaNecessaria() == dificuldade);
@@ -180,15 +156,15 @@ public class ControloDoJogoIT {
     @Test
     public void testAdicionarLocal_3args() {
         System.out.println("adicionarLocal");
-        String nomeLocal = "";
-        int dificuldade = 0;
-        Personagem p = null;
+        String nomeLocal = "Local a";
+        int dificuldade = 10;
+        Personagem p = new Personagem("Personagem a", 10);
         ControloDoJogo instance = new ControloDoJogo();
-        boolean expResult = false;
+        boolean expResult = true;
         boolean result = instance.adicionarLocal(nomeLocal, dificuldade, p);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        result = instance.adicionarLocal(nomeLocal, dificuldade, p);
+        assertFalse(result);
     }
 
     /**
@@ -197,13 +173,13 @@ public class ControloDoJogoIT {
     @Test
     public void testAdicionarLocal_Local() {
         System.out.println("adicionarLocal");
-        Local local = null;
+        Local local = new Local("Local a", 10);
         ControloDoJogo instance = new ControloDoJogo();
-        boolean expResult = false;
+        boolean expResult = true;
         boolean result = instance.adicionarLocal(local);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        result = instance.adicionarLocal(local);
+        assertFalse(result);
     }
 
     /**
@@ -212,15 +188,20 @@ public class ControloDoJogoIT {
     @Test
     public void testAdicionarEstrada() {
         System.out.println("adicionarEstrada");
-        Local a = null;
-        Local b = null;
-        double e = 0.0;
+        Personagem p1 = new Personagem("Personagem a", 10);
+        Personagem p2 = new Personagem("Personagem b", 12);
+        Local a = new Local("Local a", 10, p1);
+        Local b = new Local("Local b", 15, p2);
+        double e = 3.7;
         ControloDoJogo instance = new ControloDoJogo();
-        boolean expResult = false;
+        instance.adicionarLocal(a);
+        instance.adicionarLocal(b);
+        boolean expResult = true;
         boolean result = instance.adicionarEstrada(a, b, e);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        result = instance.adicionarEstrada(a, b, e);
+        assertFalse(result);
     }
 
     /**
@@ -233,8 +214,6 @@ public class ControloDoJogoIT {
         int expResult = 0;
         int result = instance.numEstradas();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -246,8 +225,6 @@ public class ControloDoJogoIT {
         String nomeFicheiro = "";
         ControloDoJogo instance = new ControloDoJogo();
         instance.lerAlianca(nomeFicheiro);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -261,8 +238,6 @@ public class ControloDoJogoIT {
         Iterable<Personagem> expResult = null;
         Iterable<Personagem> result = instance.devolverTodosAliados(source);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -271,11 +246,44 @@ public class ControloDoJogoIT {
     @Test
     public void testDeterminarAliancaMaisForte() {
         System.out.println("determinarAliancaMaisForte");
-        AdjacencyMatrixGraph<Personagem, Alianca> graphorig = null;
         ControloDoJogo instance = new ControloDoJogo();
-        instance.determinarAliancaMaisForte(graphorig);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
+        Personagem p1 = new Personagem("Personagem a", 10);
+        Personagem p2 = new Personagem("Personagem b", 12);
+        Personagem p3 = new Personagem("Personagem c", 8);
+        Personagem p4 = new Personagem("Personagem d", 9);
+        Personagem p5 = new Personagem("Personagem e", 4);
+        Personagem p6 = new Personagem("Personagem f", 15);
+        Personagem p7 = new Personagem("Personagem g", 4);
+        Personagem p8 = new Personagem("Personagem h", 7);
+        
+        instance.adicionarPersonagem(p1);
+        instance.adicionarPersonagem(p2);
+        instance.adicionarPersonagem(p3);
+        instance.adicionarPersonagem(p4);
+        instance.adicionarPersonagem(p5);
+        instance.adicionarPersonagem(p6);
+        instance.adicionarPersonagem(p7);
+        instance.adicionarPersonagem(p8);
+        
+        instance.novaAlianca(p1, p2, true);
+        instance.novaAlianca(p2, p5, true);
+        instance.novaAlianca(p1, p4, true);
+        instance.novaAlianca(p3, p7, false);
+        instance.novaAlianca(p4, p6, false);
+        instance.novaAlianca(p7, p8, false);
+        instance.novaAlianca(p2, p6, true);
+        instance.novaAlianca(p5, p7, true);
+        instance.novaAlianca(p7, p4, false);
+        instance.novaAlianca(p2, p3, true);
+        
+        ForcaAlianca result = instance.determinarAliancaMaisForte();
+        LinkedList<Personagem> listap = new LinkedList<>();
+        listap.add(p2);
+        listap.add(p6);
+        // Esta a retornar alianca das personagens {f, e, c, a, b}
+        ForcaAlianca expResult = new ForcaAlianca(27.0, listap);
+        assertEquals(expResult, result);
     }
 
     /**
@@ -284,15 +292,17 @@ public class ControloDoJogoIT {
     @Test
     public void testNovaAlianca() {
         System.out.println("novaAlianca");
-        Personagem p_a = null;
-        Personagem p_b = null;
+        Personagem p_a = new Personagem("Personagem 1", 10);
+        Personagem p_b = new Personagem("Personagem 2", 12);
         boolean tipoalianca = false;
         ControloDoJogo instance = new ControloDoJogo();
-        boolean expResult = false;
+        boolean expResult = true;
         boolean result = instance.novaAlianca(p_a, p_b, tipoalianca);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        tipoalianca = true;
+        expResult = true;
+        result = instance.novaAlianca(p_a, p_b, tipoalianca);
+        assertEquals(expResult, result);
     }
 
     /**
@@ -306,8 +316,6 @@ public class ControloDoJogoIT {
         AdjacencyMatrixGraph<Personagem, Alianca> expResult = null;
         AdjacencyMatrixGraph<Personagem, Alianca> result = instance.possiveisNovasAliancas(mapOriginal);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
 }
