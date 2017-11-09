@@ -295,10 +295,12 @@ public class ControloDoJogoTest {
         boolean tipoalianca = false;
         ControloDoJogo instance = new ControloDoJogo();
         boolean expResult = true;
+        instance.adicionarPersonagem(p_a);
+        instance.adicionarPersonagem(p_b);
         boolean result = instance.novaAlianca(p_a, p_b, tipoalianca);
         assertEquals(expResult, result);
         tipoalianca = true;
-        expResult = true;
+        expResult = false;
         result = instance.novaAlianca(p_a, p_b, tipoalianca);
         assertEquals(expResult, result);
     }

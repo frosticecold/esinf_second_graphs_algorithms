@@ -164,7 +164,6 @@ public class ControloDoJogo {
                 if (forca_alianca == -1) {
                     listaPersonagens.push(padj);
                     listaPersonagens.push(p);
-
                     forca_alianca = (p.getForca() + padj.getForca()) * mapPersonagensAliancas.getEdge(p, padj).getFatorCompatibilidade();
                 } else {
                     double outra_forca = (p.getForca() + padj.getForca()) * mapPersonagensAliancas.getEdge(p, padj).getFatorCompatibilidade();
@@ -189,7 +188,7 @@ public class ControloDoJogo {
     }
 
     //2d Realizar uma nova aliança entre uma personagem A e uma personagem B.
-    public boolean novaAlianca(Personagem p_a, Personagem p_b, boolean tipoalianca) {
+    public boolean novaAlianca_old(Personagem p_a, Personagem p_b, boolean tipoalianca) {
         boolean added = false;
         if (mapPersonagensAliancas.getEdge(p_a, p_b) == null) {
             mapPersonagensAliancas.insertEdge(p_a, p_b, new Alianca(tipoalianca));
@@ -224,6 +223,42 @@ public class ControloDoJogo {
         return added;
     }
 
+    public boolean novaAlianca(Personagem p_a, Personagem p_b, boolean tipoalianca) {
+        if (!mapPersonagensAliancas.checkVertex(p_a) || !mapPersonagensAliancas.checkVertex(p_b)) {
+            return false;
+        }
+        if (mapPersonagensAliancas.getEdge(p_a, p_b) != null) {
+            return false;
+        }
+        AdjacencyMatrixGraph<Personagem, Double> mapaAliancaPeso = copiarAliancaParaAliancaComPeso(mapPersonagensAliancas);
+        LinkedList<Personagem> path = new LinkedList<>();
+        double dist = graph.EdgeAsDoubleGraphAlgorithms.shortestPath(mapaAliancaPeso, p_a, p_b, path);
+        if (dist == -1) {
+            mapPersonagensAliancas.insertEdge(p_a, p_b, new Alianca(tipoalianca));
+            return true;
+        } else {
+            int numPersonagens = path.size();
+            float fator_comp = 0f;
+            Personagem a = null;
+            Personagem b = null;
+            LinkedList<Personagem> clone = (LinkedList<Personagem>) path.clone();
+            while (!clone.isEmpty()) {
+                if (a == null && b == null) {
+                    a = clone.pop();
+                    b = clone.pop();
+                    fator_comp = mapPersonagensAliancas.getEdge(a, b).getFatorCompatibilidade();
+                } else {
+                    a = b;
+                    b = clone.pop();
+                    fator_comp += mapPersonagensAliancas.getEdge(a, b).getFatorCompatibilidade();
+                }
+            }
+            float mediaComp = fator_comp / numPersonagens;
+            mapPersonagensAliancas.insertEdge(a, b, new Alianca(tipoalianca, mediaComp));
+            return true;
+        }
+    }
+
     //2e Criar um novo grafo representando todas as novas alianças que podem ser realizadas entre todas as personagens
     //caso todas as alianças existentes fossem públicas
     public AdjacencyMatrixGraph<Personagem, Alianca> possiveisNovasAliancas(AdjacencyMatrixGraph<Personagem, Alianca> mapOriginal) {
@@ -238,4 +273,21 @@ public class ControloDoJogo {
         return newgraph;
     }
 
+    private AdjacencyMatrixGraph<Personagem, Double> copiarAliancaParaAliancaComPeso(AdjacencyMatrixGraph<Personagem, Alianca> mapa) {
+        AdjacencyMatrixGraph<Personagem, Double> outromap = (AdjacencyMatrixGraph<Personagem, Double>) mapa.clone();
+        double PESO = 1;
+        for (Personagem p : mapa.vertices()) {
+            if (!outromap.checkVertex(p)) {
+                outromap.insertVertex(p);
+            }
+            for (Personagem pAdj : mapa.directConnections(p)) {
+                if (!outromap.checkVertex(pAdj)) {
+                    outromap.insertVertex(pAdj);
+                }
+                outromap.insertEdge(p, pAdj, PESO);
+            }
+
+        }
+        return outromap;
+    }
 }
