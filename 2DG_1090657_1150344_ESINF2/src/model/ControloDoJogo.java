@@ -274,7 +274,7 @@ public class ControloDoJogo {
     }
 
     private AdjacencyMatrixGraph<Personagem, Double> copiarAliancaParaAliancaComPeso(AdjacencyMatrixGraph<Personagem, Alianca> mapa) {
-        AdjacencyMatrixGraph<Personagem, Double> outromap = (AdjacencyMatrixGraph<Personagem, Double>) mapa.clone();
+        AdjacencyMatrixGraph<Personagem, Double> outromap = new AdjacencyMatrixGraph<>();
         double PESO = 1;
         for (Personagem p : mapa.vertices()) {
             if (!outromap.checkVertex(p)) {
