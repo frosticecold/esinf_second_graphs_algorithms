@@ -17,9 +17,9 @@ import static org.junit.Assert.*;
  *
  * @author Raúl Correia <1090657@isep.ipp.pt>
  */
-public class FicheiroIT {
+public class FicheiroTest {
 
-    public FicheiroIT() {
+    public FicheiroTest() {
     }
 
     @BeforeClass

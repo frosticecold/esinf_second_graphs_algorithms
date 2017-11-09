@@ -56,7 +56,7 @@ public class ControloDoJogo {
         }
         return false;
     }
-    
+
     public boolean adicionarPersonagem(Personagem p) {
         if (!mapPersonagensAliancas.checkVertex(p)) {
             return mapPersonagensAliancas.insertVertex(p);
@@ -157,30 +157,35 @@ public class ControloDoJogo {
     //2c Determinar qual a aliança mais forte, retornando a força e as personagens dessa aliança
     public ForcaAlianca determinarAliancaMaisForte() {
         LinkedList<Personagem> listaPersonagens = new LinkedList<>();
-        LinkedList<ForcaAlianca> listaForcaAlianca = new LinkedList<>();
 
+        double forca_alianca = -1;
         for (Personagem p : mapPersonagensAliancas.vertices()) {
-            listaPersonagens.push(p);
-            double forca_alianca = 0;
             for (Personagem padj : mapPersonagensAliancas.directConnections(p)) {
-                forca_alianca += ((p.getForca() + padj.getForca()) * mapPersonagensAliancas.getEdge(p, padj).getFatorCompatibilidade());
-                listaPersonagens.push(padj);
-            }
-            listaForcaAlianca.add(new ForcaAlianca(forca_alianca, listaPersonagens));
-            listaPersonagens = new LinkedList<>();
-        }
-        ForcaAlianca fa = null;
-        while (!listaForcaAlianca.isEmpty()) {
-            ForcaAlianca temp = listaForcaAlianca.pop();
-            if (fa == null) {
-                fa = temp;
-            } else {
-                if (fa.getForca() < temp.getForca()) {
-                    fa = temp;
+                if (forca_alianca == -1) {
+                    listaPersonagens.push(padj);
+                    listaPersonagens.push(p);
+
+                    forca_alianca = (p.getForca() + padj.getForca()) * mapPersonagensAliancas.getEdge(p, padj).getFatorCompatibilidade();
+                } else {
+                    double outra_forca = (p.getForca() + padj.getForca()) * mapPersonagensAliancas.getEdge(p, padj).getFatorCompatibilidade();
+                    if (outra_forca > forca_alianca) {
+                        listaPersonagens.clear();
+                        listaPersonagens.push(padj);
+                        listaPersonagens.push(p);
+
+                    }
+
                 }
             }
         }
-        return fa;
+        if (!listaPersonagens.isEmpty()) {
+            Personagem b = listaPersonagens.pop();
+            Personagem a = listaPersonagens.pop();
+            ForcaAlianca fa = new ForcaAlianca(forca_alianca, a, b);
+            return fa;
+
+        }
+        return null;
     }
 
     //2d Realizar uma nova aliança entre uma personagem A e uma personagem B.

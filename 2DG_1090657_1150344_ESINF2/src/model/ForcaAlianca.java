@@ -14,18 +14,24 @@ import java.util.LinkedList;
 public class ForcaAlianca {
 
     private double forca;
-    private LinkedList<Personagem> listaAliados;
+    private Personagem pers_a;
+    private Personagem pers_b;
 
-    public ForcaAlianca(double forca, LinkedList<Personagem> listap) {
+    public ForcaAlianca(double forca, Personagem pers_a, Personagem pers_b) {
         this.forca = forca;
-        this.listaAliados = listap;
+        this.pers_a = pers_a;
+        this.pers_b = pers_b;
     }
 
     public double getForca() {
         return forca;
     }
 
-    public LinkedList<Personagem> getListaAliados() {
-        return listaAliados;
+    public Personagem getPers_a() {
+        return pers_a;
+    }
+
+    public Personagem getPers_b() {
+        return pers_b;
     }
 }

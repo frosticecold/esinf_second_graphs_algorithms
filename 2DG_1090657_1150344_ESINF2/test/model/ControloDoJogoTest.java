@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
  *
  * @author Raúl Correia <1090657@isep.ipp.pt>
  */
-public class ControloDoJogoIT {
+public class ControloDoJogoTest {
 
     private static String LOCAIS_TEST = "locais_TEST.txt";
 
@@ -199,7 +199,7 @@ public class ControloDoJogoIT {
         boolean expResult = true;
         boolean result = instance.adicionarEstrada(a, b, e);
         assertEquals(expResult, result);
-        
+
         result = instance.adicionarEstrada(a, b, e);
         assertFalse(result);
     }
@@ -256,7 +256,7 @@ public class ControloDoJogoIT {
         Personagem p6 = new Personagem("Personagem f", 15);
         Personagem p7 = new Personagem("Personagem g", 4);
         Personagem p8 = new Personagem("Personagem h", 7);
-        
+
         instance.adicionarPersonagem(p1);
         instance.adicionarPersonagem(p2);
         instance.adicionarPersonagem(p3);
@@ -265,7 +265,7 @@ public class ControloDoJogoIT {
         instance.adicionarPersonagem(p6);
         instance.adicionarPersonagem(p7);
         instance.adicionarPersonagem(p8);
-        
+
         instance.novaAlianca(p1, p2, true);
         instance.novaAlianca(p2, p5, true);
         instance.novaAlianca(p1, p4, true);
@@ -276,14 +276,12 @@ public class ControloDoJogoIT {
         instance.novaAlianca(p5, p7, true);
         instance.novaAlianca(p7, p4, false);
         instance.novaAlianca(p2, p3, true);
-        
+
         ForcaAlianca result = instance.determinarAliancaMaisForte();
-        LinkedList<Personagem> listap = new LinkedList<>();
-        listap.add(p2);
-        listap.add(p6);
         // Esta a retornar alianca das personagens {f, e, c, a, b}
-        ForcaAlianca expResult = new ForcaAlianca(27.0, listap);
-        assertEquals(expResult, result);
+        ForcaAlianca expResult = new ForcaAlianca(27.0, p2, p6);
+        assertEquals(expResult.getPers_a(), result.getPers_a());
+        assertEquals(expResult.getPers_b(), result.getPers_b());
     }
 
     /**
