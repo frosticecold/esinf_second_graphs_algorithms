@@ -79,7 +79,7 @@ public class ControloDoJogo {
     //1A
     public void lerLocais(String nomeFicheiro) {
         Ficheiro f = new Ficheiro();
-        f.lerLocais(nomeFicheiro, mapLocaisEstradas);
+        f.lerLocais(nomeFicheiro, mapLocaisEstradas, mapPersonagensAliancas);
 
     }
 
@@ -222,7 +222,6 @@ public class ControloDoJogo {
             return true;
         }
     }
-
 
     //2e Criar um novo grafo representando todas as novas alianças que podem ser realizadas entre todas as personagens
     //caso todas as alianças existentes fossem públicas
