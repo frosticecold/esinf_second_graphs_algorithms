@@ -19,15 +19,15 @@ public class ControloDoJogo {
     private AdjacencyMatrixGraph<Local, Double> mapLocaisEstradas;
     private AdjacencyMatrixGraph<Personagem, Alianca> mapPersonagensAliancas;
 
-    public static String LOCAIS_S = "locais_S.txt";
-    public static String LOCAIS_M = "locais_M.txt";
-    public static String LOCAIS_L = "locais_L.txt";
-    public static String LOCAIS_XL = "locais_XL.txt";
+    public final static String LOCAIS_S = "locais_S.txt";
+    public final static String LOCAIS_M = "locais_M.txt";
+    public final static String LOCAIS_L = "locais_L.txt";
+    public final static String LOCAIS_XL = "locais_XL.txt";
 
-    public static String PERSONAGEM_S = "pers_S.txt";
-    public static String PERSONAGEM_M = "pers_M.txt";
-    public static String PERSONAGEM_L = "pers_L.txt";
-    public static String PERSONAGEM_XL = "pers_XL.txt";
+    public final static String PERSONAGEM_S = "pers_S.txt";
+    public final static String PERSONAGEM_M = "pers_M.txt";
+    public final static String PERSONAGEM_L = "pers_L.txt";
+    public final static String PERSONAGEM_XL = "pers_XL.txt";
 
     ControloDoJogo() {
         mapLocaisEstradas = new AdjacencyMatrixGraph<>();
@@ -187,43 +187,7 @@ public class ControloDoJogo {
         return null;
     }
 
-    //2d Realizar uma nova aliança entre uma personagem A e uma personagem B.
-    public boolean novaAlianca_old(Personagem p_a, Personagem p_b, boolean tipoalianca) {
-        boolean added = false;
-        if (mapPersonagensAliancas.getEdge(p_a, p_b) == null) {
-            mapPersonagensAliancas.insertEdge(p_a, p_b, new Alianca(tipoalianca));
-            added = true;
-        } else {
-            if (tipoalianca == true) {
-                ArrayList<Personagem> arraylist = (ArrayList<Personagem>) mapPersonagensAliancas.directConnections(p_a);
-                int numAliancasPublicas = 0;
-                float compatibilidade = 0f;
-                for (Personagem p : arraylist) {
-                    if (mapPersonagensAliancas.getEdge(p_a, p).isPublic()) {
-                        numAliancasPublicas++;
-                        compatibilidade += mapPersonagensAliancas.getEdge(p_a, p).getFatorCompatibilidade();
-                    }
-                }
-                compatibilidade = compatibilidade / numAliancasPublicas;
-                mapPersonagensAliancas.insertEdge(p_a, p_b, new Alianca(tipoalianca, compatibilidade));
-            } else {
-
-                ArrayList<Personagem> arraylist = (ArrayList<Personagem>) mapPersonagensAliancas.directConnections(p_a);
-                int numAliancasPublicas = 0;
-                float compatibilidade = 0f;
-                for (Personagem p : arraylist) {
-                    numAliancasPublicas++;
-                    compatibilidade += mapPersonagensAliancas.getEdge(p_a, p).getFatorCompatibilidade();
-                }
-
-                compatibilidade = compatibilidade / numAliancasPublicas;
-                mapPersonagensAliancas.insertEdge(p_a, p_b, new Alianca(tipoalianca, compatibilidade));
-            }
-        }
-        return added;
-    }
-
-    public boolean novaAlianca(Personagem p_a, Personagem p_b, boolean tipoalianca) {
+    public boolean novaAlianca(Personagem p_a, Personagem p_b, boolean tipoalianca, float fator_compatibilidade) {
         if (!mapPersonagensAliancas.checkVertex(p_a) || !mapPersonagensAliancas.checkVertex(p_b)) {
             return false;
         }
@@ -234,7 +198,7 @@ public class ControloDoJogo {
         LinkedList<Personagem> path = new LinkedList<>();
         double dist = graph.EdgeAsDoubleGraphAlgorithms.shortestPath(mapaAliancaPeso, p_a, p_b, path);
         if (dist == -1) {
-            mapPersonagensAliancas.insertEdge(p_a, p_b, new Alianca(tipoalianca));
+            mapPersonagensAliancas.insertEdge(p_a, p_b, new Alianca(tipoalianca, fator_compatibilidade));
             return true;
         } else {
             int numPersonagens = path.size();
@@ -258,6 +222,7 @@ public class ControloDoJogo {
             return true;
         }
     }
+
 
     //2e Criar um novo grafo representando todas as novas alianças que podem ser realizadas entre todas as personagens
     //caso todas as alianças existentes fossem públicas

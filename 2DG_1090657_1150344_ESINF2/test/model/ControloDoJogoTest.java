@@ -266,19 +266,19 @@ public class ControloDoJogoTest {
         instance.adicionarPersonagem(p7);
         instance.adicionarPersonagem(p8);
 
-        instance.novaAlianca(p1, p2, true);
-        instance.novaAlianca(p2, p5, true);
-        instance.novaAlianca(p1, p4, true);
-        instance.novaAlianca(p3, p7, false);
-        instance.novaAlianca(p4, p6, false);
-        instance.novaAlianca(p7, p8, false);
-        instance.novaAlianca(p2, p6, true);
-        instance.novaAlianca(p5, p7, true);
-        instance.novaAlianca(p7, p4, false);
-        instance.novaAlianca(p2, p3, true);
+        instance.novaAlianca(p1, p2, true, 1);
+        instance.novaAlianca(p2, p5, true, 1);
+        instance.novaAlianca(p1, p4, true, 1);
+        instance.novaAlianca(p3, p7, false, 1);
+        instance.novaAlianca(p4, p6, false, 1);
+        instance.novaAlianca(p7, p8, false, 1);
+        instance.novaAlianca(p2, p6, true, 1);
+        instance.novaAlianca(p5, p7, true, 1);
+        instance.novaAlianca(p7, p4, false, 1);
+        instance.novaAlianca(p2, p3, true, 1);
 
         ForcaAlianca result = instance.determinarAliancaMaisForte();
-        // Esta a retornar alianca das personagens {f, e, c, a, b}
+
         ForcaAlianca expResult = new ForcaAlianca(27.0, p2, p6);
         assertEquals(expResult.getPers_a(), result.getPers_a());
         assertEquals(expResult.getPers_b(), result.getPers_b());
@@ -297,11 +297,11 @@ public class ControloDoJogoTest {
         boolean expResult = true;
         instance.adicionarPersonagem(p_a);
         instance.adicionarPersonagem(p_b);
-        boolean result = instance.novaAlianca(p_a, p_b, tipoalianca);
+        boolean result = instance.novaAlianca(p_a, p_b, tipoalianca, 1);
         assertEquals(expResult, result);
         tipoalianca = true;
         expResult = false;
-        result = instance.novaAlianca(p_a, p_b, tipoalianca);
+        result = instance.novaAlianca(p_a, p_b, tipoalianca, 1);
         assertEquals(expResult, result);
     }
 

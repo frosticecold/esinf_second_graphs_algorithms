@@ -1,0 +1,9 @@
+Locais
+NomeLocal1,Pontos,NomePersonagem
+NomeLocal2,Pontos
+<nomelocal>,<pontos>,<nomepersonagem>
+-----
+
+Aliancas
+Nome Pers1,Pers2,True,0.5
+NomePersx,NomePersy,<visibilidade>,<valor>
