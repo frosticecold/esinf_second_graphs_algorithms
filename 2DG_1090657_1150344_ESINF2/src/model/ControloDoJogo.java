@@ -229,7 +229,7 @@ public class ControloDoJogo {
                 }
             }
             float mediaComp = fator_comp / numPersonagens;
-            mapPersonagensAliancas.insertEdge(a, b, new Alianca(tipoalianca, mediaComp));
+            mapPersonagensAliancas.insertEdge(p_a, p_b, new Alianca(tipoalianca, mediaComp));
             return true;
         }
     }

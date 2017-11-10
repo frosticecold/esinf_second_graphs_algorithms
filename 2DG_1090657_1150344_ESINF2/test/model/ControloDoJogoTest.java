@@ -282,6 +282,7 @@ public class ControloDoJogoTest {
         instance.novaAlianca(p5, p7, true, 1);
         instance.novaAlianca(p7, p4, false, 1);
         instance.novaAlianca(p2, p3, true, 1);
+        instance.novaAlianca(p2, p6, true, 1);
         ForcaAlianca result = instance.determinarAliancaMaisForte();
 
         //Não é p2-p6 porque existe caminho entre eles - p2-p3-p3-p7-p4-p6
