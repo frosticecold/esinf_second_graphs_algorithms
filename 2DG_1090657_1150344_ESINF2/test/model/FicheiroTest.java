@@ -6,10 +6,6 @@
 package model;
 
 import graph.AdjacencyMatrixGraph;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -21,23 +17,7 @@ public class FicheiroTest {
 
     public FicheiroTest() {
     }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
+    
     /**
      * Test of lerLocais method, of class Ficheiro.
      */
@@ -102,5 +82,45 @@ public class FicheiroTest {
         }
 
         assertTrue("Tem todas as edges", todosvisitados);
+    }
+
+    /**
+     * Test of lerPersonagensAliancas method, of class Ficheiro.
+     */
+    @Test
+    public void testLerPersonagensAliancas() {
+        System.out.println("lerPersonagensAliancas");
+        final String nomeFicheiro = "pers_TEST.txt";
+        AdjacencyMatrixGraph<Local, Double> mapLocaisEstradas = new AdjacencyMatrixGraph<>();
+        AdjacencyMatrixGraph<Personagem, Alianca> mapPersonagens = new AdjacencyMatrixGraph<>();
+
+        Ficheiro instance = new Ficheiro();
+        instance.lerPersonagensAliancas(nomeFicheiro, mapLocaisEstradas, mapPersonagens);
+
+        Personagem Pers0 = new Personagem("Pers0", 47);
+        Personagem Pers1 = new Personagem("Pers1", 53);
+        Personagem Pers2 = new Personagem("Pers2", 55);
+        Personagem Pers3 = new Personagem("Pers3", 71);
+        Personagem Pers4 = new Personagem("Pers4", 52);
+        Personagem Pers5 = new Personagem("Pers5", 71);
+        Personagem Pers6 = new Personagem("Pers6", 60);
+        Personagem Pers7 = new Personagem("Pers7", 59);
+        Personagem Pers8 = new Personagem("Pers8", 46);
+        Personagem Pers9 = new Personagem("Pers9", 62);
+
+        assertTrue(mapPersonagens.checkVertex(Pers0));
+        assertTrue(mapPersonagens.checkVertex(Pers1));
+        assertTrue(mapPersonagens.checkVertex(Pers2));
+        assertTrue(mapPersonagens.checkVertex(Pers3));
+        assertTrue(mapPersonagens.checkVertex(Pers4));
+        assertTrue(mapPersonagens.checkVertex(Pers5));
+        assertTrue(mapPersonagens.checkVertex(Pers6));
+        assertTrue(mapPersonagens.checkVertex(Pers7));
+        assertTrue(mapPersonagens.checkVertex(Pers8));
+        assertTrue(mapPersonagens.checkVertex(Pers9));
+
+        int expectedNumAliancas = 14;
+        assertTrue("Tem todas as aliancas", expectedNumAliancas == mapPersonagens.numEdges());
+
     }
 }
