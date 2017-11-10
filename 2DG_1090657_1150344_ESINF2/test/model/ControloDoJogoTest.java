@@ -28,7 +28,11 @@ public class ControloDoJogoTest {
         String nomeFicheiro = "pers_TEST.txt";
         ControloDoJogo instance = new ControloDoJogo();
         instance.lerAlianca(nomeFicheiro);
-        
+        int NUM_PERSONAGENS = 10;
+        int NUM_ALIANCAS = 14;
+        assertTrue("Para o ficheiro de teste , o número de personagens é 10", NUM_PERSONAGENS == instance.numPersonagens());
+        assertTrue("Para o ficheiro de teste, o número de aliancas é 14", NUM_ALIANCAS == instance.numAliancas());
+
     }
 
     /**
@@ -275,14 +279,13 @@ public class ControloDoJogoTest {
         instance.novaAlianca(p3, p7, false, 1);
         instance.novaAlianca(p4, p6, false, 1);
         instance.novaAlianca(p7, p8, false, 1);
-        instance.novaAlianca(p2, p6, true, 1);
         instance.novaAlianca(p5, p7, true, 1);
         instance.novaAlianca(p7, p4, false, 1);
         instance.novaAlianca(p2, p3, true, 1);
-
         ForcaAlianca result = instance.determinarAliancaMaisForte();
 
-        ForcaAlianca expResult = new ForcaAlianca(27.0, p2, p6);
+        //Não é p2-p6 porque existe caminho entre eles - p2-p3-p3-p7-p4-p6
+        ForcaAlianca expResult = new ForcaAlianca(24.0, p4, p6);
         assertEquals(expResult.getPers_a(), result.getPers_a());
         assertEquals(expResult.getPers_b(), result.getPers_b());
     }
@@ -314,11 +317,13 @@ public class ControloDoJogoTest {
     @Test
     public void testPossiveisNovasAliancas() {
         System.out.println("possiveisNovasAliancas");
-        AdjacencyMatrixGraph<Personagem, Alianca> mapOriginal = null;
         ControloDoJogo instance = new ControloDoJogo();
-        AdjacencyMatrixGraph<Personagem, Alianca> expResult = null;
-        AdjacencyMatrixGraph<Personagem, Alianca> result = instance.possiveisNovasAliancas(mapOriginal);
-        assertEquals(expResult, result);
+        instance.lerAlianca(PERS_TEST);
+        instance.lerLocais(LOCAIS_TEST);
+        AdjacencyMatrixGraph<Personagem, Alianca> result = instance.possiveisNovasAliancas();
+        boolean valido = true;
+        AdjacencyMatrixGraph<Personagem, Alianca> clone = instance.cloneAliancas();
+
     }
 
 }

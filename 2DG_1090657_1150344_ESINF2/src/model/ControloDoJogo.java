@@ -76,6 +76,18 @@ public class ControloDoJogo {
         return mapLocaisEstradas.numVertices();
     }
 
+    public int numPersonagens() {
+        return mapPersonagensAliancas.numVertices();
+    }
+
+    public int numAliancas() {
+        return mapPersonagensAliancas.numEdges();
+    }
+
+    public AdjacencyMatrixGraph<Personagem, Alianca> cloneAliancas() {
+        return (AdjacencyMatrixGraph< Personagem, Alianca>) mapPersonagensAliancas.clone();
+    }
+
     //1A
     public void lerLocais(String nomeFicheiro) {
         Ficheiro f = new Ficheiro();
@@ -156,31 +168,30 @@ public class ControloDoJogo {
 
     //2c Determinar qual a aliança mais forte, retornando a força e as personagens dessa aliança
     public ForcaAlianca determinarAliancaMaisForte() {
-        LinkedList<Personagem> listaPersonagens = new LinkedList<>();
+        Personagem p_a = null;
+        Personagem p_b = null;
 
         double forca_alianca = -1;
         for (Personagem p : mapPersonagensAliancas.vertices()) {
-            for (Personagem padj : mapPersonagensAliancas.directConnections(p)) {
+            for (Personagem pAdj : mapPersonagensAliancas.directConnections(p)) {
                 if (forca_alianca == -1) {
-                    listaPersonagens.push(padj);
-                    listaPersonagens.push(p);
-                    forca_alianca = (p.getForca() + padj.getForca()) * mapPersonagensAliancas.getEdge(p, padj).getFatorCompatibilidade();
+                    p_a = p;
+                    p_b = pAdj;
+                    forca_alianca = (p.getForca() + pAdj.getForca()) * mapPersonagensAliancas.getEdge(p, pAdj).getFatorCompatibilidade();
                 } else {
-                    double outra_forca = (p.getForca() + padj.getForca()) * mapPersonagensAliancas.getEdge(p, padj).getFatorCompatibilidade();
+                    double outra_forca = (p.getForca() + pAdj.getForca()) * mapPersonagensAliancas.getEdge(p, pAdj).getFatorCompatibilidade();
                     if (outra_forca > forca_alianca) {
-                        listaPersonagens.clear();
-                        listaPersonagens.push(padj);
-                        listaPersonagens.push(p);
-
+                        p_a = p;
+                        p_b = pAdj;
+                        forca_alianca = outra_forca;
                     }
 
                 }
             }
         }
-        if (!listaPersonagens.isEmpty()) {
-            Personagem b = listaPersonagens.pop();
-            Personagem a = listaPersonagens.pop();
-            ForcaAlianca fa = new ForcaAlianca(forca_alianca, a, b);
+        if (p_a != null && p_b != null) {
+
+            ForcaAlianca fa = new ForcaAlianca(forca_alianca, p_a, p_b);
             return fa;
 
         }
@@ -225,10 +236,10 @@ public class ControloDoJogo {
 
     //2e Criar um novo grafo representando todas as novas alianças que podem ser realizadas entre todas as personagens
     //caso todas as alianças existentes fossem públicas
-    public AdjacencyMatrixGraph<Personagem, Alianca> possiveisNovasAliancas(AdjacencyMatrixGraph<Personagem, Alianca> mapOriginal) {
-        AdjacencyMatrixGraph<Personagem, Alianca> newgraph = graph.GraphAlgorithms.transitiveClosure(mapOriginal, new Alianca(true));
-        for (Personagem pOrig : mapOriginal.vertices()) {
-            for (Personagem pAdj : mapOriginal.directConnections(pOrig)) {
+    public AdjacencyMatrixGraph<Personagem, Alianca> possiveisNovasAliancas() {
+        AdjacencyMatrixGraph<Personagem, Alianca> newgraph = graph.GraphAlgorithms.transitiveClosure(mapPersonagensAliancas, new Alianca(true));
+        for (Personagem pOrig : mapPersonagensAliancas.vertices()) {
+            for (Personagem pAdj : mapPersonagensAliancas.directConnections(pOrig)) {
                 if (newgraph.getEdge(pOrig, pAdj) != null) {
                     newgraph.removeEdge(pOrig, pAdj);
                 }
