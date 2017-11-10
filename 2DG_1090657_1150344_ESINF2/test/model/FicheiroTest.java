@@ -46,8 +46,11 @@ public class FicheiroTest {
         System.out.println("Teste lerLocais");
         final String nomeFicheiro = "locais_TEST.txt";
         AdjacencyMatrixGraph<Local, Double> map = new AdjacencyMatrixGraph<>();
+        AdjacencyMatrixGraph<Personagem, Alianca> mapPersonagensAliancas = new AdjacencyMatrixGraph<>();
+
         Ficheiro f = new Ficheiro();
-        f.lerLocais(nomeFicheiro, map);
+        f.lerPersonagensAliancas("pers_TEST", map, mapPersonagensAliancas);
+        f.lerLocais(nomeFicheiro, map, mapPersonagensAliancas);
 
         //Locais no ficheiro
         Local local0 = new Local("Local0", 27);

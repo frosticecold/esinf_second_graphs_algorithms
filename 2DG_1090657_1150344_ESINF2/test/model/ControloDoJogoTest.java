@@ -17,6 +17,18 @@ import static org.junit.Assert.*;
 public class ControloDoJogoTest {
 
     private static String LOCAIS_TEST = "locais_TEST.txt";
+    private static String PERS_TEST = "pers_TEST.txt";
+
+    /**
+     * Test of lerAlianca method, of class ControloDoJogo.
+     */
+    @Test
+    public void testLerAlianca() {
+        System.out.println("lerAlianca");
+        String nomeFicheiro = "";
+        ControloDoJogo instance = new ControloDoJogo();
+        instance.lerAlianca(nomeFicheiro);
+    }
 
     /**
      * Test of lerLocais method, of class Jogo.
@@ -26,6 +38,7 @@ public class ControloDoJogoTest {
         System.out.println("lerLocais");
 
         ControloDoJogo instance = new ControloDoJogo();
+        instance.lerAlianca(PERS_TEST);
         instance.lerLocais(LOCAIS_TEST);
         final int NUM_ESTRADAS_TESTE = 9;
         final int NUM_LOCAIS_TESTE = 10;
@@ -214,17 +227,6 @@ public class ControloDoJogoTest {
         int expResult = 0;
         int result = instance.numEstradas();
         assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of lerAlianca method, of class ControloDoJogo.
-     */
-    @Test
-    public void testLerAlianca() {
-        System.out.println("lerAlianca");
-        String nomeFicheiro = "";
-        ControloDoJogo instance = new ControloDoJogo();
-        instance.lerAlianca(nomeFicheiro);
     }
 
     /**
