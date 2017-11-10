@@ -29,7 +29,7 @@ Pers26,57
 Pers27,35
 Pers28,44
 Pers29,69
-ALIANÃ‡AS
+ALIANÇAS
 Pers0,Pers9,FALSE
 Pers0,Pers14,TRUE
 Pers0,Pers17,TRUE

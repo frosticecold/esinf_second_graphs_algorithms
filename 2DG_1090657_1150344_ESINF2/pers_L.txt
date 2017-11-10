@@ -59,7 +59,7 @@ Pers56,49
 Pers57,75
 Pers58,73
 Pers59,61
-ALIANÃ‡AS
+ALIANÇAS
 Pers0,Pers10,TRUE
 Pers0,Pers14,TRUE
 Pers0,Pers27,TRUE

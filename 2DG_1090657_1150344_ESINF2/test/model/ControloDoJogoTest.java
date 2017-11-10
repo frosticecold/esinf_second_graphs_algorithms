@@ -25,9 +25,10 @@ public class ControloDoJogoTest {
     @Test
     public void testLerAlianca() {
         System.out.println("lerAlianca");
-        String nomeFicheiro = "";
+        String nomeFicheiro = "pers_TEST.txt";
         ControloDoJogo instance = new ControloDoJogo();
         instance.lerAlianca(nomeFicheiro);
+        
     }
 
     /**

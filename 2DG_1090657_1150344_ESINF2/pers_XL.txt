@@ -99,7 +99,7 @@ Pers96,47
 Pers97,78
 Pers98,31
 Pers99,61
-ALIANÃ‡AS
+ALIANÇAS
 Pers0,Pers12,TRUE
 Pers0,Pers14,FALSE
 Pers0,Pers28,TRUE

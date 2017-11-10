@@ -9,7 +9,7 @@ Pers6,60
 Pers7,59
 Pers8,46
 Pers9,62
-ALIANÃ‡AS
+ALIANÇAS
 Pers0,Pers6,TRUE
 Pers0,Pers7,TRUE
 Pers0,Pers9,TRUE
