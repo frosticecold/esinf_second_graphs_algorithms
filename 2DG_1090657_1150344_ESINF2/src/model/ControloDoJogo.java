@@ -19,15 +19,23 @@ public class ControloDoJogo {
     private AdjacencyMatrixGraph<Local, Double> mapLocaisEstradas;
     private AdjacencyMatrixGraph<Personagem, Alianca> mapPersonagensAliancas;
 
-    public final static String LOCAIS_S = "locais_S.txt";
-    public final static String LOCAIS_M = "locais_M.txt";
-    public final static String LOCAIS_L = "locais_L.txt";
-    public final static String LOCAIS_XL = "locais_XL.txt";
+    private final static String LOCAIS_S = "locais_S.txt";
+    private final static String LOCAIS_M = "locais_M.txt";
+    private final static String LOCAIS_L = "locais_L.txt";
+    private final static String LOCAIS_XL = "locais_XL.txt";
+    private final static String LOCAIS_TESTE = "locais_TEST.txt";
 
-    public final static String PERSONAGEM_S = "pers_S.txt";
-    public final static String PERSONAGEM_M = "pers_M.txt";
-    public final static String PERSONAGEM_L = "pers_L.txt";
-    public final static String PERSONAGEM_XL = "pers_XL.txt";
+    private final static String PERSONAGEM_S = "pers_S.txt";
+    private final static String PERSONAGEM_M = "pers_M.txt";
+    private final static String PERSONAGEM_L = "pers_L.txt";
+    private final static String PERSONAGEM_XL = "pers_XL.txt";
+    private final static String PERSONAGEM_TESTE = "pers_TEST.txt";
+
+    public final static String FICH_S = "S";
+    public final static String FICH_M = "M";
+    public final static String FICH_L = "L";
+    public final static String FICH_XL = "XL";
+    public final static String FICH_TESTE = "TEST";
 
     ControloDoJogo() {
         mapLocaisEstradas = new AdjacencyMatrixGraph<>();
@@ -64,8 +72,37 @@ public class ControloDoJogo {
         return false;
     }
 
+    public boolean adicionarAlianca(Personagem a, Personagem b, boolean tipoAlianca, float fator_comp) {
+        if (!mapPersonagensAliancas.checkVertex(a) || !mapPersonagensAliancas.checkVertex(b)) {
+            return false;
+        }
+        if (mapPersonagensAliancas.getEdge(a, b) == null) {
+            mapPersonagensAliancas.insertEdge(a, b, new Alianca(tipoAlianca, fator_comp));
+            return true;
+        }
+        return false;
+    }
+
     public double obterEstrada(Local a, Local b) {
         return mapLocaisEstradas.getEdge(a, b);
+    }
+
+    public Personagem obterPersonagemPorNome(String nome) {
+        for (Personagem p : mapPersonagensAliancas.vertices()) {
+            if (p.getNome().equalsIgnoreCase(nome)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public Local obterLocalPorNome(String nome) {
+        for (Local l : mapLocaisEstradas.vertices()) {
+            if (l.getNome().equalsIgnoreCase(nome)) {
+                return l;
+            }
+        }
+        return null;
     }
 
     public int numEstradas() {
@@ -264,5 +301,33 @@ public class ControloDoJogo {
 
         }
         return outromap;
+    }
+
+    public void lerDados(String nomeFicheiro) {
+        switch (nomeFicheiro) {
+            case FICH_S:
+                lerAlianca(PERSONAGEM_S);
+                lerLocais(LOCAIS_S);
+                break;
+            case FICH_M:
+                lerAlianca(PERSONAGEM_M);
+                lerLocais(LOCAIS_M);
+                break;
+            case FICH_L:
+                lerAlianca(PERSONAGEM_L);
+                lerLocais(LOCAIS_L);
+                break;
+            case FICH_XL:
+                lerAlianca(PERSONAGEM_XL);
+                lerLocais(LOCAIS_XL);
+                break;
+            case FICH_TESTE:
+                lerAlianca(PERSONAGEM_TESTE);
+                lerLocais(LOCAIS_TESTE);
+                break;
+            default:
+                break;
+        }
+
     }
 }
