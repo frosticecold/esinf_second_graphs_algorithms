@@ -121,6 +121,25 @@ public class ControloDoJogo {
         return mapPersonagensAliancas.numEdges();
     }
 
+    public int numAliadosDiretos(Personagem source) {
+        if (!mapPersonagensAliancas.checkVertex(source)) {
+            return 0;
+        }
+        Iterable<Personagem> itrbl = mapPersonagensAliancas.directConnections(source);
+        int num = 0;
+        for (Personagem p : itrbl) {
+            num++;
+        }
+        return num;
+    }
+
+    public float obterFatorCompAlianca(Personagem a, Personagem b) {
+        if (!mapPersonagensAliancas.checkVertex(a) || !mapPersonagensAliancas.checkVertex(b)) {
+            return -1f;
+        }
+        return mapPersonagensAliancas.getEdge(a, b).getFatorCompatibilidade();
+    }
+
     public AdjacencyMatrixGraph<Personagem, Alianca> cloneAliancas() {
         return (AdjacencyMatrixGraph< Personagem, Alianca>) mapPersonagensAliancas.clone();
     }

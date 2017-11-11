@@ -6,6 +6,7 @@
 package model;
 
 import graph.AdjacencyMatrixGraph;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -257,11 +258,31 @@ public class ControloDoJogoTest {
     @Test
     public void testDevolverTodosAliados() {
         System.out.println("devolverTodosAliados");
-        Personagem source = null;
+        Personagem source;
         ControloDoJogo instance = new ControloDoJogo();
-        Iterable<Personagem> expResult = null;
+        instance.lerDados(ControloDoJogo.FICH_TESTE);
+        source = instance.obterPersonagemPorNome("Pers0");
+        Personagem p1 = instance.obterPersonagemPorNome("Pers1");
+        Personagem p4 = instance.obterPersonagemPorNome("Pers4");
+        Personagem p8 = instance.obterPersonagemPorNome("Pers8");
         Iterable<Personagem> result = instance.devolverTodosAliados(source);
-        assertEquals(expResult, result);
+        ArrayList<Personagem> resultArray = (ArrayList<Personagem>) result;
+        assertTrue("Pers0 é aliado com Pers1", resultArray.contains(p1));
+        assertTrue("Pers0 é aliado com Pers4", resultArray.contains(p4));
+        assertTrue("Pers0 é aliado com Pers8", resultArray.contains(p8));
+        int numAliados = 3;
+        assertEquals(numAliados, instance.numAliadosDiretos(source));
+
+        instance = new ControloDoJogo();
+        instance.lerDados(ControloDoJogo.FICH_XL);
+        Personagem p0 = instance.obterPersonagemPorNome("Pers0");
+        numAliados = 9; // Personagem 0 tem 9 aliados
+        assertEquals(numAliados, instance.numAliadosDiretos(p0));
+        resultArray = (ArrayList<Personagem>) instance.devolverTodosAliados(p0);
+        Personagem p9 = instance.obterPersonagemPorNome("Pers9");
+        Personagem p16 = instance.obterPersonagemPorNome("Pers16");
+        assertTrue("Pers0 é aliado com Pers9", resultArray.contains(p9));
+        assertTrue("Pers0 é aliado com Pers16", resultArray.contains(p16));
     }
 
     /**
@@ -349,6 +370,15 @@ public class ControloDoJogoTest {
         result = instance.novaAlianca(a, b, true, 1);
         expResult = true;
         assertTrue("Adicionar uma nova alianca aos ficheiros XL", result == expResult);
+
+        //Pers 0 aliada com Pers9 -0.2
+        //Pers9 aliada com Pers45 -0.5
+        //Alianca entre Pers0 e Pers45 é a média 0.7/2 = 0.35
+        Personagem p26 = instance.obterPersonagemPorNome("Pers45");
+        assertTrue("Adicionar uma nova alianca aos ficheiros XL", instance.novaAlianca(a, p26, true, 1));
+        Float f_comp_expected = 0.35f;
+        assertEquals(f_comp_expected, instance.obterFatorCompAlianca(a, b), 0.2f);
+
     }
 
     /**
