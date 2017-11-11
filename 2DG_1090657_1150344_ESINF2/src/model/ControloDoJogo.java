@@ -133,18 +133,15 @@ public class ControloDoJogo {
     }
 
     //1B
-    public LinkedList<Local> caminhoComMenorDificuldade(Local source, Local target) {
-
-        LinkedList<Local> path = new LinkedList<>();
-        EdgeAsDoubleGraphAlgorithms.shortestPath(mapLocaisEstradas, source, target, path);
-
-        return path;
+    public double caminhoComMenorDificuldade(Local source, Local target, LinkedList<Local> path) {
+        return EdgeAsDoubleGraphAlgorithms.shortestPath(mapLocaisEstradas, source, target, path);
 
     }
 
     //1C
     public Conquista verificarConquista(Personagem pers, Local source, Local target) {
-        LinkedList<Local> menorCaminho = caminhoComMenorDificuldade(source, target);
+        LinkedList<Local> menorCaminho = new LinkedList<>();
+        double dif = caminhoComMenorDificuldade(source, target, menorCaminho);
         if (!menorCaminho.isEmpty()) {
             LinkedList<Local> caminhointermedio = (LinkedList<Local>) menorCaminho.clone();
             Local local_a = source;
