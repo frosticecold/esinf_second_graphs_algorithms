@@ -23,14 +23,13 @@ public class ControloDoJogoTest {
     @Test
     public void testLerAlianca() {
         System.out.println("lerAlianca");
-        String nomeFicheiro = "pers_TEST.txt";
         ControloDoJogo instance = new ControloDoJogo();
-        instance.lerAlianca(nomeFicheiro);
+        instance.lerDados(ControloDoJogo.FICH_TESTE);
         int NUM_PERSONAGENS = 10;
         int NUM_ALIANCAS = 14;
         assertTrue("Para o ficheiro de teste , o número de personagens é 10", NUM_PERSONAGENS == instance.numPersonagens());
         assertTrue("Para o ficheiro de teste, o número de aliancas é 14", NUM_ALIANCAS == instance.numAliancas());
-
+        
         instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_XL);
         NUM_PERSONAGENS = 100;
@@ -45,14 +44,14 @@ public class ControloDoJogoTest {
     @Test
     public void testLerLocais() {
         System.out.println("lerLocais");
-
+        
         ControloDoJogo instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_TESTE);
         int NUM_ESTRADAS_TESTE = 9;
         int NUM_LOCAIS_TESTE = 10;
         assertTrue(("Número de estradas é 9 do ficheiro de teste"), instance.numEstradas() == NUM_ESTRADAS_TESTE);
         assertTrue(("Número de Locais é 10 do ficheiro de teste"), instance.numLocais() == NUM_LOCAIS_TESTE);
-
+        
         instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_XL);
         NUM_LOCAIS_TESTE = 500;
@@ -68,7 +67,7 @@ public class ControloDoJogoTest {
     public void testCaminhoComMenorDificuldade() {
         System.out.println("caminhoComMenorDificuldade");
         ControloDoJogo instance;
-
+        
         LinkedList<Local> path = new LinkedList<>();
         int tamanho;
         int dif_caminho_expected = 0;
@@ -76,15 +75,15 @@ public class ControloDoJogoTest {
         instance.lerDados(ControloDoJogo.FICH_TESTE);
         Local local_a = instance.obterLocalPorNome("Local0");
         Local local_b = instance.obterLocalPorNome("Local4");
-
+        
         double dif = instance.caminhoComMenorDificuldade(local_a, local_b, path);
-
+        
         tamanho = 2;
         //Caminho é l0-l4
         assertTrue("Caminho mais curto entre local0 e local4 é de tamanho 2", path.size() == tamanho);
         dif_caminho_expected = 50;
         assertEquals(dif_caminho_expected, dif, 1d);
-
+        
         local_a = instance.obterLocalPorNome("Local0");
         local_b = instance.obterLocalPorNome("Local3");
         dif = instance.caminhoComMenorDificuldade(local_a, local_b, path);
@@ -92,7 +91,7 @@ public class ControloDoJogoTest {
         tamanho = 4;
         assertTrue("Caminho mais curto entre local 0 e local 3 é de tamanho 4", path.size() == tamanho);
         assertEquals(dif_caminho_expected, dif, 1d);
-
+        
         instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_L);
         local_a = instance.obterLocalPorNome("Local0");
@@ -102,14 +101,14 @@ public class ControloDoJogoTest {
         assertTrue("Caminho mais curto entre local 0 e local 100 é de tamanho 3", path.size() == tamanho);
         dif_caminho_expected = 43;
         assertEquals(dif_caminho_expected, dif, 1d);
-
+        
         local_b = instance.obterLocalPorNome("Local197");
         dif = instance.caminhoComMenorDificuldade(local_a, local_b, path);
         tamanho = 3;
         assertTrue("Caminho mais curto entre local 0 e local 197 é de tamanho 3", path.size() == tamanho);
         dif_caminho_expected = 48;
         assertEquals(dif_caminho_expected, dif, 1d);
-
+        
     }
 
     /**
@@ -118,9 +117,9 @@ public class ControloDoJogoTest {
     @Test
     public void testVerificarConquista() {
         System.out.println("verificarConquista");
-
+        
         ControloDoJogo instance = new ControloDoJogo();
-
+        
         Local local1 = new Local("Local a", 10);
         Local local2 = new Local("Local b", 20);
         Local local3 = new Local("Local c", 25);
@@ -131,7 +130,7 @@ public class ControloDoJogoTest {
         Local local8 = new Local("Local h", 30);
         Local local9 = new Local("Local i", 35);
         Local local10 = new Local("Local j", 8);
-
+        
         instance.adicionarLocal(local1);
         instance.adicionarLocal(local2);
         instance.adicionarLocal(local3);
@@ -142,7 +141,7 @@ public class ControloDoJogoTest {
         instance.adicionarLocal(local8);
         instance.adicionarLocal(local9);
         instance.adicionarLocal(local10);
-
+        
         instance.adicionarEstrada(local1, local2, 20);
         instance.adicionarEstrada(local2, local3, 10);
         instance.adicionarEstrada(local3, local4, 15);
@@ -151,39 +150,39 @@ public class ControloDoJogoTest {
         instance.adicionarEstrada(local6, local7, 35);
         instance.adicionarEstrada(local7, local8, 15);
         instance.adicionarEstrada(local9, local10, 10);
-
+        
         instance.adicionarEstrada(local2, local4, 50);
         instance.adicionarEstrada(local1, local5, 30);
-
+        
         Personagem persOrig = new Personagem("José", 200);
         Local source = local1;
         Local target = local6;
         //Caminho local 1 - local 5 - local 6 
         // dificuldade local 5 + dificuldade local 6 + estrada 1-5 + estrada 5-6
         double dificuldade = local5.getDificuldade() + local6.getDificuldade() + instance.obterEstrada(local1, local5) + instance.obterEstrada(local5, local6);
-
+        
         Conquista result = instance.verificarConquista(persOrig, source, target);
         assertTrue("É possível conquistar", result.consegueConquistar());
         assertTrue("A dificuldade do caminho é 60:", result.forcaNecessaria() == dificuldade);
         assertTrue("O local 5 é local intermédio", result.getLocaisIntermedios().contains(local5));
-
+        
         source = local1;
         target = local10;
         result = instance.verificarConquista(persOrig, source, target);
-
+        
         assertNull("Nao é possível conquistar", result);
-
+        
         instance.lerDados(ControloDoJogo.FICH_L);
         Local l_a = instance.obterLocalPorNome("local0");
         Local l_b = instance.obterLocalPorNome("local50");
         result = instance.verificarConquista(persOrig, l_a, l_b);
-        assertTrue("Para o mapa L consegue conquistar entre local0 e local50", result.consegueConquistar());
-
+        assertFalse("Para o mapa L consegue conquistar entre local0 e local50", result.consegueConquistar());
+        
         Personagem outraPers = new Personagem("Ana", 50);
         l_b = instance.obterLocalPorNome("local199");
         result = instance.verificarConquista(outraPers, l_a, l_b);
         assertFalse("Não é possível conquistar", result.consegueConquistar());
-
+        
     }
 
     /**
@@ -235,7 +234,7 @@ public class ControloDoJogoTest {
         boolean expResult = true;
         boolean result = instance.adicionarEstrada(a, b, e);
         assertEquals(expResult, result);
-
+        
         result = instance.adicionarEstrada(a, b, e);
         assertFalse(result);
     }
@@ -272,7 +271,7 @@ public class ControloDoJogoTest {
         assertTrue("Pers0 é aliado com Pers8", resultArray.contains(p8));
         int numAliados = 3;
         assertEquals(numAliados, instance.numAliadosDiretos(source));
-
+        
         instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_XL);
         Personagem p0 = instance.obterPersonagemPorNome("Pers0");
@@ -292,7 +291,7 @@ public class ControloDoJogoTest {
     public void testDeterminarAliancaMaisForte() {
         System.out.println("determinarAliancaMaisForte");
         ControloDoJogo instance = new ControloDoJogo();
-
+        
         Personagem p1 = new Personagem("Personagem a", 10);
         Personagem p2 = new Personagem("Personagem b", 12);
         Personagem p3 = new Personagem("Personagem c", 8);
@@ -301,7 +300,7 @@ public class ControloDoJogoTest {
         Personagem p6 = new Personagem("Personagem f", 15);
         Personagem p7 = new Personagem("Personagem g", 4);
         Personagem p8 = new Personagem("Personagem h", 7);
-
+        
         instance.adicionarPersonagem(p1);
         instance.adicionarPersonagem(p2);
         instance.adicionarPersonagem(p3);
@@ -310,7 +309,7 @@ public class ControloDoJogoTest {
         instance.adicionarPersonagem(p6);
         instance.adicionarPersonagem(p7);
         instance.adicionarPersonagem(p8);
-
+        
         instance.adicionarAlianca(p1, p2, true, 1);
         instance.adicionarAlianca(p2, p5, true, 1);
         instance.adicionarAlianca(p1, p4, true, 1);
@@ -327,7 +326,7 @@ public class ControloDoJogoTest {
         ForcaAlianca expResult = new ForcaAlianca(27.0, p2, p6);
         assertEquals(expResult.getPers_a(), result.getPers_a());
         assertEquals(expResult.getPers_b(), result.getPers_b());
-
+        
         instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_XL);
         Personagem a = instance.obterPersonagemPorNome("Pers36");
@@ -359,10 +358,10 @@ public class ControloDoJogoTest {
         expResult = false;
         result = instance.novaAlianca(p_a, p_b, tipoalianca, 1);
         assertEquals(expResult, result);
-
+        
         instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_TESTE);
-
+        
         instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_XL);
         Personagem a = instance.obterPersonagemPorNome("Pers0");
@@ -378,7 +377,7 @@ public class ControloDoJogoTest {
         assertTrue("Adicionar uma nova alianca aos ficheiros XL", instance.novaAlianca(a, p26, true, 1));
         Float f_comp_expected = 0.35f;
         assertEquals(f_comp_expected, instance.obterFatorCompAlianca(a, b), 0.2f);
-
+        
     }
 
     /**
@@ -390,7 +389,7 @@ public class ControloDoJogoTest {
         ControloDoJogo instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_TESTE);
         AdjacencyMatrixGraph<Personagem, Alianca> result = instance.possiveisNovasAliancas();
-
+        
         Personagem p0 = instance.obterPersonagemPorNome("Pers0");
         Personagem p1 = instance.obterPersonagemPorNome("Pers1");
         Personagem p2 = instance.obterPersonagemPorNome("Pers2");
@@ -400,7 +399,7 @@ public class ControloDoJogoTest {
         assertNotNull(result.getEdge(p0, p3));
         assertNull(result.getEdge(p0, p4));
         assertNull(result.getEdge(p0, p1));
-
+        
         instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_L);
         result = instance.possiveisNovasAliancas();
@@ -414,17 +413,17 @@ public class ControloDoJogoTest {
         assertNotNull(result.getEdge(p0, p2));
         assertNull(result.getEdge(p0, p3));
         assertNotNull(result.getEdge(p0, p4));
-
+        
         assertNull(result.getEdge(p1, p5));
         assertNotNull(result.getEdge(p1, p2));
         assertNotNull(result.getEdge(p1, p3));
         assertNotNull(result.getEdge(p1, p4));
-
+        
         assertNotNull(result.getEdge(p2, p3));
         assertNotNull(result.getEdge(p2, p4));
-
+        
         assertNotNull(result.getEdge(p3, p4));
-
+        
     }
-
+    
 }

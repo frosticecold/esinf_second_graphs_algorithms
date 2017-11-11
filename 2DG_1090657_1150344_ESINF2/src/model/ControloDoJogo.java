@@ -323,24 +323,24 @@ public class ControloDoJogo {
     public void lerDados(String nomeFicheiro) {
         switch (nomeFicheiro) {
             case FICH_S:
-                lerAlianca(PERSONAGEM_S);
                 lerLocais(LOCAIS_S);
+                lerAlianca(PERSONAGEM_S);
                 break;
             case FICH_M:
-                lerAlianca(PERSONAGEM_M);
                 lerLocais(LOCAIS_M);
+                lerAlianca(PERSONAGEM_M);
                 break;
             case FICH_L:
-                lerAlianca(PERSONAGEM_L);
                 lerLocais(LOCAIS_L);
+                lerAlianca(PERSONAGEM_L);
                 break;
             case FICH_XL:
-                lerAlianca(PERSONAGEM_XL);
                 lerLocais(LOCAIS_XL);
+                lerAlianca(PERSONAGEM_XL);
                 break;
             case FICH_TESTE:
-                lerAlianca(PERSONAGEM_TESTE);
                 lerLocais(LOCAIS_TESTE);
+                lerAlianca(PERSONAGEM_TESTE);
                 break;
             default:
                 break;

@@ -75,6 +75,10 @@ public class Ficheiro {
             if (lerPersonagens == true) {
                 linhaSplit = linha.split(",");
                 Personagem p = new Personagem(linhaSplit[0], Integer.parseInt(linhaSplit[1]));
+                if (linhaSplit.length >= 3) {
+                    Local l = getLocalAssociadoAoNome(linhaSplit[2], mapLocaisEstradas);
+                    l.setDono(p);
+                }
                 mapPersonagens.insertVertex(p);
                 continue;
             }
@@ -107,9 +111,9 @@ public class Ficheiro {
             }
         }
     }
+
     /**
-     * Método para ler Locais e as Suas Estradas
-     * Segundo método a ser
+     * Método para ler Locais e as Suas Estradas Segundo método a ser
      * exeucutado, após ler as Alianças
      *
      * @param nomeFicheiro - Nome do Ficheiro
@@ -135,10 +139,10 @@ public class Ficheiro {
             if (lerLocais == true) {
                 linhaSplit = linha.split(",");
                 Local l = new Local(linhaSplit[0], Integer.parseInt(linhaSplit[1]));
-                if (linhaSplit.length >= 3) {
-                    Personagem p = personagemAssociadaAoNome(linhaSplit[2], mapPersonagens);
-                    l.setDono(p);
-                }
+//                if (linhaSplit.length >= 3) {
+//                    Personagem p = personagemAssociadaAoNome(linhaSplit[2], mapPersonagens);
+//                    l.setDono(p);
+//                }
                 mapLocaisEstradas.insertVertex(l);
                 continue;
             }
@@ -172,10 +176,10 @@ public class Ficheiro {
         }
     }
 
-    private Personagem personagemAssociadaAoNome(String nomePers, AdjacencyMatrixGraph<Personagem, Alianca> mapAliancas) {
-        for (Personagem p : mapAliancas.vertices()) {
-            if (p.getNome().equals(nomePers)) {
-                return p;
+    private Local getLocalAssociadoAoNome(String nomeLocal, AdjacencyMatrixGraph<Local, Double> matrizadj) {
+        for (Local l : matrizadj.vertices()) {
+            if (l.getNome().equalsIgnoreCase(nomeLocal)) {
+                return l;
             }
         }
         return null;
