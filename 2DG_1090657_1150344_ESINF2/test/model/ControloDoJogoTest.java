@@ -390,8 +390,40 @@ public class ControloDoJogoTest {
         ControloDoJogo instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_TESTE);
         AdjacencyMatrixGraph<Personagem, Alianca> result = instance.possiveisNovasAliancas();
-        boolean valido = true;
-        AdjacencyMatrixGraph<Personagem, Alianca> clone = instance.cloneAliancas();
+
+        Personagem p0 = instance.obterPersonagemPorNome("Pers0");
+        Personagem p1 = instance.obterPersonagemPorNome("Pers1");
+        Personagem p2 = instance.obterPersonagemPorNome("Pers2");
+        Personagem p3 = instance.obterPersonagemPorNome("Pers3");
+        Personagem p4 = instance.obterPersonagemPorNome("Pers4");
+        assertNotNull(result.getEdge(p0, p2));
+        assertNotNull(result.getEdge(p0, p3));
+        assertNull(result.getEdge(p0, p4));
+        assertNull(result.getEdge(p0, p1));
+
+        instance = new ControloDoJogo();
+        instance.lerDados(ControloDoJogo.FICH_L);
+        result = instance.possiveisNovasAliancas();
+        p0 = instance.obterPersonagemPorNome("Pers0");
+        p1 = instance.obterPersonagemPorNome("Pers1");
+        p2 = instance.obterPersonagemPorNome("Pers2");
+        p3 = instance.obterPersonagemPorNome("Pers3");
+        p4 = instance.obterPersonagemPorNome("Pers4");
+        Personagem p5 = instance.obterPersonagemPorNome("Pers5");
+        assertNotNull(result.getEdge(p0, p1));
+        assertNotNull(result.getEdge(p0, p2));
+        assertNull(result.getEdge(p0, p3));
+        assertNotNull(result.getEdge(p0, p4));
+
+        assertNull(result.getEdge(p1, p5));
+        assertNotNull(result.getEdge(p1, p2));
+        assertNotNull(result.getEdge(p1, p3));
+        assertNotNull(result.getEdge(p1, p4));
+
+        assertNotNull(result.getEdge(p2, p3));
+        assertNotNull(result.getEdge(p2, p4));
+
+        assertNotNull(result.getEdge(p3, p4));
 
     }
 

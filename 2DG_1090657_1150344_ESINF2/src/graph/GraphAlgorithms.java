@@ -187,13 +187,14 @@ public class GraphAlgorithms {
      */
     public static <V, E> AdjacencyMatrixGraph<V, E> transitiveClosure(AdjacencyMatrixGraph<V, E> graph, E dummyEdge) {
         AdjacencyMatrixGraph<V, E> ng = (AdjacencyMatrixGraph<V, E>) graph.clone();
+
         for (int k = 0; k < ng.numVertices; k++) {
             for (int i = 0; i < ng.numVertices; i++) {
                 if (i != k && ng.edgeMatrix[i][k] != null) {
                     for (int j = 0; j < ng.numVertices; j++) {
                         if (i != j && j != k && ng.edgeMatrix[k][j] != null) {
                             if (ng.edgeMatrix[i][j] == null) {
-                                graph.insertEdge(i, j, dummyEdge);
+                                ng.insertEdge(i, j, dummyEdge);
                             }
                         }
                     }

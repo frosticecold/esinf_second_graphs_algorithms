@@ -290,7 +290,7 @@ public class ControloDoJogo {
     //2e Criar um novo grafo representando todas as novas alianças que podem ser realizadas entre todas as personagens
     //caso todas as alianças existentes fossem públicas
     public AdjacencyMatrixGraph<Personagem, Alianca> possiveisNovasAliancas() {
-        AdjacencyMatrixGraph<Personagem, Alianca> newgraph = graph.GraphAlgorithms.transitiveClosure(mapPersonagensAliancas, new Alianca(true));
+        AdjacencyMatrixGraph<Personagem, Alianca> newgraph = graph.GraphAlgorithms.transitiveClosure(mapPersonagensAliancas, new Alianca(true, 1));
         for (Personagem pOrig : mapPersonagensAliancas.vertices()) {
             for (Personagem pAdj : mapPersonagensAliancas.directConnections(pOrig)) {
                 if (newgraph.getEdge(pOrig, pAdj) != null) {
@@ -298,6 +298,7 @@ public class ControloDoJogo {
                 }
             }
         }
+
         return newgraph;
     }
 
