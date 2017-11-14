@@ -77,7 +77,9 @@ public class Ficheiro {
                 Personagem p = new Personagem(linhaSplit[0], Integer.parseInt(linhaSplit[1]));
                 if (linhaSplit.length >= 3) {
                     Local l = getLocalAssociadoAoNome(linhaSplit[2], mapLocaisEstradas);
-                    l.setDono(p);
+                    if (l != null) {
+                        l.setDono(p);
+                    }
                 }
                 mapPersonagens.insertVertex(p);
                 continue;

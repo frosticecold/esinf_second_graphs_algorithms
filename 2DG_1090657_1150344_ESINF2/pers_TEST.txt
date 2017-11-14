@@ -5,7 +5,7 @@ Pers2,55,Local2
 Pers3,71,Local3
 Pers4,52,Local4
 Pers5,71,Local5
-Pers6,60,Local6
+Pers6,20,Local6
 Pers7,59,Local7
 Pers8,46,Local8
 Pers9,62,Local9
