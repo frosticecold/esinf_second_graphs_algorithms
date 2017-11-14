@@ -158,8 +158,9 @@ public class ControloDoJogo {
     }
 
     //1C
-    public Conquista verificarConquista(Personagem pers, Local source, Local target) {
+    public Conquista verificarConquista(Personagem pers, Local target) {
         LinkedList<Local> menorCaminho = new LinkedList<>();
+        Local source = obterLocalAssociadoAPersonagem(pers);
         double dif = caminhoComMenorDificuldade(source, target, menorCaminho);
         if (!menorCaminho.isEmpty()) {
             LinkedList<Local> caminhointermedio = (LinkedList<Local>) menorCaminho.clone();
@@ -302,6 +303,15 @@ public class ControloDoJogo {
         return newgraph;
     }
 
+    /*Verificar	se uma personagem pode conquistar, junto com um dos seus aliados, um determinado local	X 
+    (assuma que	o dono	de X, caso exista, não usa as suas alianças), devolvendo qual o aliado,	assim como o
+valor necessário e a lista mínima de locais intermédios	a conquistar,caso seja necessário.De notar que o
+aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
+    public Conquista conquistarComAliado(Personagem pOrig, Local target) {
+
+        return null;
+    }
+
     private AdjacencyMatrixGraph<Personagem, Double> copiarAliancaParaAliancaComPeso(AdjacencyMatrixGraph<Personagem, Alianca> mapa) {
         AdjacencyMatrixGraph<Personagem, Double> outromap = new AdjacencyMatrixGraph<>();
         double PESO = 1;
@@ -318,6 +328,18 @@ public class ControloDoJogo {
 
         }
         return outromap;
+    }
+
+    private Local obterLocalAssociadoAPersonagem(Personagem p) {
+        if (!mapPersonagensAliancas.checkVertex(p)) {
+            return null;
+        }
+        for (Local l : mapLocaisEstradas.vertices()) {
+            if (l.getDono().equals(p)) {
+                return l;
+            }
+        }
+        return null;
     }
 
     public void lerDados(String nomeFicheiro) {

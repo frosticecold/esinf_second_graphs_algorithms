@@ -155,32 +155,41 @@ public class ControloDoJogoTest {
         instance.adicionarEstrada(local1, local5, 30);
         
         Personagem persOrig = new Personagem("José", 200);
+        instance.adicionarPersonagem(persOrig);
         Local source = local1;
         Local target = local6;
         //Caminho local 1 - local 5 - local 6 
         // dificuldade local 5 + dificuldade local 6 + estrada 1-5 + estrada 5-6
         double dificuldade = local5.getDificuldade() + local6.getDificuldade() + instance.obterEstrada(local1, local5) + instance.obterEstrada(local5, local6);
         
-        Conquista result = instance.verificarConquista(persOrig, source, target);
+        source.setDono(persOrig);
+        Conquista result = instance.verificarConquista(persOrig, target);
         assertTrue("É possível conquistar", result.consegueConquistar());
         assertTrue("A dificuldade do caminho é 60:", result.forcaNecessaria() == dificuldade);
         assertTrue("O local 5 é local intermédio", result.getLocaisIntermedios().contains(local5));
         
         source = local1;
         target = local10;
-        result = instance.verificarConquista(persOrig, source, target);
-        
+        source.setDono(persOrig);
+        result = instance.verificarConquista(persOrig, target);
+        source.setDono(null);
         assertNull("Nao é possível conquistar", result);
         
+        instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_L);
+        instance.adicionarPersonagem(persOrig);
         Local l_a = instance.obterLocalPorNome("local0");
         Local l_b = instance.obterLocalPorNome("local50");
-        result = instance.verificarConquista(persOrig, l_a, l_b);
+        l_a.setDono(persOrig);
+        result = instance.verificarConquista(persOrig,l_b);
         assertFalse("Para o mapa L consegue conquistar entre local0 e local50", result.consegueConquistar());
         
+        
         Personagem outraPers = new Personagem("Ana", 50);
+        instance.adicionarPersonagem(outraPers);
         l_b = instance.obterLocalPorNome("local199");
-        result = instance.verificarConquista(outraPers, l_a, l_b);
+        l_a.setDono(outraPers);
+        result = instance.verificarConquista(outraPers, l_b);
         assertFalse("Não é possível conquistar", result.consegueConquistar());
         
     }
