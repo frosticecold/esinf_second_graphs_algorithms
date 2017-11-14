@@ -47,9 +47,9 @@ public class ControloDoJogoTest {
         
         ControloDoJogo instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_TESTE);
-        int NUM_ESTRADAS_TESTE = 9;
+        int NUM_ESTRADAS_TESTE = 10;
         int NUM_LOCAIS_TESTE = 10;
-        assertTrue(("Número de estradas é 9 do ficheiro de teste"), instance.numEstradas() == NUM_ESTRADAS_TESTE);
+        assertTrue(("Número de estradas é 10 do ficheiro de teste"), instance.numEstradas() == NUM_ESTRADAS_TESTE);
         assertTrue(("Número de Locais é 10 do ficheiro de teste"), instance.numLocais() == NUM_LOCAIS_TESTE);
         
         instance = new ControloDoJogo();
@@ -190,7 +190,7 @@ public class ControloDoJogoTest {
         l_b = instance.obterLocalPorNome("local199");
         l_a.setDono(outraPers);
         result = instance.verificarConquista(outraPers, l_b);
-        assertFalse("Não é possível conquistar", result.consegueConquistar());
+        assertFalse("A ana não consegue conquistar do local0 ao local99", result.consegueConquistar());
         
     }
 
