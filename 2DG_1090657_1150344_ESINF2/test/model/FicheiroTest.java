@@ -57,10 +57,10 @@ public class FicheiroTest {
         Personagem Pers2 = new Personagem("Pers2", 55);
         Personagem Pers3 = new Personagem("Pers3", 71);
         Personagem Pers4 = new Personagem("Pers4", 52);
-        Personagem Pers5 = new Personagem("Pers5", 71);
+        Personagem Pers5 = new Personagem("Pers5", 30);
         Personagem Pers6 = new Personagem("Pers6", 20);
         Personagem Pers7 = new Personagem("Pers7", 59);
-        Personagem Pers8 = new Personagem("Pers8", 46);
+        Personagem Pers8 = new Personagem("Pers8", 90);
         Personagem Pers9 = new Personagem("Pers9", 62);
 
         assertTrue(grafo_aliancas.validVertex(Pers0));

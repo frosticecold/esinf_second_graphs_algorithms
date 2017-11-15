@@ -9,6 +9,7 @@ import graph.AdjacencyMatrixGraph;
 import graph.EdgeAsDoubleGraphAlgorithms;
 import java.util.LinkedList;
 import graphbase.Graph;
+import java.util.ArrayList;
 
 /**
  *
@@ -271,16 +272,6 @@ public class ControloDoJogo {
             }
         }
         return grafo_novas_aliancas;
-    }
-
-    //===================================3F====================================
-    /*Verificar	se uma personagem pode conquistar, junto com um dos seus aliados, um determinado local	X 
-    (assuma que	o dono	de X, caso exista, não usa as suas alianças), devolvendo qual o aliado,	assim como o
-valor necessário e a lista mínima de locais intermédios	a conquistar,caso seja necessário.De notar que o
-aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
-    public Conquista conquistarComAliado(Personagem pOrig, Local target) {
-
-        return null;
     }
 
     /**
@@ -552,5 +543,122 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
             return true;
         }
         return false;
+    }
+
+    /**
+     * Método que verifica se uma dada Personagem pode conquistar um determinado
+     * local Pressupõe que uma personagem tenha um local atribuido na leitura de
+     * ficheiros
+     *
+     * @param pers Personagem
+     * @param target Local a conquistar
+     * @return Uma conquista que tem como atributo se consegue conquistar, a
+     * dificuldade do caminho e o caminho intermédio entre personagem e local
+     */
+    public Conquista verificarConquistaComAliados(Personagem pers, Local target) {
+        if (!grafo_personagens_aliancas.validVertex(pers) || !grafo_locais_estradas.checkVertex(target)) {
+            LinkedList<Local> naotemcaminho = new LinkedList<>();
+            return new Conquista(false, -1, naotemcaminho);
+        }
+        Local source = obterLocalAssociadoAPersonagem(pers);
+        LinkedList<Local> menorCaminho = caminhoComMenorDificuldade(source, target);
+        if (!menorCaminho.isEmpty()) {
+            LinkedList<Local> caminhointermedio = (LinkedList<Local>) menorCaminho.clone();
+            Local local_a = source;
+            Local local_b = null;
+            double dificuldade = 0;
+
+            //Remover o caminho inicial
+            if (menorCaminho.peek() == source) {
+                menorCaminho.pop();
+            }
+            while (!menorCaminho.isEmpty()) {
+                if (local_a == source && local_b == null) {
+                    local_b = menorCaminho.pop();
+                    if (local_b.getDono() != pers) {
+                        dificuldade += grafo_locais_estradas.getEdge(local_a, local_b) + local_b.getDificuldade();
+                        if (local_b.getDono() != null) {
+                            if (local_b == target) {
+                                dificuldade += local_b.getDono().getForca();
+                            } else {
+                                if (!saoAliados(pers, local_b.getDono())) {
+                                    dificuldade += local_b.getDono().getForca();
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    local_a = local_b;
+                    local_b = menorCaminho.pop();
+                    if (local_b.getDono() != pers) {
+                        dificuldade += local_b.getDificuldade() + grafo_locais_estradas.getEdge(local_a, local_b);
+                        if (local_b.getDono() != null) {
+                            if (local_b == target) {
+                                dificuldade += local_b.getDono().getForca();
+                            } else {
+                                if (!saoAliados(pers, local_b.getDono())) {
+                                    dificuldade += local_b.getDono().getForca();
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+            if (caminhointermedio.peekFirst() == source) {
+                caminhointermedio.removeFirst();
+            }
+            if (caminhointermedio.peekLast() == target) {
+                caminhointermedio.removeLast();
+            }
+            boolean consegue_conquistar = false;
+            if (pers.getForca() > dificuldade) {
+                consegue_conquistar = true;
+            }
+            Conquista cq = new Conquista(consegue_conquistar, dificuldade, caminhointermedio);
+            return cq;
+        }
+        return new Conquista(false, -1, menorCaminho);
+    }
+    //===================================3F====================================
+
+    /*Verificar	se uma personagem pode conquistar, junto com um dos seus aliados, um determinado local	X 
+    (assuma que	o dono	de X, caso exista, não usa as suas alianças), devolvendo qual o aliado,	assim como o
+valor necessário e a lista mínima de locais intermédios	a conquistar,caso seja necessário.De notar que o
+aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
+    public ConquistaComAliado conquistarComAliados(Personagem a, Local target) {
+        final double INVALIDO = -1;
+        if (!grafo_personagens_aliancas.validVertex(a) || !grafo_locais_estradas.checkVertex(target)) {
+            return null;
+        }
+        ArrayList<ConquistaComAliado> listaConquista = new ArrayList<>();
+        for (Personagem aliado : grafo_personagens_aliancas.adjVertices(a)) {
+            Local localassociado = obterLocalAssociadoAPersonagem(aliado);
+            if (localassociado != null) {
+                if (!obterLocalAssociadoAPersonagem(aliado).equals(target)) {
+                    Conquista cq = verificarConquistaComAliados(aliado, target);
+                    if (cq.consegueConquistar()) {
+                        ConquistaComAliado cqal = new ConquistaComAliado(cq, aliado);
+                        listaConquista.add(cqal);
+                    }
+                }
+            }
+        }
+        if (listaConquista.isEmpty()) {
+            return null;
+        } else {
+            ConquistaComAliado conquistamenorforca = null;
+            for (ConquistaComAliado cq : listaConquista) {
+                if (conquistamenorforca == null) {
+                    conquistamenorforca = cq;
+                } else {
+                    if (cq.forcaNecessaria() < conquistamenorforca.forcaNecessaria()) {
+                        conquistamenorforca = cq;
+                    }
+                }
+            }
+            return conquistamenorforca;
+        }
+
     }
 }
