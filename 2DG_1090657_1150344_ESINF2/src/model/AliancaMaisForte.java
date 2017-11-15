@@ -11,13 +11,13 @@ import java.util.LinkedList;
  *
  * @author Raúl Correia <1090657@isep.ipp.pt>
  */
-public class ForcaAlianca {
+public class AliancaMaisForte {
 
     private double forca;
     private Personagem pers_a;
     private Personagem pers_b;
 
-    public ForcaAlianca(double forca, Personagem pers_a, Personagem pers_b) {
+    public AliancaMaisForte(double forca, Personagem pers_a, Personagem pers_b) {
         this.forca = forca;
         this.pers_a = pers_a;
         this.pers_b = pers_b;

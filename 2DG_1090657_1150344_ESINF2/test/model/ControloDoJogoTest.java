@@ -6,6 +6,7 @@
 package model;
 
 import graph.AdjacencyMatrixGraph;
+import graphbase.Graph;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import org.junit.Test;
@@ -26,14 +27,14 @@ public class ControloDoJogoTest {
         ControloDoJogo instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_TESTE);
         int NUM_PERSONAGENS = 10;
-        int NUM_ALIANCAS = 14;
+        int NUM_ALIANCAS = 28;
         assertTrue("Para o ficheiro de teste , o número de personagens é 10", NUM_PERSONAGENS == instance.numPersonagens());
         assertTrue("Para o ficheiro de teste, o número de aliancas é 14", NUM_ALIANCAS == instance.numAliancas());
 
         instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_XL);
         NUM_PERSONAGENS = 100;
-        NUM_ALIANCAS = 455;
+        NUM_ALIANCAS = 910;
         assertTrue("Para o ficheiro de teste , o número de personagens é 100", NUM_PERSONAGENS == instance.numPersonagens());
         assertTrue("Para o ficheiro de teste, o número de aliancas é 455", NUM_ALIANCAS == instance.numAliancas());
     }
@@ -112,39 +113,6 @@ public class ControloDoJogoTest {
 
         ControloDoJogo instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_TESTE);
-//        Local local1 = new Local("Local a", 10);
-//        Local local2 = new Local("Local b", 20);
-//        Local local3 = new Local("Local c", 25);
-//        Local local4 = new Local("Local d", 15);
-//        Local local5 = new Local("Local e", 5);
-//        Local local6 = new Local("Local f", 15);
-//        Local local7 = new Local("Local g", 25);
-//        Local local8 = new Local("Local h", 30);
-//        Local local9 = new Local("Local i", 35);
-//        Local local10 = new Local("Local j", 8);
-//
-//        instance.adicionarLocal(local1);
-//        instance.adicionarLocal(local2);
-//        instance.adicionarLocal(local3);
-//        instance.adicionarLocal(local4);
-//        instance.adicionarLocal(local5);
-//        instance.adicionarLocal(local6);
-//        instance.adicionarLocal(local7);
-//        instance.adicionarLocal(local8);
-//        instance.adicionarLocal(local9);
-//        instance.adicionarLocal(local10);
-//
-//        instance.adicionarEstrada(local1, local2, 20);
-//        instance.adicionarEstrada(local2, local3, 10);
-//        instance.adicionarEstrada(local3, local4, 15);
-//        instance.adicionarEstrada(local4, local5, 25);
-//        instance.adicionarEstrada(local5, local6, 30);
-//        instance.adicionarEstrada(local6, local7, 35);
-//        instance.adicionarEstrada(local7, local8, 15);
-//        instance.adicionarEstrada(local9, local10, 10);
-//
-//        instance.adicionarEstrada(local2, local4, 50);
-//        instance.adicionarEstrada(local1, local5, 30);
 
         Personagem persOrig = instance.obterPersonagemPorNome("Pers0");
         Local l_target = instance.obterLocalPorNome("Local1");
@@ -186,20 +154,17 @@ public class ControloDoJogoTest {
         result = instance.verificarConquista(persOrig, l_target);
         assertFalse("Não é possível conquistar", result.consegueConquistar());
         dificuldade = 570;
-        assertTrue("A dificuldade é 570",result.forcaNecessaria()==dificuldade);
+        assertTrue("A dificuldade é 570", result.forcaNecessaria() == dificuldade);
 
-        Local l_a = instance.obterLocalPorNome("local0");
-        Local l_b = instance.obterLocalPorNome("local50");
-        l_a.setDono(persOrig);
-        result = instance.verificarConquista(persOrig, l_b);
-        assertFalse("Para o mapa L consegue conquistar entre local0 e local50", result.consegueConquistar());
+        l_target = instance.obterLocalPorNome("Local100");
+        result = instance.verificarConquista(persOrig, l_target);
+        assertFalse("Não é possível conquistar", result.consegueConquistar());
+        assertTrue("Existe dificuldade", result.forcaNecessaria() != -1);
 
-        Personagem outraPers = new Personagem("Ana", 50);
-        instance.adicionarPersonagem(outraPers);
-        l_b = instance.obterLocalPorNome("local199");
-        l_a.setDono(outraPers);
-        result = instance.verificarConquista(outraPers, l_b);
-        assertFalse("A ana não consegue conquistar do local0 ao local99", result.consegueConquistar());
+        l_target = instance.obterLocalPorNome("Local6");
+        result = instance.verificarConquista(persOrig, l_target);
+        assertFalse("Não é possível conquistar", result.consegueConquistar());
+        assertTrue("Existe dificuldade", result.forcaNecessaria() != -1);
 
     }
 
@@ -275,31 +240,45 @@ public class ControloDoJogoTest {
     @Test
     public void testDevolverTodosAliados() {
         System.out.println("devolverTodosAliados");
-        Personagem source;
+
         ControloDoJogo instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_TESTE);
-        source = instance.obterPersonagemPorNome("Pers0");
+        Personagem p0 = instance.obterPersonagemPorNome("Pers0");
         Personagem p1 = instance.obterPersonagemPorNome("Pers1");
+        Personagem p2 = instance.obterPersonagemPorNome("Pers2");
         Personagem p4 = instance.obterPersonagemPorNome("Pers4");
         Personagem p8 = instance.obterPersonagemPorNome("Pers8");
-        Iterable<Personagem> result = instance.devolverTodosAliados(source);
-        ArrayList<Personagem> resultArray = (ArrayList<Personagem>) result;
-        assertTrue("Pers0 é aliado com Pers1", resultArray.contains(p1));
-        assertTrue("Pers0 é aliado com Pers4", resultArray.contains(p4));
-        assertTrue("Pers0 é aliado com Pers8", resultArray.contains(p8));
+        Iterable<Personagem> result = instance.devolverTodosAliados(p0);
+        int numAliadosResult = 0;
+        for (Personagem p : result) {
+            numAliadosResult++;
+        }
         int numAliados = 3;
-        assertEquals(numAliados, instance.numAliadosDiretos(source));
+        assertEquals(numAliados, numAliadosResult);
+        assertTrue("Pers 0 é aliada com Pers1", instance.saoAliados(p0, p1));
+        assertFalse("Pers 0 não é aliada com Pers2", instance.saoAliados(p0, p2));
+        assertTrue("Pers 0 é aliada com Pers4", instance.saoAliados(p0, p4));
+        assertTrue("Pers 0 é aliada com Pers8", instance.saoAliados(p0, p8));
 
         instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_XL);
-        Personagem p0 = instance.obterPersonagemPorNome("Pers0");
+        p0 = instance.obterPersonagemPorNome("Pers0");
         numAliados = 9; // Personagem 0 tem 9 aliados
-        assertEquals(numAliados, instance.numAliadosDiretos(p0));
-        resultArray = (ArrayList<Personagem>) instance.devolverTodosAliados(p0);
-        Personagem p9 = instance.obterPersonagemPorNome("Pers9");
-        Personagem p16 = instance.obterPersonagemPorNome("Pers16");
-        assertTrue("Pers0 é aliado com Pers9", resultArray.contains(p9));
-        assertTrue("Pers0 é aliado com Pers16", resultArray.contains(p16));
+
+        result = instance.devolverTodosAliados(p0);
+        numAliadosResult = 0;
+        for (Personagem p : result) {
+            numAliadosResult++;
+        }
+        assertEquals(numAliados, numAliadosResult);
+        p1 = instance.obterPersonagemPorNome("Pers1");
+        result = instance.devolverTodosAliados(p1);
+        numAliados = 8;
+        numAliadosResult = 0;
+        for (Personagem p : result) {
+            numAliadosResult++;
+        }
+        assertEquals(numAliados, numAliadosResult);
     }
 
     /**
@@ -338,10 +317,10 @@ public class ControloDoJogoTest {
         instance.adicionarAlianca(p7, p4, false, 1);
         instance.adicionarAlianca(p2, p3, true, 1);
         instance.adicionarAlianca(p2, p6, true, 1);
-        ForcaAlianca result = instance.determinarAliancaMaisForte();
+        AliancaMaisForte result = instance.determinarAliancaMaisForte();
 
         //É p2-p6
-        ForcaAlianca expResult = new ForcaAlianca(27.0, p2, p6);
+        AliancaMaisForte expResult = new AliancaMaisForte(27.0, p2, p6);
         assertEquals(expResult.getPers_a(), result.getPers_a());
         assertEquals(expResult.getPers_b(), result.getPers_b());
 
@@ -349,7 +328,7 @@ public class ControloDoJogoTest {
         instance.lerDados(ControloDoJogo.FICH_XL);
         Personagem a = instance.obterPersonagemPorNome("Pers36");
         Personagem b = instance.obterPersonagemPorNome("Pers46");
-        expResult = new ForcaAlianca(977, a, b);
+        expResult = new AliancaMaisForte(977, a, b);
         result = instance.determinarAliancaMaisForte();
         assertEquals(expResult.getPers_a(), result.getPers_a());
         assertEquals(expResult.getPers_b(), result.getPers_b());
@@ -379,7 +358,24 @@ public class ControloDoJogoTest {
 
         instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_TESTE);
+        p_a = instance.obterPersonagemPorNome("Pers8");
+        p_b = instance.obterPersonagemPorNome("Pers6");
+        result = instance.novaAlianca(p_a, p_b, true, 1);
+        expResult = true;
+        assertTrue("Adiciona uma nova alianca ao ficheiro Teste", result == expResult);
+        double comp = instance.obterFatorCompAlianca(p_a, p_b);
+        assertTrue("Alianca é a média das aliancas", comp != 1f);
 
+        //Adicionar um vértice novo
+        Personagem p10 = new Personagem("Cátia", 200);
+        instance.adicionarPersonagem(p10);
+        result = instance.novaAlianca(p_a, p10, true, 1);
+        expResult = true;
+        assertTrue("Adiciona uma nova alianca ao ficheiro Teste", result == expResult);
+        comp = instance.obterFatorCompAlianca(p_a, p10);
+        assertTrue("Alianca é a média das aliancas", comp == 1f);
+
+        //Ficheiros XL
         instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_XL);
         Personagem a = instance.obterPersonagemPorNome("Pers0");
@@ -387,6 +383,8 @@ public class ControloDoJogoTest {
         result = instance.novaAlianca(a, b, true, 1);
         expResult = true;
         assertTrue("Adicionar uma nova alianca aos ficheiros XL", result == expResult);
+        comp = instance.obterFatorCompAlianca(a, b);
+        assertTrue("Alianca é a média das aliancas", comp != 1f);
 
         //Pers 0 aliada com Pers9 -0.2
         //Pers9 aliada com Pers45 -0.5
@@ -406,7 +404,7 @@ public class ControloDoJogoTest {
         System.out.println("possiveisNovasAliancas");
         ControloDoJogo instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_TESTE);
-        AdjacencyMatrixGraph<Personagem, Alianca> result = instance.possiveisNovasAliancas();
+        Graph<Personagem, Boolean> result = instance.possiveisNovasAliancas();
 
         Personagem p0 = instance.obterPersonagemPorNome("Pers0");
         Personagem p1 = instance.obterPersonagemPorNome("Pers1");

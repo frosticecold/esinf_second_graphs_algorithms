@@ -1,4 +1,4 @@
-nomefich = input("prompt")
+nomefich = input("")
 print('graph Locais {')
 print('\tnode [shape = circle];')
 file = open(nomefich, 'r').read().split('\n')

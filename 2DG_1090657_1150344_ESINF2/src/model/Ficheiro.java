@@ -6,6 +6,7 @@
 package model;
 
 import graph.AdjacencyMatrixGraph;
+import graphbase.Graph;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -53,10 +54,10 @@ public class Ficheiro {
      * exeucutado, antes de ler os Locais
      *
      * @param nomeFicheiro - Nome do Ficheiro
-     * @param mapLocaisEstradas - Map de Adjacências de Locais-Estradas
-     * @param mapPersonagens - Map de Adjacências de Personagens - Aliancas
+     * @param grafo_locais_estradas - Map de Adjacências de Locais-Estradas
+     * @param grafo_personagens_aliancas - Map de Adjacências de Personagens - Aliancas
      */
-    public void lerPersonagensAliancas(String nomeFicheiro, AdjacencyMatrixGraph<Local, Double> mapLocaisEstradas, AdjacencyMatrixGraph<Personagem, Alianca> mapPersonagens) {
+    public void lerPersonagensAliancas(String nomeFicheiro, AdjacencyMatrixGraph<Local, Double> grafo_locais_estradas, Graph<Personagem, Boolean> grafo_personagens_aliancas) {
         List<String> conteudoFich = lerFicheiro(nomeFicheiro);
         boolean lerPersonagens = false;
         boolean lerAliancas = false;
@@ -76,12 +77,12 @@ public class Ficheiro {
                 linhaSplit = linha.split(",");
                 Personagem p = new Personagem(linhaSplit[0], Integer.parseInt(linhaSplit[1]));
                 if (linhaSplit.length >= 3) {
-                    Local l = getLocalAssociadoAoNome(linhaSplit[2], mapLocaisEstradas);
+                    Local l = getLocalAssociadoAoNome(linhaSplit[2], grafo_locais_estradas);
                     if (l != null) {
                         l.setDono(p);
                     }
                 }
-                mapPersonagens.insertVertex(p);
+                grafo_personagens_aliancas.insertVertex(p);
                 continue;
             }
             if (lerAliancas == true) {
@@ -94,9 +95,11 @@ public class Ficheiro {
 
                 String pers_a = linhaSplit[CAMPO_PERS_A];
                 String pers_b = linhaSplit[CAMPO_PERS_B];
-                Alianca alianca = new Alianca(Boolean.parseBoolean(linhaSplit[CAMPO_TIPO_ALIANCA]), Float.parseFloat(linhaSplit[CAMPO_ALIANCA_FATOR_COMPATIBILIDADE]));
+                Boolean tipoAlianca = Boolean.parseBoolean(linhaSplit[CAMPO_TIPO_ALIANCA]);
+                Double fator_comp = Double.parseDouble(linhaSplit[CAMPO_ALIANCA_FATOR_COMPATIBILIDADE]);
+                //Alianca alianca = new Alianca(Boolean.parseBoolean(linhaSplit[CAMPO_TIPO_ALIANCA]), Float.parseFloat(linhaSplit[CAMPO_ALIANCA_FATOR_COMPATIBILIDADE]));
                 Personagem persA = null, persB = null;
-                for (Personagem p : mapPersonagens.vertices()) {
+                for (Personagem p : grafo_personagens_aliancas.vertices()) {
                     if (pers_a.equals(p.getNome())) {
                         persA = p;
                         continue;
@@ -105,7 +108,7 @@ public class Ficheiro {
                         persB = p;
                     }
                     if (persA != null && persB != null) {
-                        mapPersonagens.insertEdge(persA, persB, alianca);
+                        grafo_personagens_aliancas.insertEdge(persA, persB, tipoAlianca,fator_comp);
                         break;
                     }
                 }
@@ -122,7 +125,7 @@ public class Ficheiro {
      * @param mapLocaisEstradas - Map de Adjacências de Locais-Estradas
      * @param mapPersonagens - Map de Adjacências de Personagens - Aliancas
      */
-    public void lerLocais(String nomeFicheiro, AdjacencyMatrixGraph<Local, Double> mapLocaisEstradas, AdjacencyMatrixGraph<Personagem, Alianca> mapPersonagens) {
+    public void lerLocais(String nomeFicheiro, AdjacencyMatrixGraph<Local, Double> mapLocaisEstradas, Graph<Personagem, Boolean> mapPersonagens) {
         List<String> conteudoFich = lerFicheiro(nomeFicheiro);
         boolean lerLocais = false;
         boolean lerCaminhos = false;
