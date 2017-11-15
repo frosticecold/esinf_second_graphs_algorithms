@@ -71,7 +71,6 @@ public class ControloDoJogoTest {
 
         LinkedList<Local> path = new LinkedList<>();
         int tamanho;
-        int dif_caminho_expected = 0;
         instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_TESTE);
         Local local_a = instance.obterLocalPorNome("Local0");
@@ -91,6 +90,7 @@ public class ControloDoJogoTest {
 
         instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_L);
+
         local_a = instance.obterLocalPorNome("Local0");
         local_b = instance.obterLocalPorNome("Local100");
         path = instance.caminhoComMenorDificuldade(local_a, local_b);
@@ -116,8 +116,6 @@ public class ControloDoJogoTest {
 
         Personagem persOrig = instance.obterPersonagemPorNome("Pers0");
         Local l_target = instance.obterLocalPorNome("Local1");
-        //Caminho local 1 - local 5 - local 6 
-        // dificuldade local 5 + dificuldade local 6 + estrada 1-5 + estrada 5-6
         //Dificuldade do local
         Local source = instance.obterLocalPorNome("Local0");
         Personagem p_b = instance.obterPersonagemPorNome("Pers1");
@@ -125,7 +123,7 @@ public class ControloDoJogoTest {
 
         Conquista result = instance.verificarConquista(persOrig, l_target);
         assertFalse("Não é possível conquistar", result.consegueConquistar());
-        assertTrue("A dificuldade do caminho é -1:", result.forcaNecessaria() == dificuldade);
+        assertTrue("A dificuldade do caminho é igual ao calculado:", result.forcaNecessaria() == dificuldade);
 
         l_target = instance.obterLocalPorNome("Local6");
         result = instance.verificarConquista(persOrig, l_target);
@@ -249,12 +247,12 @@ public class ControloDoJogoTest {
         Personagem p4 = instance.obterPersonagemPorNome("Pers4");
         Personagem p8 = instance.obterPersonagemPorNome("Pers8");
         Iterable<Personagem> result = instance.devolverTodosAliados(p0);
-        int numAliadosResult = 0;
+        int numaliados_contados = 0;
         for (Personagem p : result) {
-            numAliadosResult++;
+            numaliados_contados++;
         }
-        int numAliados = 3;
-        assertEquals(numAliados, numAliadosResult);
+        int numAliados_expected = 3;
+        assertEquals(numAliados_expected, numaliados_contados);
         assertTrue("Pers 0 é aliada com Pers1", instance.saoAliados(p0, p1));
         assertFalse("Pers 0 não é aliada com Pers2", instance.saoAliados(p0, p2));
         assertTrue("Pers 0 é aliada com Pers4", instance.saoAliados(p0, p4));
@@ -263,22 +261,22 @@ public class ControloDoJogoTest {
         instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_XL);
         p0 = instance.obterPersonagemPorNome("Pers0");
-        numAliados = 9; // Personagem 0 tem 9 aliados
+        numAliados_expected = 9; // Personagem 0 tem 9 aliados
 
         result = instance.devolverTodosAliados(p0);
-        numAliadosResult = 0;
+        numaliados_contados = 0;
         for (Personagem p : result) {
-            numAliadosResult++;
+            numaliados_contados++;
         }
-        assertEquals(numAliados, numAliadosResult);
+        assertEquals(numAliados_expected, numaliados_contados);
         p1 = instance.obterPersonagemPorNome("Pers1");
         result = instance.devolverTodosAliados(p1);
-        numAliados = 8;
-        numAliadosResult = 0;
+        numAliados_expected = 8;
+        numaliados_contados = 0;
         for (Personagem p : result) {
-            numAliadosResult++;
+            numaliados_contados++;
         }
-        assertEquals(numAliados, numAliadosResult);
+        assertEquals(numAliados_expected, numaliados_contados);
     }
 
     /**
@@ -288,48 +286,34 @@ public class ControloDoJogoTest {
     public void testDeterminarAliancaMaisForte() {
         System.out.println("determinarAliancaMaisForte");
         ControloDoJogo instance = new ControloDoJogo();
-
-        Personagem p1 = new Personagem("Personagem a", 10);
-        Personagem p2 = new Personagem("Personagem b", 12);
-        Personagem p3 = new Personagem("Personagem c", 8);
-        Personagem p4 = new Personagem("Personagem d", 9);
-        Personagem p5 = new Personagem("Personagem e", 4);
-        Personagem p6 = new Personagem("Personagem f", 15);
-        Personagem p7 = new Personagem("Personagem g", 4);
-        Personagem p8 = new Personagem("Personagem h", 7);
-
-        instance.adicionarPersonagem(p1);
-        instance.adicionarPersonagem(p2);
-        instance.adicionarPersonagem(p3);
-        instance.adicionarPersonagem(p4);
-        instance.adicionarPersonagem(p5);
-        instance.adicionarPersonagem(p6);
-        instance.adicionarPersonagem(p7);
-        instance.adicionarPersonagem(p8);
-
-        instance.adicionarAlianca(p1, p2, true, 1);
-        instance.adicionarAlianca(p2, p5, true, 1);
-        instance.adicionarAlianca(p1, p4, true, 1);
-        instance.adicionarAlianca(p3, p7, false, 1);
-        instance.adicionarAlianca(p4, p6, false, 1);
-        instance.adicionarAlianca(p7, p8, false, 1);
-        instance.adicionarAlianca(p5, p7, true, 1);
-        instance.adicionarAlianca(p7, p4, false, 1);
-        instance.adicionarAlianca(p2, p3, true, 1);
-        instance.adicionarAlianca(p2, p6, true, 1);
+        instance.lerDados(ControloDoJogo.FICH_TESTE);
         AliancaMaisForte result = instance.determinarAliancaMaisForte();
 
-        //É p2-p6
-        AliancaMaisForte expResult = new AliancaMaisForte(27.0, p2, p6);
+        //É p3-p5
+        Personagem a = instance.obterPersonagemPorNome("Pers3");
+        Personagem b = instance.obterPersonagemPorNome("Pers5");
+        AliancaMaisForte expResult = new AliancaMaisForte(113.6, a, b);
+        assertEquals(expResult.getForca(), result.getForca(), 0.1);
+        assertEquals(expResult.getPers_a(), result.getPers_a());
+        assertEquals(expResult.getPers_b(), result.getPers_b());
+
+        instance = new ControloDoJogo();
+        instance.lerDados(ControloDoJogo.FICH_M);
+        a = instance.obterPersonagemPorNome("Pers21");
+        b = instance.obterPersonagemPorNome("Pers29");
+        result = instance.determinarAliancaMaisForte();
+        expResult = new AliancaMaisForte(676, a, b);
+        assertEquals(expResult.getForca(), result.getForca(), 0.1);
         assertEquals(expResult.getPers_a(), result.getPers_a());
         assertEquals(expResult.getPers_b(), result.getPers_b());
 
         instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_XL);
-        Personagem a = instance.obterPersonagemPorNome("Pers36");
-        Personagem b = instance.obterPersonagemPorNome("Pers46");
-        expResult = new AliancaMaisForte(977, a, b);
+        a = instance.obterPersonagemPorNome("Pers36");
+        b = instance.obterPersonagemPorNome("Pers46");
+        expResult = new AliancaMaisForte(781.6, a, b);
         result = instance.determinarAliancaMaisForte();
+        assertEquals(expResult.getForca(), result.getForca(), 0.1);
         assertEquals(expResult.getPers_a(), result.getPers_a());
         assertEquals(expResult.getPers_b(), result.getPers_b());
     }
