@@ -358,11 +358,11 @@ public class ControloDoJogoTest {
         Personagem p18 = instance.obterPersonagemPorNome("Pers18");
         Personagem p19 = instance.obterPersonagemPorNome("Pers19");
         Personagem p20 = instance.obterPersonagemPorNome("Pers20");
-        assertTrue("Pers0 é aliado com Pers9",instance.saoAliados(p0, p9));
-        assertTrue("Pers0 é aliado com Pers16",instance.saoAliados(p0, p16));
-        assertTrue("Pers0 é aliado com Pers18",instance.saoAliados(p0, p18));
-        assertTrue("Pers0 é aliado com Pers19",instance.saoAliados(p0, p19));
-        assertFalse("Pers0 não é aliada com Pers20",instance.saoAliados(p0, p20));
+        assertTrue("Pers0 é aliado com Pers9", instance.saoAliados(p0, p9));
+        assertTrue("Pers0 é aliado com Pers16", instance.saoAliados(p0, p16));
+        assertTrue("Pers0 é aliado com Pers18", instance.saoAliados(p0, p18));
+        assertTrue("Pers0 é aliado com Pers19", instance.saoAliados(p0, p19));
+        assertFalse("Pers0 não é aliada com Pers20", instance.saoAliados(p0, p20));
 
         //Teste para a personagem 1, contando as linhas no ficheiro tem 8 aliados
         p1 = instance.obterPersonagemPorNome("Pers1");
@@ -389,6 +389,16 @@ public class ControloDoJogoTest {
         Personagem a = instance.obterPersonagemPorNome("Pers1");
         Personagem b = instance.obterPersonagemPorNome("Pers7");
         AliancaMaisForte expResult = new AliancaMaisForte(272.2, a, b);
+        assertEquals(expResult.getForca(), result.getForca(), 0.1);
+        assertEquals(expResult.getPers_a(), result.getPers_a());
+        assertEquals(expResult.getPers_b(), result.getPers_b());
+
+        instance = new ControloDoJogo();
+        instance.lerDados(ControloDoJogo.FICH_S);
+        result = instance.determinarAliancaMaisForte();
+        a = instance.obterPersonagemPorNome("Pers0");
+        b = instance.obterPersonagemPorNome("Pers3");
+        expResult = new AliancaMaisForte(499.2, a, b);
         assertEquals(expResult.getForca(), result.getForca(), 0.1);
         assertEquals(expResult.getPers_a(), result.getPers_a());
         assertEquals(expResult.getPers_b(), result.getPers_b());
