@@ -136,10 +136,12 @@ public class Ficheiro {
             if (lerLocais == true) {
                 linhaSplit = linha.split(",");
                 Local l = new Local(linhaSplit[0], Integer.parseInt(linhaSplit[1]));
-//                if (linhaSplit.length >= 3) {
-//                    Personagem p = personagemAssociadaAoNome(linhaSplit[2], mapPersonagens);
-//                    l.setDono(p);
-//                }
+                if (linhaSplit.length >= 3) {
+                    Personagem p = jg.obterPersonagemPorNome(linhaSplit[2]);
+                    if (p != null) {
+                        l.setDono(p);
+                    }
+                }
                 jg.adicionarLocal(l);
                 continue;
             }
@@ -171,14 +173,5 @@ public class Ficheiro {
             }
 
         }
-    }
-
-    private Local getLocalAssociadoAoNome(String nomeLocal, AdjacencyMatrixGraph<Local, Double> matrizadj) {
-        for (Local l : matrizadj.vertices()) {
-            if (l.getNome().equalsIgnoreCase(nomeLocal)) {
-                return l;
-            }
-        }
-        return null;
     }
 }
