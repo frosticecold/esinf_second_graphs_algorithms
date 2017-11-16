@@ -39,12 +39,12 @@ public class AlgoritmosJogo {
                             minDist[vAdj] = minDist[sourceIdx] + edge + vx.getDificuldade();
                             verticesIndex[vAdj] = sourceIdx;
                         }
-                    }
+                    }else{
                     if (!knownVertices[vAdj] && minDist[vAdj] > minDist[sourceIdx] + edge + vx.getDificuldade() + vx.getDono().getForca()) {
                         minDist[vAdj] = minDist[sourceIdx] + edge + vx.getDificuldade() + vx.getDono().getForca();
                         verticesIndex[vAdj] = sourceIdx;
                     }
-                }
+                }}
             }
 
             Double min = Double.MAX_VALUE;

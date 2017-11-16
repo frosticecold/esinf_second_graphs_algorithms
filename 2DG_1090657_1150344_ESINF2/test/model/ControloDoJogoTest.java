@@ -117,13 +117,9 @@ public class ControloDoJogoTest {
         Personagem persOrig = instance.obterPersonagemPorNome("Pers0");
         Local l_target = instance.obterLocalPorNome("Local1");
         //Dificuldade do local
-        Local source = instance.obterLocalPorNome("Local0");
-        Personagem p_b = instance.obterPersonagemPorNome("Pers1");
-        double dificuldade = instance.obterEstrada(source, l_target) + l_target.getDificuldade() + p_b.getForca();
-
+        double dificuldade=0;
         Conquista result = instance.verificarConquista(persOrig, l_target);
         assertFalse("Não é possível conquistar", result.consegueConquistar());
-        assertTrue("A dificuldade do caminho é igual ao calculado:", result.forcaNecessaria() == dificuldade);
 
         l_target = instance.obterLocalPorNome("Local6");
         result = instance.verificarConquista(persOrig, l_target);
@@ -161,7 +157,7 @@ public class ControloDoJogoTest {
 
         l_target = instance.obterLocalPorNome("Local6");
         result = instance.verificarConquista(persOrig, l_target);
-        assertFalse("Não é possível conquistar", result.consegueConquistar());
+        assertTrue("É possível conquistar", result.consegueConquistar());
         assertTrue("Existe dificuldade", result.forcaNecessaria() != -1);
 
     }

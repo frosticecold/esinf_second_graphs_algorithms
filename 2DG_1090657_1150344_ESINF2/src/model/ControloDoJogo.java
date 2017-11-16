@@ -75,68 +75,29 @@ public class ControloDoJogo {
 
     //===================================1 C====================================
     //Determinar qual a	aliança	mais forte, retornando	a força	e as personagens dessa aliança
-    /**
-     * Método que verifica se uma dada Personagem pode conquistar um determinado
-     * local Pressupõe que uma personagem tenha um local atribuido na leitura de
-     * ficheiros
-     *
-     * @param pers Personagem
-     * @param target Local a conquistar
-     * @return Uma conquista que tem como atributo se consegue conquistar, a
-     * dificuldade do caminho e o caminho intermédio entre personagem e local
-     */
     public Conquista verificarConquista(Personagem pers, Local target) {
         if (!grafo_personagens_aliancas.validVertex(pers) || !grafo_locais_estradas.checkVertex(target)) {
             LinkedList<Local> naotemcaminho = new LinkedList<>();
             return new Conquista(false, -1, naotemcaminho);
         }
         Local source = obterLocalAssociadoAPersonagem(pers);
-        LinkedList<Local> menorCaminho = caminhoComMenorDificuldade(source, target);
-        if (!menorCaminho.isEmpty()) {
-            LinkedList<Local> caminhointermedio = (LinkedList<Local>) menorCaminho.clone();
-            Local local_a = source;
-            Local local_b = null;
-            double dificuldade = 0;
-
-            //Remover o caminho inicial
-            if (menorCaminho.peek() == source) {
-                menorCaminho.pop();
+        LinkedList<Local> path = new LinkedList<>();
+        double dificuldade = graph.AlgoritmosJogo.shortestPathConquista(grafo_locais_estradas, source, target, path);
+        if (dificuldade != -1) {
+            if (path.peekFirst() == source) {
+                path.removeFirst();
             }
-            while (!menorCaminho.isEmpty()) {
-                if (local_a == source && local_b == null) {
-                    local_b = menorCaminho.pop();
-                    if (local_b.getDono() != pers) {
-                        dificuldade += grafo_locais_estradas.getEdge(local_a, local_b) + local_b.getDificuldade();
-                        if (local_b.getDono() != null) {
-                            dificuldade += local_b.getDono().getForca();
-                        }
-                    }
-                } else {
-                    local_a = local_b;
-                    local_b = menorCaminho.pop();
-                    if (local_b.getDono() != pers) {
-                        dificuldade += local_b.getDificuldade() + grafo_locais_estradas.getEdge(local_a, local_b);
-                        if (local_b.getDono() != null) {
-                            dificuldade += local_b.getDono().getForca();
-                        }
-                    }
-                }
-
-            }
-            if (caminhointermedio.peekFirst() == source) {
-                caminhointermedio.removeFirst();
-            }
-            if (caminhointermedio.peekLast() == target) {
-                caminhointermedio.removeLast();
+            if (path.peekLast() == target) {
+                path.removeLast();
             }
             boolean consegue_conquistar = false;
             if (pers.getForca() > dificuldade) {
                 consegue_conquistar = true;
             }
-            Conquista cq = new Conquista(consegue_conquistar, dificuldade, caminhointermedio);
+            Conquista cq = new Conquista(consegue_conquistar, dificuldade, path);
             return cq;
         }
-        return new Conquista(false, -1, menorCaminho);
+        return new Conquista(false, -1, path);
     }
 
     //===================================2 A====================================
