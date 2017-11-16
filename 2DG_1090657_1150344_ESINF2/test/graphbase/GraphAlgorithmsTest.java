@@ -237,6 +237,7 @@ public class GraphAlgorithmsTest {
         assertTrue("3º é E", path.pop().equals(e));
         assertTrue("4º é G", path.pop().equals(g));
         assertTrue("5º é H", path.pop().equals(h));
+        assertTrue("Vazio", path.isEmpty());
 
         String i = "i";
         String j = "j";
@@ -261,7 +262,29 @@ public class GraphAlgorithmsTest {
         assertTrue("Primeiro é A", path.pop().equals(a));
         assertTrue("2º é B", path.pop().equals(b));
         assertTrue("3º é K", path.pop().equals(k));
-        assertTrue("4º é l", path.pop().equals(l));
+        assertTrue("4º é L", path.pop().equals(l));
+        assertTrue("Vazio", path.isEmpty());
+
+        path.clear();
+        GraphAlgorithms.shortestPathEdges(grafo, k, g, path);
+        assertTrue("Primeiro é K", path.pop().equals(k));
+        assertTrue("2º é B", path.pop().equals(b));
+        assertTrue("3º é A", path.pop().equals(a));
+        assertTrue("4º é D", path.pop().equals(d));
+        assertTrue("5º é E", path.pop().equals(e));
+        assertTrue("6º é G", path.pop().equals(g));
+        assertTrue("Vazio", path.isEmpty());
+
+        path.clear();
+        GraphAlgorithms.shortestPathEdges(grafo, h, i, path);
+        assertTrue("Primeiro é H", path.pop().equals(h));
+        assertTrue("2º é G", path.pop().equals(g));
+        assertTrue("3º é E", path.pop().equals(e));
+        assertTrue("4º é D", path.pop().equals(d));
+        assertTrue("5º é A", path.pop().equals(a));
+        assertTrue("6º é B", path.pop().equals(b));
+        assertTrue("7º é K", path.pop().equals(k));
+        assertTrue("8º é I", path.pop().equals(i));
         assertTrue("Vazio", path.isEmpty());
 
     }

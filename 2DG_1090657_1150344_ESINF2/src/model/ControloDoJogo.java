@@ -180,6 +180,7 @@ public class ControloDoJogo {
      * @return True or False se a alianca foi adicionada
      */
     public boolean novaAlianca(Personagem p_source, Personagem p_target, boolean tipoalianca, double fator_compatibilidade) {
+        final double SEM_CAMINHO = -1;
         if (!grafo_personagens_aliancas.validVertex(p_source) || !grafo_personagens_aliancas.validVertex(p_target)) {
             return false;
         }
@@ -187,8 +188,8 @@ public class ControloDoJogo {
             return false;
         }
         LinkedList<Personagem> path = new LinkedList<>();
-        double dist = graphbase.GraphAlgorithms.shortestPath(grafo_personagens_aliancas, p_source, p_target, path);
-        if (dist == -1) {
+        double dist = graphbase.GraphAlgorithms.shortestPathEdges(grafo_personagens_aliancas, p_source, p_target, path);
+        if (dist == SEM_CAMINHO) {
             grafo_personagens_aliancas.insertEdge(p_source, p_target, tipoalianca, fator_compatibilidade);
             return true;
         } else {

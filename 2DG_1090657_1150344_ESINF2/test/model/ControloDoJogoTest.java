@@ -430,13 +430,18 @@ public class ControloDoJogoTest {
     @Test
     public void testNovaAlianca() {
         System.out.println("novaAlianca");
+        
         Personagem p_a = new Personagem("Personagem 1", 10);
         Personagem p_b = new Personagem("Personagem 2", 12);
+        
         boolean tipoalianca = false;
         ControloDoJogo instance = new ControloDoJogo();
+        
         boolean expResult = true;
+        
         instance.adicionarPersonagem(p_a);
         instance.adicionarPersonagem(p_b);
+        
         boolean result = instance.novaAlianca(p_a, p_b, tipoalianca, 1);
         assertEquals(expResult, result);
 
