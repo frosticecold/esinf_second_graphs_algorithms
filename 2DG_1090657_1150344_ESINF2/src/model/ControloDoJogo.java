@@ -504,24 +504,24 @@ public class ControloDoJogo {
     public void lerDados(String nomeFicheiro) {
         switch (nomeFicheiro) {
             case FICH_S:
-                lerLocais(LOCAIS_S);
                 lerAlianca(PERSONAGEM_S);
+                lerLocais(LOCAIS_S);
                 break;
             case FICH_M:
-                lerLocais(LOCAIS_M);
                 lerAlianca(PERSONAGEM_M);
+                lerLocais(LOCAIS_M);
                 break;
             case FICH_L:
-                lerLocais(LOCAIS_L);
                 lerAlianca(PERSONAGEM_L);
+                lerLocais(LOCAIS_L);
                 break;
             case FICH_XL:
-                lerLocais(LOCAIS_XL);
                 lerAlianca(PERSONAGEM_XL);
+                lerLocais(LOCAIS_XL);
                 break;
             case FICH_TESTE:
-                lerLocais(LOCAIS_TESTE);
                 lerAlianca(PERSONAGEM_TESTE);
+                lerLocais(LOCAIS_TESTE);
                 break;
             default:
                 break;
@@ -660,5 +660,9 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
             return conquistamenorforca;
         }
 
+    }
+
+    public Iterable<Personagem> devolverTodasPersonagens() {
+        return grafo_personagens_aliancas.vertices();
     }
 }

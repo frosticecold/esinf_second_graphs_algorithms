@@ -57,7 +57,7 @@ public class Ficheiro {
      * @param grafo_locais_estradas - Map de Adjacências de Locais-Estradas
      * @param grafo_personagens_aliancas - Map de Adjacências de Personagens - Aliancas
      */
-    public void lerPersonagensAliancas(String nomeFicheiro, AdjacencyMatrixGraph<Local, Double> grafo_locais_estradas, Graph<Personagem, Boolean> grafo_personagens_aliancas) {
+    public void lerPersonagensAliancas(String nomeFicheiro, ControloDoJogo jg) {
         List<String> conteudoFich = lerFicheiro(nomeFicheiro);
         boolean lerPersonagens = false;
         boolean lerAliancas = false;
@@ -76,13 +76,7 @@ public class Ficheiro {
             if (lerPersonagens == true) {
                 linhaSplit = linha.split(",");
                 Personagem p = new Personagem(linhaSplit[0], Integer.parseInt(linhaSplit[1]));
-                if (linhaSplit.length >= 3) {
-                    Local l = getLocalAssociadoAoNome(linhaSplit[2], grafo_locais_estradas);
-                    if (l != null) {
-                        l.setDono(p);
-                    }
-                }
-                grafo_personagens_aliancas.insertVertex(p);
+                jg.adicionarPersonagem(p);
                 continue;
             }
             if (lerAliancas == true) {
@@ -96,8 +90,7 @@ public class Ficheiro {
                 String pers_a = linhaSplit[CAMPO_PERS_A];
                 String pers_b = linhaSplit[CAMPO_PERS_B];
                 Boolean tipoAlianca = Boolean.parseBoolean(linhaSplit[CAMPO_TIPO_ALIANCA]);
-                Double fator_comp = Double.parseDouble(linhaSplit[CAMPO_ALIANCA_FATOR_COMPATIBILIDADE]);
-                //Alianca alianca = new Alianca(Boolean.parseBoolean(linhaSplit[CAMPO_TIPO_ALIANCA]), Float.parseFloat(linhaSplit[CAMPO_ALIANCA_FATOR_COMPATIBILIDADE]));
+                Double fator_comp = Double.parseDouble(linhaSplit[CAMPO_ALIANCA_FATOR_COMPATIBILIDADE]);                
                 Personagem persA = null, persB = null;
                 for (Personagem p : grafo_personagens_aliancas.vertices()) {
                     if (pers_a.equals(p.getNome())) {
