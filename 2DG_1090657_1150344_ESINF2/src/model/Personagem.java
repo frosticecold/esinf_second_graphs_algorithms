@@ -11,7 +11,7 @@ import java.util.Objects;
  *
  * @author Raúl Correia <1090657@isep.ipp.pt>
  */
-class Personagem implements Cloneable {
+public class Personagem implements Cloneable {
 
     private String nome;
 
