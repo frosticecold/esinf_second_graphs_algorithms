@@ -54,8 +54,7 @@ public class Ficheiro {
      * exeucutado, antes de ler os Locais
      *
      * @param nomeFicheiro - Nome do Ficheiro
-     * @param grafo_locais_estradas - Map de Adjacências de Locais-Estradas
-     * @param grafo_personagens_aliancas - Map de Adjacências de Personagens - Aliancas
+     * @param jg Controlo de Jogo
      */
     public void lerPersonagensAliancas(String nomeFicheiro, ControloDoJogo jg) {
         List<String> conteudoFich = lerFicheiro(nomeFicheiro);
@@ -90,9 +89,9 @@ public class Ficheiro {
                 String pers_a = linhaSplit[CAMPO_PERS_A];
                 String pers_b = linhaSplit[CAMPO_PERS_B];
                 Boolean tipoAlianca = Boolean.parseBoolean(linhaSplit[CAMPO_TIPO_ALIANCA]);
-                Double fator_comp = Double.parseDouble(linhaSplit[CAMPO_ALIANCA_FATOR_COMPATIBILIDADE]);                
+                Double fator_comp = Double.parseDouble(linhaSplit[CAMPO_ALIANCA_FATOR_COMPATIBILIDADE]);
                 Personagem persA = null, persB = null;
-                for (Personagem p : grafo_personagens_aliancas.vertices()) {
+                for (Personagem p : jg.devolverTodasPersonagens()) {
                     if (pers_a.equals(p.getNome())) {
                         persA = p;
                         continue;
@@ -101,7 +100,7 @@ public class Ficheiro {
                         persB = p;
                     }
                     if (persA != null && persB != null) {
-                        grafo_personagens_aliancas.insertEdge(persA, persB, tipoAlianca,fator_comp);
+                        jg.adicionarAlianca(persA, persB, tipoAlianca, fator_comp);
                         break;
                     }
                 }
@@ -118,7 +117,7 @@ public class Ficheiro {
      * @param mapLocaisEstradas - Map de Adjacências de Locais-Estradas
      * @param mapPersonagens - Map de Adjacências de Personagens - Aliancas
      */
-    public void lerLocais(String nomeFicheiro, AdjacencyMatrixGraph<Local, Double> mapLocaisEstradas, Graph<Personagem, Boolean> mapPersonagens) {
+    public void lerLocais(String nomeFicheiro, ControloDoJogo jg) {
         List<String> conteudoFich = lerFicheiro(nomeFicheiro);
         boolean lerLocais = false;
         boolean lerCaminhos = false;
@@ -141,7 +140,7 @@ public class Ficheiro {
 //                    Personagem p = personagemAssociadaAoNome(linhaSplit[2], mapPersonagens);
 //                    l.setDono(p);
 //                }
-                mapLocaisEstradas.insertVertex(l);
+                jg.adicionarLocal(l);
                 continue;
             }
             if (lerCaminhos == true) {
@@ -151,20 +150,20 @@ public class Ficheiro {
                 final int CAMPO_DIF_ESTRADA = 2;
                 linhaSplit = linha.split(",");
 
-                String local_a = linhaSplit[CAMPO_LOCAL_A];
-                String local_b = linhaSplit[CAMPO_LOCAL_B];
+                String string_local_a = linhaSplit[CAMPO_LOCAL_A];
+                String string_local_b = linhaSplit[CAMPO_LOCAL_B];
 
                 Local locala = null, localb = null;
-                for (Local l : mapLocaisEstradas.vertices()) {
-                    if (local_a.equals(l.getNome())) {
+                for (Local l : jg.devolverTodosLocais()) {
+                    if (string_local_a.equals(l.getNome())) {
                         locala = l;
                     }
-                    if (local_b.equals(l.getNome())) {
+                    if (string_local_b.equals(l.getNome())) {
                         localb = l;
                     }
                     if (locala != null && localb != null) {
                         double e = Double.parseDouble(linhaSplit[CAMPO_DIF_ESTRADA]);
-                        mapLocaisEstradas.insertEdge(locala, localb, e);
+                        jg.adicionarEstrada(locala, localb, e);
                         break;
                     }
 

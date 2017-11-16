@@ -52,7 +52,7 @@ public class ControloDoJogo {
      */
     public void lerLocais(String nomeFicheiro) {
         Ficheiro f = new Ficheiro();
-        f.lerLocais(nomeFicheiro, grafo_locais_estradas, grafo_personagens_aliancas);
+        f.lerLocais(nomeFicheiro, this);
 
     }
 
@@ -149,7 +149,7 @@ public class ControloDoJogo {
      */
     public void lerAlianca(String nomeFicheiro) {
         Ficheiro f = new Ficheiro();
-        f.lerPersonagensAliancas(nomeFicheiro, grafo_locais_estradas, grafo_personagens_aliancas);
+        f.lerPersonagensAliancas(nomeFicheiro, this);
     }
 
     //===================================2 B====================================
@@ -664,5 +664,9 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
 
     public Iterable<Personagem> devolverTodasPersonagens() {
         return grafo_personagens_aliancas.vertices();
+    }
+
+    public Iterable<Local> devolverTodosLocais() {
+        return grafo_locais_estradas.vertices();
     }
 }
