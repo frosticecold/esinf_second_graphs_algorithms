@@ -2,8 +2,19 @@ graph Locais {
 
 
     node [shape = circle];
+    Local0[label="Local0 (27)"];
+    Local1[label="Local1 (28)"];
+    Local2[label="Local2 (38)"];
+    Local3[label="Local3 (37)"];
+    Local4[label="Local4 (24)"];
+    Local5[label="Local5 (40)"];
+    Local6[label="Local6 (45)"];
+    Local7[label="Local7 (50)"];
+    Local8[label="Local8 (30)"];
+    Local9[label="Local9 (15)"];
     Local0 -- Local1[label="20"];
     Local0 -- Local4[label="50"];
+    Local0 -- Local5[label="70"];
     Local1 -- Local2[label="30"];
     Local2 -- Local3[label="10"];
     Local3 -- Local4[label="20"];
@@ -11,7 +22,7 @@ graph Locais {
     Local6 -- Local7[label="10"];
     Local5 -- Local8[label="15"];
     Local8 -- Local9[label="15"];
-    Local0 -- Local5[label="70"];
+    Local4 -- Local9[label="100"];
 }
 
 

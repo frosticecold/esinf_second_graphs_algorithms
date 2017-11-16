@@ -80,10 +80,11 @@ public class ControloDoJogo {
             LinkedList<Local> naotemcaminho = new LinkedList<>();
             return new Conquista(false, -1, naotemcaminho);
         }
+        final double SEM_CAMINHO = -1;
         Local source = obterLocalAssociadoAPersonagem(pers);
         LinkedList<Local> path = new LinkedList<>();
         double dificuldade = graph.AlgoritmosJogo.shortestPathConquista(grafo_locais_estradas, source, target, path);
-        if (dificuldade != -1) {
+        if (dificuldade != SEM_CAMINHO) {
             if (path.peekFirst() == source) {
                 path.removeFirst();
             }
