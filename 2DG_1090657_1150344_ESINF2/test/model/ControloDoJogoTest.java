@@ -5,6 +5,7 @@
  */
 package model;
 
+import graph.AdjacencyMatrixGraph;
 import graphbase.Graph;
 import java.util.LinkedList;
 import org.junit.Test;
@@ -673,6 +674,42 @@ public class ControloDoJogoTest {
         assertNull(grafo_aliancas_publicas.getEdge(p9, p3));
         assertNull(grafo_aliancas_publicas.getEdge(p8, p10));
 
+    }
+
+    @Test
+    public void testarGerarGrafoSemLocaisAliados() {
+        System.out.println("gerarGrafoSemLocaisAliados");
+
+        ControloDoJogo instance = new ControloDoJogo();
+        instance.lerDados(ControloDoJogo.FICH_TESTE);
+        Personagem p0 = instance.obterPersonagemPorNome("Pers0");
+        Personagem p1 = instance.obterPersonagemPorNome("Pers1");
+        Personagem p4 = instance.obterPersonagemPorNome("Pers4");
+        Personagem p8 = instance.obterPersonagemPorNome("Pers8");
+        AdjacencyMatrixGraph<Local, Double> novografo = instance.gerarGrafoSemLocaisAliados(p0, p1);
+        assertFalse(novografo.checkVertex(instance.obterLocalPorNome("Local1")));
+
+        novografo = instance.gerarGrafoSemLocaisAliados(p0, p8);
+        assertFalse(novografo.checkVertex(instance.obterLocalPorNome("Local8")));
+
+        novografo = instance.gerarGrafoSemLocaisAliados(p0, p4);
+        assertFalse(novografo.checkVertex(instance.obterLocalPorNome("Local4")));
+
+        //Vamos forcar varias remocoes;
+        Local local1 = instance.obterLocalPorNome("Local1");
+        Local local2 = instance.obterLocalPorNome("Local2");
+        Local local3 = instance.obterLocalPorNome("Local3");
+        Local local5 = instance.obterLocalPorNome("Local5");
+        local1.setDono(p8);
+        local2.setDono(p8);
+        local3.setDono(p8);
+        local5.setDono(p8);
+        
+        novografo = instance.gerarGrafoSemLocaisAliados(p0, p8);
+        assertFalse(novografo.checkVertex(instance.obterLocalPorNome("Local1")));
+        assertFalse(novografo.checkVertex(instance.obterLocalPorNome("Local2")));
+        assertFalse(novografo.checkVertex(instance.obterLocalPorNome("Local3")));
+        assertFalse(novografo.checkVertex(instance.obterLocalPorNome("Local5")));
     }
 
 }
