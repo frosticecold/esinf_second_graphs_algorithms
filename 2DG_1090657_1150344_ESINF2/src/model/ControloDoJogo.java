@@ -595,4 +595,18 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
 
         return grafo_aliancas_publicas;
     }
+
+    public AdjacencyMatrixGraph<Local, Double> gerarGrafoSemLocaisAliados(Personagem orig, Personagem aliado) {
+        AdjacencyMatrixGraph<Local, Double> grafo_locais_sem_o_aliado = (AdjacencyMatrixGraph<Local, Double>) grafo_locais_estradas.clone();
+
+        for (Local loc : grafo_locais_estradas.vertices()) {
+            if (loc.getDono() != null) {
+                if (loc.getDono().equals(aliado)) {
+                    grafo_locais_sem_o_aliado.removeVertex(loc);
+                }
+            }
+
+        }
+        return grafo_locais_sem_o_aliado;
+    }
 }
