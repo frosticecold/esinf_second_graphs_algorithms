@@ -139,14 +139,18 @@ public class ControloDoJogoTest {
         Local l_target = instance.obterLocalPorNome("Local1");
         //Dificuldade do local
         double dificuldade = 0;
-        Conquista result = instance.verificarConquista(persOrig, l_target);
+        Conquista result = instance.verificarConquista(persOrig, l_target, null);
         assertFalse("Pers0 não consegue conquistar local1", result.consegueConquistar());
         dificuldade = 378;
         assertEquals(dificuldade, result.forcaNecessaria(), 0.1);
+        //Pode conquistar o proprio local?
+        l_target = instance.obterLocalPorNome("Local0");
+        result = instance.verificarConquista(persOrig, l_target, null);
+        assertFalse("Pers0 não pode conquistar o próprio local",result.consegueConquistar());
 
         //Pers 0 Para Local 3 Tem que passar por local4
         l_target = instance.obterLocalPorNome("Local3");
-        result = instance.verificarConquista(persOrig, l_target);
+        result = instance.verificarConquista(persOrig, l_target, null);
         assertFalse("Pers0 não consegue conquistar local3", result.consegueConquistar());
         dificuldade = 254;
         assertEquals(dificuldade, result.forcaNecessaria(), 0.1);
@@ -155,7 +159,7 @@ public class ControloDoJogoTest {
 
         //Pers0 não consegue conquistar local6
         l_target = instance.obterLocalPorNome("Local6");
-        result = instance.verificarConquista(persOrig, l_target);
+        result = instance.verificarConquista(persOrig, l_target, null);
         assertFalse("Nao é possível conquistar", result.consegueConquistar());
         dificuldade = 215;
         assertEquals(dificuldade, result.forcaNecessaria(), 0.1);
@@ -165,7 +169,7 @@ public class ControloDoJogoTest {
         //Pers5 não consegue conquistar local6
         persOrig = instance.obterPersonagemPorNome("Pers5");
         l_target = instance.obterLocalPorNome("Local6");
-        result = instance.verificarConquista(persOrig, l_target);
+        result = instance.verificarConquista(persOrig, l_target, null);
         assertFalse("Não é possível conquistar", result.consegueConquistar());
         dificuldade = 75;
         assertEquals(dificuldade, result.forcaNecessaria(), 0.1);
@@ -174,7 +178,7 @@ public class ControloDoJogoTest {
         //Personagem 1 consegue conquistar local6
         persOrig = instance.obterPersonagemPorNome("Pers1");
         l_target = instance.obterLocalPorNome("Local6");
-        result = instance.verificarConquista(persOrig, l_target);
+        result = instance.verificarConquista(persOrig, l_target, null);
         assertTrue("Pers1 consegue conquistar local6", result.consegueConquistar());
         dificuldade = 309;
         assertEquals(dificuldade, result.forcaNecessaria(), 0.1);
@@ -185,7 +189,7 @@ public class ControloDoJogoTest {
         //Personagem 1 conquista local4
         persOrig = instance.obterPersonagemPorNome("Pers1");
         l_target = instance.obterLocalPorNome("Local4");
-        result = instance.verificarConquista(persOrig, l_target);
+        result = instance.verificarConquista(persOrig, l_target, null);
         assertTrue("Pers1 consegue conquistar local4", result.consegueConquistar());
         dificuldade = 220;
         assertEquals(dificuldade, result.forcaNecessaria(), 0.1);
@@ -196,32 +200,32 @@ public class ControloDoJogoTest {
         instance.lerDados(ControloDoJogo.FICH_L);
         persOrig = instance.obterPersonagemPorNome("Pers1");
         l_target = instance.obterLocalPorNome("Local2");
-        result = instance.verificarConquista(persOrig, l_target);
+        result = instance.verificarConquista(persOrig, l_target, null);
         assertTrue("É possível conquistar", result.consegueConquistar());
 
         l_target = instance.obterLocalPorNome("Local23");
-        result = instance.verificarConquista(persOrig, l_target);
+        result = instance.verificarConquista(persOrig, l_target, null);
         assertTrue("É possível conquistar", result.consegueConquistar());
 
         l_target = instance.obterLocalPorNome("Local111");
-        result = instance.verificarConquista(persOrig, l_target);
+        result = instance.verificarConquista(persOrig, l_target, null);
         assertTrue("É possível conquistar", result.consegueConquistar());
 
         l_target = instance.obterLocalPorNome("Local38");
-        result = instance.verificarConquista(persOrig, l_target);
+        result = instance.verificarConquista(persOrig, l_target, null);
         assertFalse("Não é possível conquistar", result.consegueConquistar());
         dificuldade = 570;
         assertEquals(result.forcaNecessaria(), dificuldade, 0.1);
 
         l_target = instance.obterLocalPorNome("Local100");
-        result = instance.verificarConquista(persOrig, l_target);
+        result = instance.verificarConquista(persOrig, l_target, null);
         assertFalse("Não é possível conquistar", result.consegueConquistar());
         dificuldade = 516;
         assertTrue("Existe dificuldade", result.forcaNecessaria() != -1);
         assertEquals(dificuldade, result.forcaNecessaria(), 0.1);
 
         l_target = instance.obterLocalPorNome("Local6");
-        result = instance.verificarConquista(persOrig, l_target);
+        result = instance.verificarConquista(persOrig, l_target, null);
         assertTrue("É possível conquistar", result.consegueConquistar());
         assertTrue("Existe dificuldade", result.forcaNecessaria() != -1);
         dificuldade = 466;
@@ -541,12 +545,14 @@ public class ControloDoJogoTest {
         Personagem p9 = instance.obterPersonagemPorNome("Pers9");
         Personagem p10 = instance.obterPersonagemPorNome("Pers10");
         double expWeight = 0.85;
-        assertEquals(expWeight,result.getEdge(p5, p10).getWeight(),0.01);
-        expWeight = 0.775;
-        assertEquals(expWeight,result.getEdge(p2,p6).getWeight(),0.05);
-        expWeight = 0.15;
-        assertEquals(expWeight,result.getEdge(p2,p3).getWeight(),0.05);
-        
+        assertEquals(expWeight, result.getEdge(p5, p10).getWeight(), 0.01);
+        expWeight = 0.65;
+        assertEquals(expWeight, result.getEdge(p2, p6).getWeight(), 0.05);
+        expWeight = 0.55;
+        assertEquals(expWeight, result.getEdge(p2, p3).getWeight(), 0.05);
+        expWeight = 0.766;
+        assertEquals(expWeight, result.getEdge(p6, p5).getWeight(), 0.05);
+
         instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_L);
         result = instance.possiveisNovasAliancas();
@@ -555,13 +561,12 @@ public class ControloDoJogoTest {
         p2 = instance.obterPersonagemPorNome("Pers2");
         p3 = instance.obterPersonagemPorNome("Pers3");
         p4 = instance.obterPersonagemPorNome("Pers4");
-        //Personagem p5 = instance.obterPersonagemPorNome("Pers5");
+        p5 = instance.obterPersonagemPorNome("Pers5");
         assertNotNull(result.getEdge(p0, p1));
         assertNotNull(result.getEdge(p0, p2));
         assertNotNull(result.getEdge(p0, p3));
         assertNotNull(result.getEdge(p0, p4));
 
-        assertNull(result.getEdge(p1, p5));
         assertNotNull(result.getEdge(p1, p2));
         assertNotNull(result.getEdge(p1, p3));
         assertNotNull(result.getEdge(p1, p4));
@@ -592,17 +597,12 @@ public class ControloDoJogoTest {
         porig = instance.obterPersonagemPorNome("Pers0");
         target = instance.obterLocalPorNome("Local3");
         result = instance.conquistarComAliados(porig, target);
-        assertTrue("Um aliado de Pers0 consegue conquistar Local3", result.consegueConquistar());
-        forca_necessaria = (30 + 38 + 55 + 10 + 37 + 71);
-        assertEquals(forca_necessaria, result.forcaNecessaria(), 0.05);
-        assertEquals(instance.obterPersonagemPorNome("Pers1"), result.getAliado());
+        assertFalse("Pers0 não consegue conquistar Local3 com ajuda de aliados", result.consegueConquistar());
 
         //Aliado de pers0 conquistar local5
         target = instance.obterLocalPorNome("Local5");
         result = instance.conquistarComAliados(porig, target);
-        assertTrue("Para a pers0, o aliado pers8 consegue conquistar o local5", result.consegueConquistar());
-        forca_necessaria = 15 + 40 + 30;
-        assertEquals(forca_necessaria, result.forcaNecessaria(), 0.05);
+        assertFalse("Para a pers0 nenhum aliado consegue ajudar a conquistar local5", result.consegueConquistar());
 
         //Aliado de pers4 conquistar local5
         porig = instance.obterPersonagemPorNome("Pers4");
@@ -614,15 +614,24 @@ public class ControloDoJogoTest {
         porig = instance.obterPersonagemPorNome("Pers7");
         target = instance.obterLocalPorNome("Local5");
         result = instance.conquistarComAliados(porig, target);
-        assertTrue("Um aliado de Pers7 consegue conquistar local5", result.consegueConquistar());
-        forca_necessaria = 20 + 27 + 47 + 70 + 40 + 30;
+        assertTrue("Pers7 consegue conquistar local5 com ajuda de aliado", result.consegueConquistar());
+        forca_necessaria = 10 + 45 + 10 + 40 + 20 + 30;
         assertEquals(forca_necessaria, result.forcaNecessaria(), 0.05);
+
+        //Teste para a pers8
+        porig = instance.obterPersonagemPorNome("Pers8");
+        target = instance.obterLocalPorNome("Local9");
+        result = instance.conquistarComAliados(porig, target);
+        assertTrue("Pers8 consegue conquistar com a ajuda de um aliado o local9", result.consegueConquistar());
+        forca_necessaria = 15 + 15 + 62;
+        assertEquals(forca_necessaria, result.forcaNecessaria(), 0.05);
+        assertTrue(result.getLocaisIntermedios().isEmpty());
 
         instance.lerDados(ControloDoJogo.FICH_L);
         porig = instance.obterPersonagemPorNome("Pers0");
         target = instance.obterLocalPorNome("Local0");
         result = instance.conquistarComAliados(porig, target);
-        assertTrue("Existe conquista com aliado para o local10", result.consegueConquistar());
+        assertFalse("Não pode conquistar o próprio local", result.consegueConquistar());
 
         porig = instance.obterPersonagemPorNome("Pers10");
         target = instance.obterLocalPorNome("Local35");
@@ -712,12 +721,14 @@ public class ControloDoJogoTest {
         local2.setDono(p8);
         local3.setDono(p8);
         local5.setDono(p8);
-        
+
         novografo = instance.gerarGrafoSemLocaisAliados(p0, p8);
         assertFalse(novografo.checkVertex(instance.obterLocalPorNome("Local1")));
         assertFalse(novografo.checkVertex(instance.obterLocalPorNome("Local2")));
         assertFalse(novografo.checkVertex(instance.obterLocalPorNome("Local3")));
-        assertFalse(novografo.checkVertex(instance.obterLocalPorNome("Local5")));}
+        assertFalse(novografo.checkVertex(instance.obterLocalPorNome("Local5")));
+    }
+
     /**
      * Test of determinarFatorCompatibilidade method, of class ControloDoJogo.
      */

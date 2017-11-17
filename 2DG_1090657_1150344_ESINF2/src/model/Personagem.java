@@ -35,6 +35,10 @@ public class Personagem implements Cloneable {
         return forca;
     }
 
+    public void setForca(int forca) {
+        this.forca = forca;
+    }
+
     @Override
     public String toString() {
         return String.format("Nome: %s Forca:%d", nome, forca);
@@ -49,7 +53,6 @@ public class Personagem implements Cloneable {
     public int hashCode() {
         int hash = 5;
         hash = 67 * hash + Objects.hashCode(this.nome);
-        hash = 67 * hash + this.forca;
         return hash;
     }
 

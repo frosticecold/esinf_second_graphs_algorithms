@@ -76,15 +76,33 @@ public class ControloDoJogo {
 
     //===================================1 C====================================
     //Determinar qual a	aliança	mais forte, retornando	a força	e as personagens dessa aliança
-    public Conquista verificarConquista(Personagem pers, Local target) {
-        if (!grafo_personagens_aliancas.validVertex(pers) || !grafo_locais_estradas.checkVertex(target)) {
-            LinkedList<Local> naotemcaminho = new LinkedList<>();
-            return new Conquista(false, -1, naotemcaminho);
+    /**
+     * Método que verifica se uma dada personagem pode conquistar um dado local,
+     * percorrendo o caminho com menor esforço
+     *
+     * @param pers Personagem a Conquistar
+     * @param target Local a conquistar
+     * @param grafo_locais_alternativo Grafo de locais alternativo, Dependência
+     * para satisfazer o 3F para poder conquistar com aliados, caso o grafo
+     * passado por parâmetro seja null, utiliza o grafo locais por omissão
+     * @return Se uma conquista é valida, com dificuldade e caminho
+     */
+    public Conquista verificarConquista(Personagem pers, Local target, AdjacencyMatrixGraph<Local, Double> grafo_locais_alternativo) {
+        AdjacencyMatrixGraph<Local, Double> grafo_locais_a_utilizar = grafo_locais_estradas;
+        if (grafo_locais_alternativo != null) {
+            grafo_locais_a_utilizar = grafo_locais_alternativo;
+        }
+        if (!grafo_personagens_aliancas.validVertex(pers) || !grafo_locais_a_utilizar.checkVertex(target)) {
+            return new Conquista(false, -1, null);
+        }
+        if (target.getDono() != null && target.getDono().equals(pers)) {
+            return new Conquista(false, -1, null);
         }
         final double SEM_CAMINHO = -1;
         Local source = obterLocalAssociadoAPersonagem(pers);
         LinkedList<Local> path = new LinkedList<>();
-        double dificuldade = graph.AlgoritmosJogo.shortestPathConquista(grafo_locais_estradas, source, target, path);
+
+        double dificuldade = graph.AlgoritmosJogo.shortestPathConquista(grafo_locais_a_utilizar, source, target, path);
         if (dificuldade != SEM_CAMINHO) {
             if (path.peekFirst() == source) {
                 path.removeFirst();
@@ -175,7 +193,9 @@ public class ControloDoJogo {
      * função com o valor da compatibilidade para facilitar os testes
      *
      * --PONTO 2 Foi implementado o algoritmo de dijkstra para grafos não
-     * pesados Devolvendo assim o menor caminho em número de arestas
+     * pesados Devolvendo assim o menor caminho em número de arestas É de notar
+     * quse corre o algoritmo duas vezes, para os vértices na ordem
+     * SOURCE-TARGET E TARGET-SOURCE e escolhe-se o caminho menor dos dois
      *
      * @param p_source Personagem A
      * @param p_target Personagem B
@@ -189,15 +209,47 @@ public class ControloDoJogo {
             return false;
         }
 
-        LinkedList<Personagem> path = new LinkedList<>();
+        LinkedList<Personagem> path = null;
+        double dist = 0;
+
+        //Vamos ver o caminho de p_source para p_target
+        LinkedList<Personagem> path1 = new LinkedList<>();
         Graph<Personagem, Boolean> grafo_aliancas_publicas = gerarGrafoAliancasPublicas();
-        double dist = graphbase.GraphAlgorithms.shortestPathEdges(grafo_aliancas_publicas, p_source, p_target, path);
+        double dist1 = graphbase.GraphAlgorithms.shortestPathEdges(grafo_aliancas_publicas, p_source, p_target, path1);
+
+        //Vamos ver o caminho de p_target para p_source
+        LinkedList<Personagem> path2 = new LinkedList<>();
+        double dist2 = graphbase.GraphAlgorithms.shortestPathEdges(grafo_aliancas_publicas, p_target, p_source, path1);
+
+        if (path1.isEmpty() && path2.isEmpty()) {
+            dist = SEM_CAMINHO;
+        } else {
+            if (!path1.isEmpty() && path2.isEmpty()) {
+                dist = dist1;
+                path = path1;
+            } else {
+                if (path1.isEmpty() && !path2.isEmpty()) {
+                    dist = dist2;
+                    path = path2;
+                } else {
+                    if (path1.size() < path2.size()) {
+                        dist = dist1;
+                        path = path1;
+                    } else {
+                        if (path2.size() < path1.size()) {
+                            dist = dist2;
+                            path = path2;
+                        }
+                    }
+                }
+            }
+        }
 
         if (dist == SEM_CAMINHO) {
             return adicionarAlianca(p_source, p_target, tipoalianca, fator_compatibilidade);
 
         } else {
-            int numPers = path.size();
+            int numPers = path1.size();
             //Se o número de Personagens é maior do que 1, então é n-1 ramos
             if (numPers > 1) {
                 numPers--;
@@ -205,7 +257,7 @@ public class ControloDoJogo {
             double fator_comp = 0;
             Personagem a = null;
             Personagem b = null;
-            LinkedList<Personagem> clone = (LinkedList<Personagem>) path.clone();
+            LinkedList<Personagem> clone = (LinkedList<Personagem>) path1.clone();
             while (!clone.isEmpty()) {
                 if (a == null && b == null) {
                     a = clone.pop();
@@ -256,39 +308,27 @@ public class ControloDoJogo {
     (assuma que	o dono	de X, caso exista, não usa as suas alianças), devolvendo qual o aliado,	assim como o
 valor necessário e a lista mínima de locais intermédios	a conquistar,caso seja necessário.De notar que o
 aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
-    public ConquistaComAliado conquistarComAliados(Personagem a, Local target) {
+    public ConquistaComAliado conquistarComAliados(Personagem pOrig, Local target) {
         final double INVALIDO = -1;
-        if (!grafo_personagens_aliancas.validVertex(a) || !grafo_locais_estradas.checkVertex(target)) {
+        if (!grafo_personagens_aliancas.validVertex(pOrig) || !grafo_locais_estradas.checkVertex(target)) {
             return null;
         }
-        ArrayList<ConquistaComAliado> listaConquista = new ArrayList<>();
-        for (Personagem aliado : grafo_personagens_aliancas.adjVertices(a)) {
-            Local localassociado = obterLocalAssociadoAPersonagem(aliado);
-            if (localassociado != null) {
-                if (!obterLocalAssociadoAPersonagem(aliado).equals(target)) {
-                    Conquista cq = verificarConquista(aliado, target);
-                    if (cq.consegueConquistar()) {
-                        ConquistaComAliado cqal = new ConquistaComAliado(cq, aliado);
-                        listaConquista.add(cqal);
-                    }
-                }
+
+        int forca_antiga = pOrig.getForca();
+        for (Personagem aliado : grafo_personagens_aliancas.adjVertices(pOrig)) {
+            AdjacencyMatrixGraph<Local, Double> grafo_sem_locais_aliados = gerarGrafoSemLocaisAliados(pOrig, aliado);
+            pOrig.setForca(forca_antiga);
+            pOrig.setForca(determinarForcaAlianca(pOrig, aliado));
+            Conquista cq = verificarConquista(pOrig, target, grafo_sem_locais_aliados);
+            if (cq.consegueConquistar()) {
+                pOrig.setForca(forca_antiga);
+                ConquistaComAliado cqal = new ConquistaComAliado(cq, aliado);
+                return cqal;
             }
         }
-        if (listaConquista.isEmpty()) {
-            return new ConquistaComAliado(false, INVALIDO, new LinkedList<Local>(), null);
-        } else {
-            ConquistaComAliado conquistamenorforca = null;
-            for (ConquistaComAliado cq : listaConquista) {
-                if (conquistamenorforca == null) {
-                    conquistamenorforca = cq;
-                } else {
-                    if (cq.forcaNecessaria() < conquistamenorforca.forcaNecessaria()) {
-                        conquistamenorforca = cq;
-                    }
-                }
-            }
-            return conquistamenorforca;
-        }
+        pOrig.setForca(forca_antiga);
+
+        return new ConquistaComAliado(false, INVALIDO, new LinkedList<Local>(), null);
 
     }
 
@@ -603,7 +643,6 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
         return grafo_aliancas_publicas;
     }
 
-
     public AdjacencyMatrixGraph<Local, Double> gerarGrafoSemLocaisAliados(Personagem orig, Personagem aliado) {
         AdjacencyMatrixGraph<Local, Double> grafo_locais_sem_o_aliado = (AdjacencyMatrixGraph<Local, Double>) grafo_locais_estradas.clone();
 
@@ -617,9 +656,18 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
         }
         return grafo_locais_sem_o_aliado;
     }
+
     public double determinarFatorCompatibilidade(Personagem pers_a, Personagem pers_b) {
         LinkedList<Personagem> path = new LinkedList<>();
         GraphAlgorithms.shortestPathEdges(grafo_personagens_aliancas, pers_a, pers_b, path);
+        LinkedList<Personagem> path2 = new LinkedList<>();
+        GraphAlgorithms.shortestPathEdges(grafo_personagens_aliancas, pers_b, pers_a, path2);
+        if (!path2.isEmpty() && path2.size() < path.size()) {
+            path = path2;
+        }
+        if (path.isEmpty()) {
+            return -1;
+        }
         int numPers = path.size();
         //Se o número de Personagens é maior do que 1, então é n-1 ramos
         if (numPers > 1) {
@@ -640,8 +688,15 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
                 fator_comp += grafo_personagens_aliancas.getEdge(a, b).getWeight();
             }
         }
-        double rt = fator_comp / numPers; 
+        double rt = fator_comp / numPers;
         return rt;
 
+    }
+
+    public int determinarForcaAlianca(Personagem a, Personagem b) {
+        if (!grafo_personagens_aliancas.validVertex(a) || !grafo_personagens_aliancas.validVertex(b)) {
+            return -1;
+        }
+        return (int) ((a.getForca() + b.getForca()) * grafo_personagens_aliancas.getEdge(a, b).getWeight());
     }
 }
