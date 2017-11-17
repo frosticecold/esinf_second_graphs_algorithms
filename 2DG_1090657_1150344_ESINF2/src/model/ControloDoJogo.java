@@ -167,11 +167,14 @@ public class ControloDoJogo {
      * Método que recebe como parâmetro duas personagens, o tipo de alianca e o
      * fator de compatibilidade Efetua uma nova alianca entre A e B Caso B
      * esteja contida na rede de alianças de A, o fator de compatibilidade é
-     * igual à média da comp. da rede. Senão é usado o fator_compatibilidade
-     * passado por parâmetr ----PRESSUPOSTO---- Após conversa em aula com o
-     * professor, foi removido o random entre uma nova aliança A e B e como novo
-     * critéiro, adicionou-se um parâmetro passado na função com o valor da
-     * compatibilidade para facilitar os testes
+     * igual à média da comp. da rede do menor caminho de alianca. Senão é usado
+     * o fator_compatibilidade passado por parâmetr ----PONTO 1---- Após
+     * conversa em aula com o professor, foi removido o random entre uma nova
+     * aliança A e B e como novo critéiro, adicionou-se um parâmetro passado na
+     * função com o valor da compatibilidade para facilitar os testes
+     *
+     * --PONTO 2 Foi implementado o algoritmo de dijkstra para grafos não
+     * pesados Devolvendo assim o menor caminho em número de arestas
      *
      * @param p_source Personagem A
      * @param p_target Personagem B
@@ -184,17 +187,21 @@ public class ControloDoJogo {
         if (!grafo_personagens_aliancas.validVertex(p_source) || !grafo_personagens_aliancas.validVertex(p_target)) {
             return false;
         }
-        if (grafo_personagens_aliancas.getEdge(p_source, p_target) != null) {
-            return false;
-        }
+
         LinkedList<Personagem> path = new LinkedList<>();
-        double dist = graphbase.GraphAlgorithms.shortestPathEdges(grafo_personagens_aliancas, p_source, p_target, path);
+        Graph<Personagem, Boolean> grafo_aliancas_publicas = gerarGrafoAliancasPublicas();
+        double dist = graphbase.GraphAlgorithms.shortestPathEdges(grafo_aliancas_publicas, p_source, p_target, path);
+
         if (dist == SEM_CAMINHO) {
-            grafo_personagens_aliancas.insertEdge(p_source, p_target, tipoalianca, fator_compatibilidade);
-            return true;
+            return adicionarAlianca(p_source, p_target, tipoalianca, fator_compatibilidade);
+
         } else {
-            int numPersonagens = path.size();
-            double fator_comp = 0f;
+            int numPers = path.size();
+            //Se o número de Personagens é maior do que 1, então é n-1 ramos
+            if (numPers > 1) {
+                numPers--;
+            }
+            double fator_comp = 0;
             Personagem a = null;
             Personagem b = null;
             LinkedList<Personagem> clone = (LinkedList<Personagem>) path.clone();
@@ -209,7 +216,7 @@ public class ControloDoJogo {
                     fator_comp += grafo_personagens_aliancas.getEdge(a, b).getWeight();
                 }
             }
-            double mediaComp = fator_comp / numPersonagens;
+            double mediaComp = fator_comp / numPers;
             grafo_personagens_aliancas.insertEdge(p_source, p_target, tipoalianca, mediaComp);
             return true;
         }
@@ -313,6 +320,11 @@ public class ControloDoJogo {
         if (grafo_personagens_aliancas.getEdge(p_a, p_b) == null) {
             grafo_personagens_aliancas.insertEdge(p_a, p_b, tipoAlianca, fator_comp);
             return true;
+        } else {
+            if (grafo_personagens_aliancas.getEdge(p_a, p_b).getElement() != tipoAlianca) {
+                grafo_personagens_aliancas.getEdge(p_a, p_b).setElement(tipoAlianca);
+                return true;
+            }
         }
         return false;
     }
@@ -330,6 +342,20 @@ public class ControloDoJogo {
         }
         if (grafo_locais_estradas.getEdge(a, b) != null) {
             return grafo_locais_estradas.getEdge(a, b);
+        }
+        return -1;
+    }
+
+    public int obterTipoAlianca(Personagem a, Personagem b) {
+        if (!grafo_personagens_aliancas.validVertex(a) || !grafo_personagens_aliancas.validVertex(b)) {
+            return -1;
+        }
+        if (grafo_personagens_aliancas.getEdge(a, b) != null) {
+            if (grafo_personagens_aliancas.getEdge(a, b).getElement() == true) {
+                return 1;
+            } else {
+                return 0;
+            }
         }
         return -1;
     }
@@ -631,5 +657,18 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
 
     public Iterable<Local> devolverTodosLocais() {
         return grafo_locais_estradas.vertices();
+    }
+
+    public Graph<Personagem, Boolean> gerarGrafoAliancasPublicas() {
+        Graph<Personagem, Boolean> grafo_aliancas_publicas = new Graph<>(false);
+        for (Personagem pOrig : grafo_personagens_aliancas.vertices()) {
+            for (Personagem pAdj : grafo_personagens_aliancas.adjVertices(pOrig)) {
+                if (grafo_personagens_aliancas.getEdge(pOrig, pAdj) != null && grafo_personagens_aliancas.getEdge(pOrig, pAdj).getElement() == true) {
+                    grafo_aliancas_publicas.insertEdge(pOrig, pAdj, true, grafo_personagens_aliancas.getEdge(pOrig, pAdj).getWeight());
+                }
+            }
+        }
+
+        return grafo_aliancas_publicas;
     }
 }

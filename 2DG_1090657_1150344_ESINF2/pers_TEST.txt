@@ -9,6 +9,7 @@ Pers6,20
 Pers7,59
 Pers8,90
 Pers9,62
+Pers10,40
 ALIANÇAS
 Pers0,Pers1,TRUE,0.3
 Pers2,Pers8,TRUE,0.1
@@ -24,3 +25,4 @@ Pers0,Pers4,TRUE,0.7
 Pers3,Pers8,TRUE,0.2
 Pers3,Pers4,FALSE,0.7
 Pers0,Pers8,TRUE,0.9
+Pers8,Pers10,False,0.8

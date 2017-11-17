@@ -30,6 +30,18 @@ graph Alianca {
 
 
     node [shape = circle];
+    Pers0[label="Pers0 (47)"];
+    Pers1[label="Pers1 (330)"];
+    Pers2[label="Pers2 (55)"];
+    Pers3[label="Pers3 (71)"];
+    Pers4[label="Pers4 (52)"];
+    Pers5[label="Pers5 (30)"];
+    Pers6[label="Pers6 (20)"];
+    Pers7[label="Pers7 (59)"];
+    Pers8[label="Pers8 (90)"];
+    Pers9[label="Pers9 (62)"];
+    Pers10[label="Pers10 (40)"];
+    
     Pers0 -- Pers1[label="TRUE 0.3"];
     Pers2 -- Pers8[label="TRUE 0.1"];
     Pers1 -- Pers7[label="TRUE 0.7"];
@@ -44,4 +56,5 @@ graph Alianca {
     Pers3 -- Pers8[label="TRUE 0.2"];
     Pers3 -- Pers4[label="FALSE 0.7"];
     Pers0 -- Pers8[label="TRUE 0.9"];
+    Pers8 -- Pers10[label="FALSE 0.8"];
 }

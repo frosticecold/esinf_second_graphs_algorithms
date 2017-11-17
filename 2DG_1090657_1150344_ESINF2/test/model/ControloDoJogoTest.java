@@ -24,8 +24,9 @@ public class ControloDoJogoTest {
         System.out.println("lerAlianca");
         ControloDoJogo instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_TESTE);
-        int NUM_PERSONAGENS = 10;
-        int NUM_ALIANCAS = 28;
+        int NUM_PERSONAGENS = 11;
+        //No map de adjacencias o número de arestas é o dobro da matriz de adjacencia
+        int NUM_ALIANCAS = 30;
         assertTrue("Para o ficheiro de teste , o número de personagens é 10", NUM_PERSONAGENS == instance.numPersonagens());
         assertTrue("Para o ficheiro de teste, o número de aliancas é 28", NUM_ALIANCAS == instance.numAliancas());
 
@@ -46,8 +47,8 @@ public class ControloDoJogoTest {
 
         ControloDoJogo instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_TESTE);
-        int NUM_ESTRADAS_TESTE = 11;
-        int NUM_LOCAIS_TESTE = 10;
+        int NUM_ESTRADAS_TESTE = 12;
+        int NUM_LOCAIS_TESTE = 11;
         assertTrue(("Número de estradas é 11 do ficheiro de teste"), instance.numEstradas() == NUM_ESTRADAS_TESTE);
         assertTrue(("Número de Locais é 10 do ficheiro de teste"), instance.numLocais() == NUM_LOCAIS_TESTE);
 
@@ -324,18 +325,20 @@ public class ControloDoJogoTest {
         Personagem p5 = instance.obterPersonagemPorNome("Pers5");
         Personagem p3 = instance.obterPersonagemPorNome("Pers3");
         Personagem p9 = instance.obterPersonagemPorNome("Pers9");
+        Personagem p10 = instance.obterPersonagemPorNome("Pers10");
         result = instance.devolverTodosAliados(p8);
         numaliados_contados = 0;
         for (Personagem p : result) {
             numaliados_contados++;
         }
-        numAliados_expected = 5;
+        numAliados_expected = 6;
         assertEquals(numAliados_expected, numaliados_contados);
         assertTrue("Pers8 é aliada com p0", instance.saoAliados(p8, p0));
         assertTrue("Pers8 é aliada com p2", instance.saoAliados(p8, p2));
         assertTrue("Pers8 é aliado com p3", instance.saoAliados(p8, p3));
         assertTrue("Pers8 é aliada com p5", instance.saoAliados(p8, p5));
         assertTrue("Pers8 é aliada com p9", instance.saoAliados(p8, p9));
+        assertTrue("Pers8 é aliada com p10", instance.saoAliados(p8, p10));
         assertFalse("Pers8 não é aliado com p1", instance.saoAliados(p8, p1));
         Personagem p6 = instance.obterPersonagemPorNome("Pers6");
         assertFalse("Pers8 não é aliado com p6", instance.saoAliados(p8, p6));
@@ -430,23 +433,22 @@ public class ControloDoJogoTest {
     @Test
     public void testNovaAlianca() {
         System.out.println("novaAlianca");
-        
+
         Personagem p_a = new Personagem("Personagem 1", 10);
         Personagem p_b = new Personagem("Personagem 2", 12);
-        
+
         boolean tipoalianca = false;
         ControloDoJogo instance = new ControloDoJogo();
-        
+
         boolean expResult = true;
-        
+
         instance.adicionarPersonagem(p_a);
         instance.adicionarPersonagem(p_b);
-        
+
         boolean result = instance.novaAlianca(p_a, p_b, tipoalianca, 1);
         assertEquals(expResult, result);
 
-        //Vamos repetir adicionar uma nova alianca
-        tipoalianca = true;
+        //Vamos repetir adicionar uma nova alianca igual
         expResult = false;
         result = instance.novaAlianca(p_a, p_b, tipoalianca, 1);
         assertEquals(expResult, result);
@@ -459,35 +461,60 @@ public class ControloDoJogoTest {
         expResult = true;
         assertTrue("Adiciona uma nova alianca ao ficheiro Teste", result == expResult);
         double comp = instance.obterFatorCompAlianca(p_a, p_b);
-        assertTrue("Alianca é a média das aliancas", comp != 1f);
+        double fator_esperado = 0.8;
+        assertEquals(fator_esperado, comp, 0.1);
 
         //Adicionar um vértice novo
+        tipoalianca = true;
         Personagem p10 = new Personagem("Cátia", 200);
         instance.adicionarPersonagem(p10);
         result = instance.novaAlianca(p_a, p10, true, 1);
         expResult = true;
         assertTrue("Adiciona uma nova alianca ao ficheiro Teste", result == expResult);
         comp = instance.obterFatorCompAlianca(p_a, p10);
-        assertTrue("Alianca é a média das aliancas", comp == 1f);
+        assertTrue("Alianca é a média das aliancas", comp == 1);
+
+        //Realizar uma nova alianca entre dois pontos com ligações privadas
+        instance = new ControloDoJogo();
+        instance.lerDados(ControloDoJogo.FICH_TESTE);
+        tipoalianca = true;
+        p_a = instance.obterPersonagemPorNome("Pers3");
+        p_b = instance.obterPersonagemPorNome("Pers6");
+        result = instance.novaAlianca(p_b, p_a, tipoalianca, 1);
+        expResult = true;
+        fator_esperado = (0.2 + 0.9 + 0.7 + 0.8) / 4;
+        assertTrue("Foi adicionada uma nova aliança entre pers3--pers6", result == expResult);
+        assertEquals(fator_esperado, instance.obterFatorCompAlianca(p_a, p_b), 0.05);
+
+        //Realizar mais uma nova alianca com pontos com ligações privadas
+        instance = new ControloDoJogo();
+        instance.lerDados(ControloDoJogo.FICH_TESTE);
+        tipoalianca = true;
+        p_a = instance.obterPersonagemPorNome("Pers5");
+        p_b = instance.obterPersonagemPorNome("Pers7");
+        result = instance.novaAlianca(p_b, p_a, tipoalianca, 1);
+        expResult = true;
+        fator_esperado = (0.8 + 0.2 + 0.9 + 0.3 + 0.7) / 5;
+        assertTrue("Foi adicionada uma nova aliança entre pers5--pers7", result == expResult);
+        assertEquals(fator_esperado, instance.obterFatorCompAlianca(p_a, p_b), 0.05);
 
         //Ficheiros XL
         instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_XL);
-        Personagem a = instance.obterPersonagemPorNome("Pers0");
-        Personagem b = instance.obterPersonagemPorNome("Pers1");
-        result = instance.novaAlianca(a, b, true, 1);
+        p_a = instance.obterPersonagemPorNome("Pers0");
+        p_b = instance.obterPersonagemPorNome("Pers1");
+        result = instance.novaAlianca(p_a, p_b, true, 1);
         expResult = true;
         assertTrue("Adicionar uma nova alianca aos ficheiros XL", result == expResult);
-        comp = instance.obterFatorCompAlianca(a, b);
-        assertTrue("Alianca é a média das aliancas", comp != 1f);
+        comp = instance.obterFatorCompAlianca(p_a, p_b);
+        assertTrue("Alianca é a média das aliancas", comp != 1);
 
         //Pers 0 aliada com Pers9 -0.2
         //Pers9 aliada com Pers45 -0.5
         //Alianca entre Pers0 e Pers45 é a média 0.7/2 = 0.35
-        Personagem p26 = instance.obterPersonagemPorNome("Pers45");
-        assertTrue("Adicionar uma nova alianca aos ficheiros XL", instance.novaAlianca(a, p26, true, 1));
-        Float f_comp_expected = 0.35f;
-        assertEquals(f_comp_expected, instance.obterFatorCompAlianca(a, b), 0.2f);
+        Personagem p45 = instance.obterPersonagemPorNome("Pers45");
+        assertTrue("Adicionar uma nova alianca aos ficheiros XL", instance.novaAlianca(p_a, p45, true, 1));
+        assertTrue("Alianca é a média das aliancas",instance.obterFatorCompAlianca(p_a, p_b)!=1);
 
     }
 
@@ -588,6 +615,43 @@ public class ControloDoJogoTest {
         result = instance.conquistarComAliados(porig, target);
         assertNotNull("Para a Pers13 existe conquista com aliado para o local85", result);
         assertTrue("Consegue conquistar", result.consegueConquistar());
+
+    }
+
+    @Test
+    public void testGerarGrafoAliancasPublicas() {
+        System.out.println("gerarGrafoAliancasPublicas");
+
+        ControloDoJogo instance = new ControloDoJogo();
+        instance.lerDados(ControloDoJogo.FICH_TESTE);
+
+        Graph<Personagem, Boolean> grafo_aliancas_publicas = instance.gerarGrafoAliancasPublicas();
+
+        Personagem p0 = instance.obterPersonagemPorNome("Pers0");
+        Personagem p1 = instance.obterPersonagemPorNome("Pers1");
+        Personagem p2 = instance.obterPersonagemPorNome("Pers2");
+        Personagem p3 = instance.obterPersonagemPorNome("Pers3");
+        Personagem p4 = instance.obterPersonagemPorNome("Pers4");
+        Personagem p5 = instance.obterPersonagemPorNome("Pers5");
+        Personagem p6 = instance.obterPersonagemPorNome("Pers6");
+        Personagem p7 = instance.obterPersonagemPorNome("Pers7");
+        Personagem p8 = instance.obterPersonagemPorNome("Pers8");
+        Personagem p9 = instance.obterPersonagemPorNome("Pers9");
+        Personagem p10 = instance.obterPersonagemPorNome("Pers10");
+
+        //Personagem 0
+        assertEquals(grafo_aliancas_publicas.getEdge(p0, p1).getWeight(), 0.3, 0.05);
+        assertEquals(grafo_aliancas_publicas.getEdge(p0, p4).getWeight(), 0.7, 0.05);
+        assertEquals(grafo_aliancas_publicas.getEdge(p0, p8).getWeight(), 0.9, 0.05);
+        //Personagem 8
+        assertEquals(grafo_aliancas_publicas.getEdge(p8, p3).getWeight(), 0.2, 0.05);
+        assertEquals(grafo_aliancas_publicas.getEdge(p8, p9).getWeight(), 0.5, 0.05);
+        assertEquals(grafo_aliancas_publicas.getEdge(p8, p2).getWeight(), 0.1, 0.05);
+
+        assertNull(grafo_aliancas_publicas.getEdge(p3, p4));
+        assertNull(grafo_aliancas_publicas.getEdge(p8, p5));
+        assertNull(grafo_aliancas_publicas.getEdge(p9, p3));
+        assertNull(grafo_aliancas_publicas.getEdge(p8, p10));
 
     }
 
