@@ -80,8 +80,8 @@ public class ControloDoJogoTest {
         tamanho = 2;
         //Caminho é l0-l4
         assertTrue("Caminho mais curto entre local0 e local4 é de tamanho 2", path.size() == tamanho);
-        assertTrue("Local 0", path.get(0).getNome().equals("Local0"));
-        assertTrue("Local 4", path.get(1).getNome().equals("Local4"));
+        assertTrue("Local 0", path.pop().getNome().equals("Local0"));
+        assertTrue("Local 4", path.pop().getNome().equals("Local4"));
 
         //O caminho é l0-l1-l2-l3
         local_a = instance.obterLocalPorNome("Local0");
@@ -89,10 +89,10 @@ public class ControloDoJogoTest {
         path = instance.caminhoComMenorDificuldade(local_a, local_b);
         tamanho = 4;
         assertTrue("Caminho mais curto entre local 0 e local 3 é de tamanho 4", path.size() == tamanho);
-        assertTrue("Local 0", path.get(0).getNome().equals("Local0"));
-        assertTrue("Local 1", path.get(1).getNome().equals("Local1"));
-        assertTrue("Local 2", path.get(2).getNome().equals("Local2"));
-        assertTrue("Local 3", path.get(3).getNome().equals("Local3"));
+        assertTrue("Local 0", path.pop().getNome().equals("Local0"));
+        assertTrue("Local 1", path.pop().getNome().equals("Local1"));
+        assertTrue("Local 2", path.pop().getNome().equals("Local2"));
+        assertTrue("Local 3", path.pop().getNome().equals("Local3"));
 
         //O caminho é l3-l4-l9-l8
         local_a = instance.obterLocalPorNome("Local3");
@@ -100,10 +100,10 @@ public class ControloDoJogoTest {
         tamanho = 4;
         path = instance.caminhoComMenorDificuldade(local_a, local_b);
         assertTrue("Caminho mais curto entre local 3 e local 8 é de tamanho 4", path.size() == tamanho);
-        assertTrue("Local 3", path.get(0).getNome().equals("Local3"));
-        assertTrue("Local 4", path.get(1).getNome().equals("Local4"));
-        assertTrue("Local 9", path.get(2).getNome().equals("Local9"));
-        assertTrue("Local 8", path.get(3).getNome().equals("Local8"));
+        assertTrue("Local 3", path.pop().getNome().equals("Local3"));
+        assertTrue("Local 4", path.pop().getNome().equals("Local4"));
+        assertTrue("Local 9", path.pop().getNome().equals("Local9"));
+        assertTrue("Local 8", path.pop().getNome().equals("Local8"));
 
         instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_L);
@@ -113,9 +113,9 @@ public class ControloDoJogoTest {
         path = instance.caminhoComMenorDificuldade(local_a, local_b);
         tamanho = 3;
         assertTrue("Caminho mais curto entre local 0 e local 100 é de tamanho 3", path.size() == tamanho);
-        assertTrue("Local 0", path.get(0).getNome().equals("Local0"));
-        assertTrue("Local 151", path.get(1).getNome().equals("Local151"));
-        assertTrue("Local 100", path.get(2).getNome().equals("Local100"));
+        assertTrue("Local 0", path.pop().getNome().equals("Local0"));
+        assertTrue("Local 151", path.pop().getNome().equals("Local151"));
+        assertTrue("Local 100", path.pop().getNome().equals("Local100"));
 
         local_b = instance.obterLocalPorNome("Local197");
         path = instance.caminhoComMenorDificuldade(local_a, local_b);
@@ -178,8 +178,8 @@ public class ControloDoJogoTest {
         dificuldade = 309;
         assertEquals(dificuldade, result.forcaNecessaria(), 0.1);
         assertTrue("Número de locais intermédios é 2", result.getLocaisIntermedios().size() == 2);
-        assertTrue("Local intermédio 1 é local0", result.getLocaisIntermedios().getFirst().getNome().equals("Local0"));
-        assertTrue("Local intermédio 2 é local5", result.getLocaisIntermedios().get(1).getNome().equals("Local5"));
+        assertTrue("Local intermédio 1 é local0", result.getLocaisIntermedios().pop().getNome().equals("Local0"));
+        assertTrue("Local intermédio 2 é local5", result.getLocaisIntermedios().pop().getNome().equals("Local5"));
 
         //Personagem 1 conquista local4
         persOrig = instance.obterPersonagemPorNome("Pers1");
@@ -583,11 +583,11 @@ public class ControloDoJogoTest {
         porig = instance.obterPersonagemPorNome("Pers0");
         target = instance.obterLocalPorNome("Local3");
         result = instance.conquistarComAliados(porig, target);
-        assertTrue("Um aliado de Pers0 consegue conquistar Local3",result.consegueConquistar());
-        forca_necessaria = (30+38+55+10+37+71);
-        assertEquals(forca_necessaria, result.forcaNecessaria(),0.05);
-        assertEquals(instance.obterPersonagemPorNome("Pers1"),result.getAliado());
-        
+        assertTrue("Um aliado de Pers0 consegue conquistar Local3", result.consegueConquistar());
+        forca_necessaria = (30 + 38 + 55 + 10 + 37 + 71);
+        assertEquals(forca_necessaria, result.forcaNecessaria(), 0.05);
+        assertEquals(instance.obterPersonagemPorNome("Pers1"), result.getAliado());
+
         //Aliado de pers0 conquistar local5
         target = instance.obterLocalPorNome("Local5");
         result = instance.conquistarComAliados(porig, target);
@@ -601,13 +601,14 @@ public class ControloDoJogoTest {
         result = instance.conquistarComAliados(porig, target);
         assertFalse("Não existe conquista com aliado para Pers4", result.consegueConquistar());
 
+        //Aliado de pers7 consegue conquistar local5
         porig = instance.obterPersonagemPorNome("Pers7");
         target = instance.obterLocalPorNome("Local5");
         result = instance.conquistarComAliados(porig, target);
-        assertTrue("Um aliado de Pers7 consegue conquistar local5",result.consegueConquistar());
-        forca_necessaria=20+27+47+70+40+30;
-        assertEquals(forca_necessaria,result.forcaNecessaria(),0.05);
-        
+        assertTrue("Um aliado de Pers7 consegue conquistar local5", result.consegueConquistar());
+        forca_necessaria = 20 + 27 + 47 + 70 + 40 + 30;
+        assertEquals(forca_necessaria, result.forcaNecessaria(), 0.05);
+
         instance.lerDados(ControloDoJogo.FICH_L);
         porig = instance.obterPersonagemPorNome("Pers0");
         target = instance.obterLocalPorNome("Local0");
