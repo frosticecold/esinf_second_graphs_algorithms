@@ -534,11 +534,19 @@ public class ControloDoJogoTest {
         Personagem p2 = instance.obterPersonagemPorNome("Pers2");
         Personagem p3 = instance.obterPersonagemPorNome("Pers3");
         Personagem p4 = instance.obterPersonagemPorNome("Pers4");
-        assertNotNull(result.getEdge(p0, p2));
-        assertNotNull(result.getEdge(p0, p3));
-        assertNull(result.getEdge(p0, p4));
-        assertNull(result.getEdge(p0, p1));
-
+        Personagem p5 = instance.obterPersonagemPorNome("Pers5");
+        Personagem p6 = instance.obterPersonagemPorNome("Pers6");
+        Personagem p7 = instance.obterPersonagemPorNome("Pers7");
+        Personagem p8 = instance.obterPersonagemPorNome("Pers8");
+        Personagem p9 = instance.obterPersonagemPorNome("Pers9");
+        Personagem p10 = instance.obterPersonagemPorNome("Pers10");
+        double expWeight = 0.85;
+        assertEquals(expWeight,result.getEdge(p5, p10).getWeight(),0.01);
+        expWeight = 0.775;
+        assertEquals(expWeight,result.getEdge(p2,p6).getWeight(),0.05);
+        expWeight = 0.15;
+        assertEquals(expWeight,result.getEdge(p2,p3).getWeight(),0.05);
+        
         instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_L);
         result = instance.possiveisNovasAliancas();
@@ -547,10 +555,10 @@ public class ControloDoJogoTest {
         p2 = instance.obterPersonagemPorNome("Pers2");
         p3 = instance.obterPersonagemPorNome("Pers3");
         p4 = instance.obterPersonagemPorNome("Pers4");
-        Personagem p5 = instance.obterPersonagemPorNome("Pers5");
+        //Personagem p5 = instance.obterPersonagemPorNome("Pers5");
         assertNotNull(result.getEdge(p0, p1));
         assertNotNull(result.getEdge(p0, p2));
-        assertNull(result.getEdge(p0, p3));
+        assertNotNull(result.getEdge(p0, p3));
         assertNotNull(result.getEdge(p0, p4));
 
         assertNull(result.getEdge(p1, p5));
@@ -709,7 +717,20 @@ public class ControloDoJogoTest {
         assertFalse(novografo.checkVertex(instance.obterLocalPorNome("Local1")));
         assertFalse(novografo.checkVertex(instance.obterLocalPorNome("Local2")));
         assertFalse(novografo.checkVertex(instance.obterLocalPorNome("Local3")));
-        assertFalse(novografo.checkVertex(instance.obterLocalPorNome("Local5")));
+        assertFalse(novografo.checkVertex(instance.obterLocalPorNome("Local5")));}
+    /**
+     * Test of determinarFatorCompatibilidade method, of class ControloDoJogo.
+     */
+    @Test
+    public void testDeterminarFatorCompatibilidade() {
+        System.out.println("determinarFatorCompatibilidade");
+        ControloDoJogo instance = new ControloDoJogo();
+        instance.lerDados(ControloDoJogo.FICH_TESTE);
+        Personagem pers_a = instance.obterPersonagemPorNome("Pers8");
+        Personagem pers_b = instance.obterPersonagemPorNome("Pers6");
+        double expResult = 0.8;
+        double result = instance.determinarFatorCompatibilidade(pers_a, pers_b);
+        assertEquals(expResult, result, 0.05);
     }
 
 }

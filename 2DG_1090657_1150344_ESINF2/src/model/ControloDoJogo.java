@@ -9,6 +9,7 @@ import graph.AdjacencyMatrixGraph;
 import graph.EdgeAsDoubleGraphAlgorithms;
 import java.util.LinkedList;
 import graphbase.Graph;
+import graphbase.GraphAlgorithms;
 import java.util.ArrayList;
 
 /**
@@ -231,17 +232,23 @@ public class ControloDoJogo {
      * @return Grafo com as possíveis novas alianças
      */
     public Graph<Personagem, Boolean> possiveisNovasAliancas() {
-        Graph<Personagem, Boolean> grafo_novas_aliancas = new Graph(false);
-        for (Personagem p_a : grafo_personagens_aliancas.vertices()) {
-            for (Personagem p_b : grafo_personagens_aliancas.vertices()) {
-                if (p_a != p_b) {
-                    if (grafo_personagens_aliancas.getEdge(p_a, p_b) == null) {
-                        grafo_novas_aliancas.insertEdge(p_a, p_b, Boolean.TRUE, 1);
+
+        Graph<Personagem, Boolean> ng = (Graph<Personagem, Boolean>) grafo_personagens_aliancas.clone();
+        for (Personagem p_a : ng.vertices()) {
+            for (Personagem p_b : ng.vertices()) {
+                if (!p_a.equals(p_b) && ng.getEdge(p_a, p_b) != null) {
+                    for (Personagem p_c : ng.vertices()) {
+                        if (!p_b.equals(p_c) && !p_c.equals(p_a) && ng.getEdge(p_a, p_c) != null) {
+                            if (ng.getEdge(p_b, p_c) == null) {
+                                double fator = determinarFatorCompatibilidade(p_b, p_c);
+                                ng.insertEdge(p_b, p_c, Boolean.TRUE, fator);
+                            }
+                        }
                     }
                 }
             }
         }
-        return grafo_novas_aliancas;
+        return ng;
     }
     //===================================3F====================================
 
@@ -596,6 +603,7 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
         return grafo_aliancas_publicas;
     }
 
+
     public AdjacencyMatrixGraph<Local, Double> gerarGrafoSemLocaisAliados(Personagem orig, Personagem aliado) {
         AdjacencyMatrixGraph<Local, Double> grafo_locais_sem_o_aliado = (AdjacencyMatrixGraph<Local, Double>) grafo_locais_estradas.clone();
 
@@ -608,5 +616,32 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
 
         }
         return grafo_locais_sem_o_aliado;
+    }
+    public double determinarFatorCompatibilidade(Personagem pers_a, Personagem pers_b) {
+        LinkedList<Personagem> path = new LinkedList<>();
+        GraphAlgorithms.shortestPathEdges(grafo_personagens_aliancas, pers_a, pers_b, path);
+        int numPers = path.size();
+        //Se o número de Personagens é maior do que 1, então é n-1 ramos
+        if (numPers > 1) {
+            numPers--;
+        }
+        double fator_comp = 0.0;
+        Personagem a = null;
+        Personagem b = null;
+        LinkedList<Personagem> clone = (LinkedList<Personagem>) path.clone();
+        while (!clone.isEmpty()) {
+            if (a == null && b == null) {
+                a = clone.pop();
+                b = clone.pop();
+                fator_comp = grafo_personagens_aliancas.getEdge(a, b).getWeight();
+            } else {
+                a = b;
+                b = clone.pop();
+                fator_comp += grafo_personagens_aliancas.getEdge(a, b).getWeight();
+            }
+        }
+        double rt = fator_comp / numPers; 
+        return rt;
+
     }
 }
