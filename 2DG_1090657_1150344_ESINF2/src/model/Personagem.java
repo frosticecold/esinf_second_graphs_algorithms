@@ -13,37 +13,81 @@ import java.util.Objects;
  */
 public class Personagem implements Cloneable {
 
+    /**
+     * Atributo nome da Personagem
+     */
     private String nome;
 
+    /**
+     * Força da Personagem
+     */
     private int forca;
 
+    /**
+     * Construtor Personagem que recebe como parâmetro o nome e a força da
+     * personagem
+     *
+     * @param nome Nome da personagem
+     * @param forca Forca da personagem
+     */
     public Personagem(String nome, int forca) {
         this.nome = nome;
         this.forca = forca;
     }
 
+    /**
+     * Construtor cópia de Personagem
+     *
+     * @param p Personagem a copiar
+     */
     public Personagem(Personagem p) {
         this.nome = p.nome;
         this.forca = p.forca;
     }
 
+    /**
+     * Devolve o nome da personagem
+     *
+     * @return
+     */
     public String getNome() {
         return nome;
     }
 
+    /**
+     * Devolve a força da personagem
+     *
+     * @return
+     */
     public int getForca() {
         return forca;
     }
 
+    /**
+     * Modifica a força da personagem
+     *
+     * @param forca
+     */
     public void setForca(int forca) {
         this.forca = forca;
     }
 
+    /**
+     * Método toString de uma Personagem
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return String.format("Nome: %s Forca:%d", nome, forca);
     }
 
+    /**
+     * Método para clonar uma personagem
+     *
+     * @return
+     * @throws CloneNotSupportedException
+     */
     @Override
     public Object clone() throws CloneNotSupportedException {
         return new Personagem(this);

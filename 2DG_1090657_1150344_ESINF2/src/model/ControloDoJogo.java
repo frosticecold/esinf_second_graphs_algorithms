@@ -308,6 +308,14 @@ public class ControloDoJogo {
     (assuma que	o dono	de X, caso exista, não usa as suas alianças), devolvendo qual o aliado,	assim como o
 valor necessário e a lista mínima de locais intermédios	a conquistar,caso seja necessário.De notar que o
 aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
+    /**
+     * Método que verifica se uma personagem pode conquistar um dado local com a
+     * ajuda dos seus aliados
+     *
+     * @param pOrig Personagem a conquistar o local
+     * @param target Local a ser conquistado
+     * @return
+     */
     public ConquistaComAliado conquistarComAliados(Personagem pOrig, Local target) {
         final double INVALIDO = -1;
         if (!grafo_personagens_aliancas.validVertex(pOrig) || !grafo_locais_estradas.checkVertex(target)) {
@@ -434,6 +442,14 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
         return -1;
     }
 
+    /**
+     * Retorna o tipo de aliança -1 se não é valido 0 se é privado 1 se é
+     * pública
+     *
+     * @param a Personagem a
+     * @param b Personagem b
+     * @return -1,0,1
+     */
     public int obterTipoAlianca(Personagem a, Personagem b) {
         if (!grafo_personagens_aliancas.validVertex(a) || !grafo_personagens_aliancas.validVertex(b)) {
             return -1;
@@ -578,6 +594,11 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
         return null;
     }
 
+    /**
+     * Método que trata da leitura de ficheiros pela a ordem devida
+     *
+     * @param nomeFicheiro Nome de Ficheiro prédefinido na classe
+     */
     public void lerDados(String nomeFicheiro) {
         switch (nomeFicheiro) {
             case FICH_S:
@@ -622,14 +643,29 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
         return false;
     }
 
+    /**
+     * Devolve todas as personagens
+     *
+     * @return
+     */
     public Iterable<Personagem> devolverTodasPersonagens() {
         return grafo_personagens_aliancas.vertices();
     }
 
+    /**
+     * Método que devolve todos os locais
+     *
+     * @return
+     */
     public Iterable<Local> devolverTodosLocais() {
         return grafo_locais_estradas.vertices();
     }
 
+    /**
+     * Método que gera o grafo de alianças para as alianças apenas públicas
+     *
+     * @return grafo com as alianças públicas
+     */
     public Graph<Personagem, Boolean> gerarGrafoAliancasPublicas() {
         Graph<Personagem, Boolean> grafo_aliancas_publicas = new Graph<>(false);
         for (Personagem pOrig : grafo_personagens_aliancas.vertices()) {
@@ -643,6 +679,14 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
         return grafo_aliancas_publicas;
     }
 
+    /**
+     * Método que retorna um grafo onde não tem os locais das personagens
+     * aliadas
+     *
+     * @param orig Personagem A conquistar locais
+     * @param aliado Aliado da personagem a quem se vai remover locais
+     * @return
+     */
     public AdjacencyMatrixGraph<Local, Double> gerarGrafoSemLocaisAliados(Personagem orig, Personagem aliado) {
         AdjacencyMatrixGraph<Local, Double> grafo_locais_sem_o_aliado = (AdjacencyMatrixGraph<Local, Double>) grafo_locais_estradas.clone();
 
@@ -657,6 +701,17 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
         return grafo_locais_sem_o_aliado;
     }
 
+    /**
+     * Método que determina o fator de compatibilidade entre uma rede de
+     * alianças -- É de notar que se corre o algoritmo de dijkstra para grafos
+     * sem peso duas vezes, Na ordem pers_a -- pers_b e pers_b -- pers_a pois o
+     * algoritmo de dijkstra nem sempre dá a solução óptima Então escolhe-se o
+     * menor caminho de entre os dois
+     *
+     * @param pers_a Personagem A
+     * @param pers_b Personagem B
+     * @return Média de fator de compatibilidade de uma aliança
+     */
     public double determinarFatorCompatibilidade(Personagem pers_a, Personagem pers_b) {
         LinkedList<Personagem> path = new LinkedList<>();
         GraphAlgorithms.shortestPathEdges(grafo_personagens_aliancas, pers_a, pers_b, path);
@@ -693,6 +748,13 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
 
     }
 
+    /**
+     * Método que determina a força de uma aliança
+     *
+     * @param a Personagem a
+     * @param b Personagem b
+     * @return a força da aliança em função do fator de compatibilidade
+     */
     public int determinarForcaAlianca(Personagem a, Personagem b) {
         if (!grafo_personagens_aliancas.validVertex(a) || !grafo_personagens_aliancas.validVertex(b)) {
             return -1;

@@ -18,6 +18,8 @@ public class AlgoritmosJogo {
     /**
      * Determine the shortest path to all vertices from a vertex using
      * Dijkstra's algorithm To be called by public short method
+     * 
+     * Modificado para ter em consideração uma conquista o peso do vértice e a força de um dono, se tiver o mesmo.
      *
      * @param graph Graph object
      * @param sourceIdx Source vertex
@@ -62,6 +64,8 @@ public class AlgoritmosJogo {
      * Determine the shortest path between two vertices using Dijkstra's
      * algorithm
      *
+     * Modificado para ter em consideração uma conquista o peso do vértice e a força de um dono, se tiver o mesmo.
+     * 
      * @param graph Graph object
      * @param source Source vertex
      * @param dest Destination vertices

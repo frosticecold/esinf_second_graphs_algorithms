@@ -114,8 +114,7 @@ public class Ficheiro {
      * exeucutado, após ler as Alianças
      *
      * @param nomeFicheiro - Nome do Ficheiro
-     * @param mapLocaisEstradas - Map de Adjacências de Locais-Estradas
-     * @param mapPersonagens - Map de Adjacências de Personagens - Aliancas
+     * @param jg - Controlo de Jogo
      */
     public void lerLocais(String nomeFicheiro, ControloDoJogo jg) {
         List<String> conteudoFich = lerFicheiro(nomeFicheiro);

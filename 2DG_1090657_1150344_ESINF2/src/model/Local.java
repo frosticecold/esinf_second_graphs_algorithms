@@ -13,10 +13,29 @@ import java.util.Objects;
  */
 public class Local implements Cloneable {
 
+    /**
+     * Atributo do nome do local
+     */
     private String nome;
+
+    /**
+     * Atributo da personagem associada a local (pode ser null)
+     */
     private Personagem personagem;
+
+    /**
+     * Dificuldade do local apenas
+     */
     private int dificuldade;
 
+    /**
+     * Construtor de Local que recebe como parâmetro o nome, a dificuldade e
+     * Personagem dona do local
+     *
+     * @param nome Nome da Local
+     * @param dificuldade Dificuldade do local
+     * @param personagem Personagem dona do local
+     */
     public Local(String nome, int dificuldade, Personagem personagem) {
         this.nome = nome;
         this.personagem = personagem;
@@ -24,30 +43,62 @@ public class Local implements Cloneable {
 
     }
 
+    /**
+     * Construtor de Local que recebe como parâmetro o nome e a dificuldade do
+     * local
+     *
+     * @param nome Nome do Local
+     * @param dificuldade Dificuldade do local
+     */
     public Local(String nome, int dificuldade) {
         this.nome = nome;
         this.personagem = null;
         this.dificuldade = dificuldade;
     }
 
+    /**
+     * Construtor cópia de um Local
+     *
+     * @param local local a copiar
+     */
     public Local(Local local) {
         this.nome = local.nome;
         this.personagem = local.personagem;
         this.dificuldade = local.dificuldade;
     }
 
+    /**
+     * Retorna o nome do local
+     *
+     * @return
+     */
     public String getNome() {
         return nome;
     }
 
+    /**
+     * Retorna a dificuldade de um local
+     *
+     * @return
+     */
     public int getDificuldade() {
         return dificuldade;
     }
 
+    /**
+     * Retorna o dono do local
+     *
+     * @return
+     */
     public Personagem getDono() {
         return personagem;
     }
 
+    /**
+     * Muda o dono do local
+     *
+     * @param p Personagem a alterar
+     */
     public void setDono(Personagem p) {
         personagem = p;
     }
@@ -55,7 +106,7 @@ public class Local implements Cloneable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 47 * hash + Objects.hashCode(this.nome) + Objects.hashCode(dificuldade);
+        hash = 47 * hash + Objects.hashCode(this.nome);
         return hash;
     }
 
