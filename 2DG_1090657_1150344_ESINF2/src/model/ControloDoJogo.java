@@ -625,7 +625,7 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
             Local localassociado = obterLocalAssociadoAPersonagem(aliado);
             if (localassociado != null) {
                 if (!obterLocalAssociadoAPersonagem(aliado).equals(target)) {
-                    Conquista cq = verificarConquistaComAliados(aliado, target);
+                    Conquista cq = verificarConquista(aliado, target);
                     if (cq.consegueConquistar()) {
                         ConquistaComAliado cqal = new ConquistaComAliado(cq, aliado);
                         listaConquista.add(cqal);
@@ -634,7 +634,7 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
             }
         }
         if (listaConquista.isEmpty()) {
-            return null;
+            return new ConquistaComAliado(false, INVALIDO, new LinkedList<Local>(), null);
         } else {
             ConquistaComAliado conquistamenorforca = null;
             for (ConquistaComAliado cq : listaConquista) {

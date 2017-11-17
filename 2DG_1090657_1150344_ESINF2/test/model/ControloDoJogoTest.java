@@ -514,7 +514,7 @@ public class ControloDoJogoTest {
         //Alianca entre Pers0 e Pers45 é a média 0.7/2 = 0.35
         Personagem p45 = instance.obterPersonagemPorNome("Pers45");
         assertTrue("Adicionar uma nova alianca aos ficheiros XL", instance.novaAlianca(p_a, p45, true, 1));
-        assertTrue("Alianca é a média das aliancas",instance.obterFatorCompAlianca(p_a, p_b)!=1);
+        assertTrue("Alianca é a média das aliancas", instance.obterFatorCompAlianca(p_a, p_b) != 1);
 
     }
 
@@ -571,33 +571,53 @@ public class ControloDoJogoTest {
     public void testconquistarComAliados() {
         System.out.println("conquistarComAliados");
         ControloDoJogo instance = new ControloDoJogo();
+        double forca_necessaria = 0;
         instance.lerDados(ControloDoJogo.FICH_TESTE);
 
         Personagem porig = instance.obterPersonagemPorNome("Pers0");
         Local target = instance.obterLocalPorNome("Local9");
         ConquistaComAliado result = instance.conquistarComAliados(porig, target);
-        assertNull("Não existe possível conquista com aliado para o local9", result);
+        assertFalse("Não existe possível conquista com aliado para o local9", result.consegueConquistar());
 
+        //Aliado de pers0 conquistar local3
+        porig = instance.obterPersonagemPorNome("Pers0");
+        target = instance.obterLocalPorNome("Local3");
+        result = instance.conquistarComAliados(porig, target);
+        assertTrue("Um aliado de Pers0 consegue conquistar Local3",result.consegueConquistar());
+        forca_necessaria = (30+38+55+10+37+71);
+        assertEquals(forca_necessaria, result.forcaNecessaria(),0.05);
+        assertEquals(instance.obterPersonagemPorNome("Pers1"),result.getAliado());
+        
+        //Aliado de pers0 conquistar local5
         target = instance.obterLocalPorNome("Local5");
         result = instance.conquistarComAliados(porig, target);
-        assertNotNull("Objeto não é nulo", result);
         assertTrue("Para a pers0, o aliado pers8 consegue conquistar o local5", result.consegueConquistar());
+        forca_necessaria = 15 + 40 + 30;
+        assertEquals(forca_necessaria, result.forcaNecessaria(), 0.05);
 
+        //Aliado de pers4 conquistar local5
         porig = instance.obterPersonagemPorNome("Pers4");
+        target = instance.obterLocalPorNome("Local5");
         result = instance.conquistarComAliados(porig, target);
-        assertNull("Não existe conquista com aliado para Pers4", result);
+        assertFalse("Não existe conquista com aliado para Pers4", result.consegueConquistar());
 
+        porig = instance.obterPersonagemPorNome("Pers7");
+        target = instance.obterLocalPorNome("Local5");
+        result = instance.conquistarComAliados(porig, target);
+        assertTrue("Um aliado de Pers7 consegue conquistar local5",result.consegueConquistar());
+        forca_necessaria=20+27+47+70+40+30;
+        assertEquals(forca_necessaria,result.forcaNecessaria(),0.05);
+        
         instance.lerDados(ControloDoJogo.FICH_L);
         porig = instance.obterPersonagemPorNome("Pers0");
         target = instance.obterLocalPorNome("Local0");
         result = instance.conquistarComAliados(porig, target);
-        assertNull("Não existe conquista com aliado para o local10", result);
+        assertTrue("Existe conquista com aliado para o local10", result.consegueConquistar());
 
         porig = instance.obterPersonagemPorNome("Pers10");
         target = instance.obterLocalPorNome("Local35");
         result = instance.conquistarComAliados(porig, target);
-        assertNotNull("Para a Pers10 existe conquista com aliado para o local10", result);
-        assertTrue("Consegue conquistar", result.consegueConquistar());
+        assertFalse("Consegue conquistar", result.consegueConquistar());
 
         porig = instance.obterPersonagemPorNome("Pers11");
         target = instance.obterLocalPorNome("Local161");
@@ -608,12 +628,11 @@ public class ControloDoJogoTest {
         porig = instance.obterPersonagemPorNome("Pers12");
         target = instance.obterLocalPorNome("Local100");
         result = instance.conquistarComAliados(porig, target);
-        assertNull("Para a Pers12, não existe conquista com aliado para o local100", result);
+        assertFalse("Para a Pers12, não existe conquista com aliado para o local100", result.consegueConquistar());
 
         porig = instance.obterPersonagemPorNome("Pers13");
         target = instance.obterLocalPorNome("Local85");
         result = instance.conquistarComAliados(porig, target);
-        assertNotNull("Para a Pers13 existe conquista com aliado para o local85", result);
         assertTrue("Consegue conquistar", result.consegueConquistar());
 
     }
