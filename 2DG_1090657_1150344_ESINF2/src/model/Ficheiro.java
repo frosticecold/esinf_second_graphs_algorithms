@@ -47,7 +47,7 @@ public class Ficheiro {
             }
         }
         return lista;                                                           //O(1)
-    }
+    }                                                                           //Total O(n)
 
     /**
      * Método para ler Personagens e as Suas Alianças Primeiro método a ser
@@ -57,12 +57,12 @@ public class Ficheiro {
      * @param jg Controlo de Jogo
      */
     public void lerPersonagensAliancas(String nomeFicheiro, ControloDoJogo jg) {
-        List<String> conteudoFich = lerFicheiro(nomeFicheiro);
-        boolean lerPersonagens = false;
-        boolean lerAliancas = false;
+        List<String> conteudoFich = lerFicheiro(nomeFicheiro);                  //O(n)
+        boolean lerPersonagens = false;                                         //O(1)
+        boolean lerAliancas = false;                                            //O(1)
 
-        String linhaSplit[] = null;
-        for (String linha : conteudoFich) {
+        String linhaSplit[] = null;                                             //O(1)
+        for (String linha : conteudoFich) {                                     //O(1)
             if (linha.equals(PERSONAGENS)) {
                 lerPersonagens = true;
                 continue;
@@ -117,38 +117,38 @@ public class Ficheiro {
      * @param jg - Controlo de Jogo
      */
     public void lerLocais(String nomeFicheiro, ControloDoJogo jg) {
-        List<String> conteudoFich = lerFicheiro(nomeFicheiro);
-        boolean lerLocais = false;
-        boolean lerCaminhos = false;
+        List<String> conteudoFich = lerFicheiro(nomeFicheiro);                  //O(n)
+        boolean lerLocais = false;                                              //O(1)
+        boolean lerCaminhos = false;                                            //O(1)
 
-        String linhaSplit[] = null;
-        for (String linha : conteudoFich) {
-            if (linha.equals(LOCAIS)) {
-                lerLocais = true;
-                continue;
+        String linhaSplit[] = null;                                             //O(1)
+        for (String linha : conteudoFich) {                                     //O(n)
+            if (linha.equals(LOCAIS)) {                                         //O(1)
+                lerLocais = true;                                               //O(1)
+                continue;                                                       //O(1)
             }
-            if (linha.equals(CAMINHOS)) {
-                lerLocais = false;
-                lerCaminhos = true;
-                continue;
+            if (linha.equals(CAMINHOS)) {                                       //O(1)
+                lerLocais = false;                                              //O(1)
+                lerCaminhos = true;                                             //O(1)
+                continue;                                                       //O(1)
             }
-            if (lerLocais == true) {
-                linhaSplit = linha.split(",");
-                Local l = new Local(linhaSplit[0], Integer.parseInt(linhaSplit[1]));
-                if (linhaSplit.length >= 3) {
-                    Personagem p = jg.obterPersonagemPorNome(linhaSplit[2]);
-                    if (p != null) {
-                        l.setDono(p);
+            if (lerLocais == true) {                                            //O(1)
+                linhaSplit = linha.split(",");                                  //O(m)
+                Local l = new Local(linhaSplit[0], Integer.parseInt(linhaSplit[1]));//O(1)
+                if (linhaSplit.length >= 3) {                                   //O(1)
+                    Personagem p = jg.obterPersonagemPorNome(linhaSplit[2]);    //O(V)
+                    if (p != null) {                                            //O(1)
+                        l.setDono(p);                                           //O(1)
                     }
                 }
-                jg.adicionarLocal(l);
-                continue;
+                jg.adicionarLocal(l);                                           //O(v)
+                continue;                                                       //O(1)
             }
-            if (lerCaminhos == true) {
-                final int CAMPO_LOCAL_A = 0;
+            if (lerCaminhos == true) {                                          //O(1)
+                final int CAMPO_LOCAL_A = 0;                                    //O(1)
                 final int CAMPO_LOCAL_B = 1;
-
                 final int CAMPO_DIF_ESTRADA = 2;
+                
                 linhaSplit = linha.split(",");
 
                 String string_local_a = linhaSplit[CAMPO_LOCAL_A];
@@ -165,7 +165,7 @@ public class Ficheiro {
                     if (locala != null && localb != null) {
                         double e = Double.parseDouble(linhaSplit[CAMPO_DIF_ESTRADA]);
                         jg.adicionarEstrada(locala, localb, e);
-                        break;
+                        break; //break ao for
                     }
 
                 }

@@ -146,7 +146,7 @@ public class ControloDoJogoTest {
         //Pode conquistar o proprio local?
         l_target = instance.obterLocalPorNome("Local0");
         result = instance.verificarConquista(persOrig, l_target, null);
-        assertFalse("Pers0 não pode conquistar o próprio local",result.consegueConquistar());
+        assertFalse("Pers0 não pode conquistar o próprio local", result.consegueConquistar());
 
         //Pers 0 Para Local 3 Tem que passar por local4
         l_target = instance.obterLocalPorNome("Local3");
@@ -532,7 +532,7 @@ public class ControloDoJogoTest {
         ControloDoJogo instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_TESTE);
         Graph<Personagem, Boolean> result = instance.possiveisNovasAliancas();
-
+        
         Personagem p0 = instance.obterPersonagemPorNome("Pers0");
         Personagem p1 = instance.obterPersonagemPorNome("Pers1");
         Personagem p2 = instance.obterPersonagemPorNome("Pers2");
@@ -544,13 +544,24 @@ public class ControloDoJogoTest {
         Personagem p8 = instance.obterPersonagemPorNome("Pers8");
         Personagem p9 = instance.obterPersonagemPorNome("Pers9");
         Personagem p10 = instance.obterPersonagemPorNome("Pers10");
-        double expWeight = 0.85;
-        assertEquals(expWeight, result.getEdge(p5, p10).getWeight(), 0.01);
-        expWeight = 0.65;
+        
+        //Não existe possível aliança entre p5-p10
+        double expWeight = 0;
+
+        //Caminho entre p5-p8-p10
+        expWeight = (0.9 + 0.8) / 2;
+        assertEquals(expWeight, result.getEdge(p5, p10).getWeight(), 0.05);
+
+        //Caminho é p2-p8-p0-p4-p6
+        expWeight = (0.1 + 0.9 + 0.7 + 0.8) / 4;
         assertEquals(expWeight, result.getEdge(p2, p6).getWeight(), 0.05);
-        expWeight = 0.55;
+
+        //Para este caso especifico, o caminho escolhido é p2-p8-p3
+        expWeight = (0.1 + 0.2) / 2;
         assertEquals(expWeight, result.getEdge(p2, p3).getWeight(), 0.05);
-        expWeight = 0.766;
+
+        //Caminho entre p6-p4-p3-p5
+        expWeight = (0.8 + 0.7 + 0.8) / 3;
         assertEquals(expWeight, result.getEdge(p6, p5).getWeight(), 0.05);
 
         instance = new ControloDoJogo();
@@ -740,7 +751,7 @@ public class ControloDoJogoTest {
         Personagem pers_a = instance.obterPersonagemPorNome("Pers8");
         Personagem pers_b = instance.obterPersonagemPorNome("Pers6");
         double expResult = 0.8;
-        double result = instance.determinarFatorCompatibilidade(pers_a, pers_b);
+        double result = instance.determinarFatorCompatibilidade(pers_a, pers_b, true);
         assertEquals(expResult, result, 0.05);
     }
 

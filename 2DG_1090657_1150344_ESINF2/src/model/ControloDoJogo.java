@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import graphbase.Graph;
 import graphbase.GraphAlgorithms;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  *
@@ -209,47 +210,18 @@ public class ControloDoJogo {
             return false;
         }
 
-        LinkedList<Personagem> path = null;
+        LinkedList<Personagem> path = new LinkedList<>();
         double dist = 0;
 
         //Vamos ver o caminho de p_source para p_target
-        LinkedList<Personagem> path1 = new LinkedList<>();
-        Graph<Personagem, Boolean> grafo_aliancas_publicas = gerarGrafoAliancasPublicas();
-        double dist1 = graphbase.GraphAlgorithms.shortestPathEdges(grafo_aliancas_publicas, p_source, p_target, path1);
-
-        //Vamos ver o caminho de p_target para p_source
-        LinkedList<Personagem> path2 = new LinkedList<>();
-        double dist2 = graphbase.GraphAlgorithms.shortestPathEdges(grafo_aliancas_publicas, p_target, p_source, path1);
-
-        if (path1.isEmpty() && path2.isEmpty()) {
-            dist = SEM_CAMINHO;
-        } else {
-            if (!path1.isEmpty() && path2.isEmpty()) {
-                dist = dist1;
-                path = path1;
-            } else {
-                if (path1.isEmpty() && !path2.isEmpty()) {
-                    dist = dist2;
-                    path = path2;
-                } else {
-                    if (path1.size() < path2.size()) {
-                        dist = dist1;
-                        path = path1;
-                    } else {
-                        if (path2.size() < path1.size()) {
-                            dist = dist2;
-                            path = path2;
-                        }
-                    }
-                }
-            }
-        }
+        Graph<Personagem, Boolean> grafo_aliancas_publicas_sem_peso = gerarGrafoAliancasApenasPublicasSemPeso();
+        dist = graphbase.GraphAlgorithms.shortestPath(grafo_aliancas_publicas_sem_peso, p_source, p_target, path);
 
         if (dist == SEM_CAMINHO) {
             return adicionarAlianca(p_source, p_target, tipoalianca, fator_compatibilidade);
 
         } else {
-            int numPers = path1.size();
+            int numPers = path.size();
             //Se o número de Personagens é maior do que 1, então é n-1 ramos
             if (numPers > 1) {
                 numPers--;
@@ -257,15 +229,14 @@ public class ControloDoJogo {
             double fator_comp = 0;
             Personagem a = null;
             Personagem b = null;
-            LinkedList<Personagem> clone = (LinkedList<Personagem>) path1.clone();
-            while (!clone.isEmpty()) {
+            while (!path.isEmpty()) {
                 if (a == null && b == null) {
-                    a = clone.pop();
-                    b = clone.pop();
+                    a = path.pop();
+                    b = path.pop();
                     fator_comp = grafo_personagens_aliancas.getEdge(a, b).getWeight();
                 } else {
                     a = b;
-                    b = clone.pop();
+                    b = path.pop();
                     fator_comp += grafo_personagens_aliancas.getEdge(a, b).getWeight();
                 }
             }
@@ -292,8 +263,10 @@ public class ControloDoJogo {
                     for (Personagem p_c : ng.vertices()) {
                         if (!p_b.equals(p_c) && !p_c.equals(p_a) && ng.getEdge(p_a, p_c) != null) {
                             if (ng.getEdge(p_b, p_c) == null) {
-                                double fator = determinarFatorCompatibilidade(p_b, p_c);
-                                ng.insertEdge(p_b, p_c, Boolean.TRUE, fator);
+                                double fator = determinarFatorCompatibilidade(p_b, p_c, false);
+                                if (fator != -1) {
+                                    ng.insertEdge(p_b, p_c, Boolean.TRUE, fator);
+                                }
                             }
                         }
                     }
@@ -350,10 +323,7 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
      */
     public boolean adicionarLocal(String nomeLocal, int dificuldade, Personagem p) {
         Local l = new Local(nomeLocal, dificuldade, p);
-        if (!grafo_locais_estradas.checkVertex(l)) {
-            return grafo_locais_estradas.insertVertex(l);
-        }
-        return false;
+        return grafo_locais_estradas.insertVertex(l); //O(v)
     }
 
     /**
@@ -363,10 +333,8 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
      * @return True or False
      */
     public boolean adicionarLocal(Local local) {
-        if (!grafo_locais_estradas.checkVertex(local)) {
-            return grafo_locais_estradas.insertVertex(local);
-        }
-        return false;
+        return grafo_locais_estradas.insertVertex(local); //O(v)
+
     }
 
     /**
@@ -679,6 +647,32 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
         return grafo_aliancas_publicas;
     }
 
+    public Graph<Personagem, Boolean> gerarGrafoAliancasApenasPublicasSemPeso() {
+        Graph<Personagem, Boolean> grafo_aliancas_publicas = new Graph<>(false);
+        for (Personagem pOrig : grafo_personagens_aliancas.vertices()) {
+            for (Personagem pAdj : grafo_personagens_aliancas.adjVertices(pOrig)) {
+                if (grafo_personagens_aliancas.getEdge(pOrig, pAdj) != null && grafo_personagens_aliancas.getEdge(pOrig, pAdj).getElement() == true) {
+                    grafo_aliancas_publicas.insertEdge(pOrig, pAdj, true, 1);
+                }
+            }
+        }
+
+        return grafo_aliancas_publicas;
+    }
+
+    public Graph<Personagem, Boolean> gerarGrafoAliancasTodasPublicasSemPeso() {
+        Graph<Personagem, Boolean> grafo = new Graph<>(false);
+        for (Personagem pOrig : grafo_personagens_aliancas.vertices()) {
+            for (Personagem pAdj : grafo_personagens_aliancas.adjVertices(pOrig)) {
+                if (grafo_personagens_aliancas.getEdge(pOrig, pAdj) != null) {
+                    grafo.insertEdge(pOrig, pAdj, true, 1);
+                }
+            }
+        }
+
+        return grafo;
+    }
+
     /**
      * Método que retorna um grafo onde não tem os locais das personagens
      * aliadas
@@ -710,16 +704,21 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
      *
      * @param pers_a Personagem A
      * @param pers_b Personagem B
+     * @param apenas_publicas True Se se considera apenas as aliancas publicas
+     * ou não, false se se considera todas as aliancas como sendo publicas
      * @return Média de fator de compatibilidade de uma aliança
      */
-    public double determinarFatorCompatibilidade(Personagem pers_a, Personagem pers_b) {
+    public double determinarFatorCompatibilidade(Personagem pers_a, Personagem pers_b, boolean apenas_publicas) {
         LinkedList<Personagem> path = new LinkedList<>();
-        GraphAlgorithms.shortestPathEdges(grafo_personagens_aliancas, pers_a, pers_b, path);
-        LinkedList<Personagem> path2 = new LinkedList<>();
-        GraphAlgorithms.shortestPathEdges(grafo_personagens_aliancas, pers_b, pers_a, path2);
-        if (!path2.isEmpty() && path2.size() < path.size()) {
-            path = path2;
+
+        Graph<Personagem, Boolean> grafo = null;
+        if (apenas_publicas) {
+            grafo = gerarGrafoAliancasApenasPublicasSemPeso();
+        } else {
+            grafo = gerarGrafoAliancasTodasPublicasSemPeso();
         }
+        GraphAlgorithms.shortestPath(grafo, pers_a, pers_b, path);
+
         if (path.isEmpty()) {
             return -1;
         }
