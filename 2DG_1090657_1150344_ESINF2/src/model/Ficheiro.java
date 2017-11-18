@@ -62,44 +62,44 @@ public class Ficheiro {
         boolean lerAliancas = false;                                            //O(1)
 
         String linhaSplit[] = null;                                             //O(1)
-        for (String linha : conteudoFich) {                                     //O(1)
-            if (linha.equals(PERSONAGENS)) {
-                lerPersonagens = true;
+        for (String linha : conteudoFich) {                                     //O(n)
+            if (linha.equals(PERSONAGENS)) {                                    //O(1)
+                lerPersonagens = true;                                          //O(1)
                 continue;
             }
-            if (linha.equals(ALIANCAS)) {
-                lerPersonagens = false;
-                lerAliancas = true;
+            if (linha.equals(ALIANCAS)) {                                       //O(1)
+                lerPersonagens = false;                                         //O(1)
+                lerAliancas = true;                                             //O(1)
                 continue;
             }
-            if (lerPersonagens == true) {
-                linhaSplit = linha.split(",");
-                Personagem p = new Personagem(linhaSplit[0], Integer.parseInt(linhaSplit[1]));
-                jg.adicionarPersonagem(p);
+            if (lerPersonagens == true) {                                       //O(1)
+                linhaSplit = linha.split(",");                                  //O(1)
+                Personagem p = new Personagem(linhaSplit[0], Integer.parseInt(linhaSplit[1]));//O(1)
+                jg.adicionarPersonagem(p);                                      //O(1)
                 continue;
             }
-            if (lerAliancas == true) {
-                final int CAMPO_PERS_A = 0;
-                final int CAMPO_PERS_B = 1;
+            if (lerAliancas == true) {                                          //O(1)
+                final int CAMPO_PERS_A = 0;                                     //O(1)
+                final int CAMPO_PERS_B = 1;                                     //O(1)
 
-                final int CAMPO_TIPO_ALIANCA = 2;
-                final int CAMPO_ALIANCA_FATOR_COMPATIBILIDADE = 3;
-                linhaSplit = linha.split(",");
+                final int CAMPO_TIPO_ALIANCA = 2;                               //O(1)
+                final int CAMPO_ALIANCA_FATOR_COMPATIBILIDADE = 3;              //O(1)
+                linhaSplit = linha.split(",");                                  //O(1)
 
-                String pers_a = linhaSplit[CAMPO_PERS_A];
-                String pers_b = linhaSplit[CAMPO_PERS_B];
-                Boolean tipoAlianca = Boolean.parseBoolean(linhaSplit[CAMPO_TIPO_ALIANCA]);
-                Double fator_comp = Double.parseDouble(linhaSplit[CAMPO_ALIANCA_FATOR_COMPATIBILIDADE]);
-                Personagem persA = null, persB = null;
-                for (Personagem p : jg.devolverTodasPersonagens()) {
-                    if (pers_a.equals(p.getNome())) {
-                        persA = p;
+                String pers_a = linhaSplit[CAMPO_PERS_A];                       //O(1)
+                String pers_b = linhaSplit[CAMPO_PERS_B];                       //O(1)
+                Boolean tipoAlianca = Boolean.parseBoolean(linhaSplit[CAMPO_TIPO_ALIANCA]);//O(1)
+                Double fator_comp = Double.parseDouble(linhaSplit[CAMPO_ALIANCA_FATOR_COMPATIBILIDADE]);//O(1)
+                Personagem persA = null, persB = null;                          //O(1)
+                for (Personagem p : jg.devolverTodasPersonagens()) {            //O(n)
+                    if (pers_a.equals(p.getNome())) {                           //O(1)
+                        persA = p;                                              //O(1)
                         continue;
                     }
-                    if (pers_b.equals(p.getNome())) {
-                        persB = p;
+                    if (pers_b.equals(p.getNome())) {                           //O(1)
+                        persB = p;                                              //O(1)
                     }
-                    if (persA != null && persB != null) {
+                    if (persA != null && persB != null) {                       //O(1)
                         jg.adicionarAlianca(persA, persB, tipoAlianca, fator_comp);
                         break;
                     }
@@ -133,7 +133,7 @@ public class Ficheiro {
                 continue;                                                       //O(1)
             }
             if (lerLocais == true) {                                            //O(1)
-                linhaSplit = linha.split(",");                                  //O(m)
+                linhaSplit = linha.split(",");                                  //O(z)
                 Local l = new Local(linhaSplit[0], Integer.parseInt(linhaSplit[1]));//O(1)
                 if (linhaSplit.length >= 3) {                                   //O(1)
                     Personagem p = jg.obterPersonagemPorNome(linhaSplit[2]);    //O(V)
@@ -141,30 +141,30 @@ public class Ficheiro {
                         l.setDono(p);                                           //O(1)
                     }
                 }
-                jg.adicionarLocal(l);                                           //O(v)
+                jg.adicionarLocal(l);                                           //O(v^2)
                 continue;                                                       //O(1)
             }
             if (lerCaminhos == true) {                                          //O(1)
                 final int CAMPO_LOCAL_A = 0;                                    //O(1)
-                final int CAMPO_LOCAL_B = 1;
-                final int CAMPO_DIF_ESTRADA = 2;
+                final int CAMPO_LOCAL_B = 1;                                    //O(1)
+                final int CAMPO_DIF_ESTRADA = 2;                                //O(1)
                 
-                linhaSplit = linha.split(",");
+                linhaSplit = linha.split(",");                                  //O(m)
 
-                String string_local_a = linhaSplit[CAMPO_LOCAL_A];
-                String string_local_b = linhaSplit[CAMPO_LOCAL_B];
+                String string_local_a = linhaSplit[CAMPO_LOCAL_A];              //O(1)
+                String string_local_b = linhaSplit[CAMPO_LOCAL_B];              //O(1)
 
-                Local locala = null, localb = null;
-                for (Local l : jg.devolverTodosLocais()) {
-                    if (string_local_a.equals(l.getNome())) {
+                Local locala = null, localb = null;                             //O(1)
+                for (Local l : jg.devolverTodosLocais()) {                      //O(v)
+                    if (string_local_a.equals(l.getNome())) {                   //O(1)
                         locala = l;
                     }
-                    if (string_local_b.equals(l.getNome())) {
-                        localb = l;
+                    if (string_local_b.equals(l.getNome())) {                   //O(1)
+                        localb = l;                                             //O(1)
                     }
-                    if (locala != null && localb != null) {
-                        double e = Double.parseDouble(linhaSplit[CAMPO_DIF_ESTRADA]);
-                        jg.adicionarEstrada(locala, localb, e);
+                    if (locala != null && localb != null) {                     //O(1)
+                        double e = Double.parseDouble(linhaSplit[CAMPO_DIF_ESTRADA]);//O(1)
+                        jg.adicionarEstrada(locala, localb, e);                 //O(V^2local)
                         break; //break ao for
                     }
 
@@ -172,5 +172,5 @@ public class Ficheiro {
             }
 
         }
-    }
-}
+    }                                                                           //Total:O(n)*(O(z)+O(Vlocal^2)+O(m)+O(e)+(Vlocal^2)
+}                                                                               //Total: O(n*Vlocal^2)

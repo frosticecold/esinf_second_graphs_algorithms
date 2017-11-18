@@ -36,7 +36,7 @@ public class Graph<V, E> implements GraphInterface<V, E> {
 
     public boolean validVertex(V vert) {
 
-        if (vertices.get(vert) == null) {
+        if (vertices.get(vert) == null) { //O(1)
             return false;
         }
 

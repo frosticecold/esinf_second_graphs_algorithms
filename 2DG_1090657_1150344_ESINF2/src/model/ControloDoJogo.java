@@ -52,7 +52,7 @@ public class ControloDoJogo {
      */
     public void lerLocais(String nomeFicheiro) {
         Ficheiro f = new Ficheiro();
-        f.lerLocais(nomeFicheiro, this);
+        f.lerLocais(nomeFicheiro, this); //Total: O(n*Vlocal^2)
 
     }
 
@@ -328,7 +328,7 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
      * @return True or False
      */
     public boolean adicionarLocal(Local local) {
-        return grafo_locais_estradas.insertVertex(local); //O(v)
+        return grafo_locais_estradas.insertVertex(local); //O(v^2)
 
     }
 
@@ -341,11 +341,11 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
      * @return
      */
     public boolean adicionarEstrada(Local l_a, Local l_b, double custo_estrada) {
-        if (!grafo_locais_estradas.checkVertex(l_a) || !grafo_locais_estradas.checkVertex(l_b)) {
+        if (!grafo_locais_estradas.checkVertex(l_a) || !grafo_locais_estradas.checkVertex(l_b)) { //O(Vlocal * Vlocal)
             return false;
         }
-        if (grafo_locais_estradas.getEdge(l_a, l_b) == null) {
-            return grafo_locais_estradas.insertEdge(l_a, l_b, custo_estrada);
+        if (grafo_locais_estradas.getEdge(l_a, l_b) == null) {                  //O(1)
+            return grafo_locais_estradas.insertEdge(l_a, l_b, custo_estrada);   //O(1)
         }
         return false;
     }
@@ -357,11 +357,11 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
      * @return true or false
      */
     public boolean adicionarPersonagem(Personagem p) {
-        if (!grafo_personagens_aliancas.validVertex(p)) {
-            return grafo_personagens_aliancas.insertVertex(p);
+        if (!grafo_personagens_aliancas.validVertex(p)) {       //O(1)
+            return grafo_personagens_aliancas.insertVertex(p);  //O(1)
         }
         return false;
-    }
+    }                                                           //O(1)
 
     /**
      * Método que serve para adicionar uma alianca durante a leitura do ficheiro
@@ -373,15 +373,15 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
      * @return true or false
      */
     public boolean adicionarAlianca(Personagem p_a, Personagem p_b, boolean tipoAlianca, double fator_comp) {
-        if (!grafo_personagens_aliancas.validVertex(p_a) || !grafo_personagens_aliancas.validVertex(p_b)) {
+        if (!grafo_personagens_aliancas.validVertex(p_a) || !grafo_personagens_aliancas.validVertex(p_b)) { // O(1) + O(1)
             return false;
         }
-        if (grafo_personagens_aliancas.getEdge(p_a, p_b) == null) {
-            grafo_personagens_aliancas.insertEdge(p_a, p_b, tipoAlianca, fator_comp);
+        if (grafo_personagens_aliancas.getEdge(p_a, p_b) == null) {             //O(1)
+            grafo_personagens_aliancas.insertEdge(p_a, p_b, tipoAlianca, fator_comp);//O(1)
             return true;
         } else {
-            if (grafo_personagens_aliancas.getEdge(p_a, p_b).getElement() != tipoAlianca) {
-                grafo_personagens_aliancas.getEdge(p_a, p_b).setElement(tipoAlianca);
+            if (grafo_personagens_aliancas.getEdge(p_a, p_b).getElement() != tipoAlianca) {//O(1)
+                grafo_personagens_aliancas.getEdge(p_a, p_b).setElement(tipoAlianca);//O(1)
                 return true;
             }
         }
