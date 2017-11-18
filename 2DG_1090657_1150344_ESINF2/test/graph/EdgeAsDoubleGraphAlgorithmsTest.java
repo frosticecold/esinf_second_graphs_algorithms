@@ -131,10 +131,10 @@ public class EdgeAsDoubleGraphAlgorithmsTest {
         AdjacencyMatrixGraph<String, Double> mapCaminhosCurtos = EdgeAsDoubleGraphAlgorithms.minDistGraph(map);
         Double d1 = mapCaminhosCurtos.getEdge("Porto", "Portimão");
         assertTrue("Caminho entre Porto e Portimão é 500km", d1 == 500);
-
+        
         Double d2 = mapCaminhosCurtos.getEdge("Porto", "Guimarães");
         assertTrue("Caminho entre Porto e Guimarães é 65km", d2 == 65);
-
+        
         Double d3 = mapCaminhosCurtos.getEdge(("Guimarães"), "Portimão");
         assertTrue("Caminho entre Guimarães e Portimão é 65km", d3 == 565);
     }

@@ -184,7 +184,7 @@ public class LabyrinthCheaterTest {
         expectedResult.add("E");
         expectedResult.add("F");
         expectedResult.add("G");
-
+        
         LinkedList<String> result = tempMap.pathToExit("A");
 
         assertEquals(expectedResult, result);
@@ -206,7 +206,7 @@ public class LabyrinthCheaterTest {
         tempMap.insertDoor("D", "E");
         tempMap.insertDoor("E", "F");
         tempMap.insertDoor("F", "G");
-
+        
         result = tempMap.pathToExit("A");
         assertNull("Não existe caminho", result);
 
