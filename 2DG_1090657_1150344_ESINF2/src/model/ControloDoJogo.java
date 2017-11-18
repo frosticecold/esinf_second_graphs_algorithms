@@ -67,11 +67,10 @@ public class ControloDoJogo {
      * @return double com o tamanho do caminho
      */
     public LinkedList<Local> caminhoComMenorDificuldade(Local source, Local target) {
-        LinkedList<Local> path = new LinkedList<>();
-        EdgeAsDoubleGraphAlgorithms.shortestPath(grafo_locais_estradas, source, target, path);
-        return path;
-
-    }
+        LinkedList<Local> path = new LinkedList<>();                            //O(1)
+        EdgeAsDoubleGraphAlgorithms.shortestPath(grafo_locais_estradas, source, target, path);//O(V^2)
+        return path;                                                            //O(1)
+    }                                                                           //Total:O(V^2)
 
     //===================================1 C====================================
     //Determinar qual a	aliança	mais forte, retornando	a força	e as personagens dessa aliança
@@ -86,32 +85,34 @@ public class ControloDoJogo {
      * passado por parâmetro seja null, utiliza o grafo locais por omissão
      * @return Se uma conquista é valida, com dificuldade e caminho
      */
-    public Conquista verificarConquista(Personagem pers, Local target, AdjacencyMatrixGraph<Local, Double> grafo_locais_alternativo) {
+    public Conquista verificarConquista(Personagem pers, Local source, Local target, AdjacencyMatrixGraph<Local, Double> grafo_locais_alternativo) {
         AdjacencyMatrixGraph<Local, Double> grafo_locais_a_utilizar = grafo_locais_estradas;
-        if (grafo_locais_alternativo != null) {
-            grafo_locais_a_utilizar = grafo_locais_alternativo;
+        if (grafo_locais_alternativo != null) {                                 //O(1)
+            grafo_locais_a_utilizar = grafo_locais_alternativo;                 //O(1)
         }
-        if (!grafo_personagens_aliancas.validVertex(pers) || !grafo_locais_a_utilizar.checkVertex(target)) {
+        if (!grafo_personagens_aliancas.validVertex(pers) || !grafo_locais_a_utilizar.checkVertex(target)) {//O(1)
+            return new Conquista(false, -1, null);                                                          //O(1)
+        }
+        if (target.getDono() != null && target.getDono().equals(pers)) {                                    //O(1)
+            return new Conquista(false, -1, null);                                                          //O(1)
+        }
+        if (source.getDono() != null && !source.getDono().equals(pers)) {
             return new Conquista(false, -1, null);
         }
-        if (target.getDono() != null && target.getDono().equals(pers)) {
-            return new Conquista(false, -1, null);
-        }
-        final double SEM_CAMINHO = -1;
-        Local source = obterLocalAssociadoAPersonagem(pers);
-        LinkedList<Local> path = new LinkedList<>();
+        final double SEM_CAMINHO = -1;                                                                      //O(1)
+        LinkedList<Local> path = new LinkedList<>();                                                        //O(1)
 
-        double dificuldade = graph.AlgoritmosJogo.shortestPathConquista(grafo_locais_a_utilizar, source, target, path);
-        if (dificuldade != SEM_CAMINHO) {
-            if (path.peekFirst() == source) {
-                path.removeFirst();
+        double dificuldade = graph.AlgoritmosJogo.shortestPathConquista(grafo_locais_a_utilizar, source, target, path,pers); //O(V^2)
+        if (dificuldade != SEM_CAMINHO) {                                                                   //O(1)
+            if (path.peekFirst() == source) {                                                               //O(1)
+                path.removeFirst();                                                                         //O(1)
             }
-            if (path.peekLast() == target) {
-                path.removeLast();
+            if (path.peekLast() == target) {                                                                //O(1)
+                path.removeLast();                                                                          //O(1)
             }
-            boolean consegue_conquistar = false;
-            if (pers.getForca() > dificuldade) {
-                consegue_conquistar = true;
+            boolean consegue_conquistar = false;                                                            //O(1)
+            if (pers.getForca() > dificuldade) {                                                            //O(1)
+                consegue_conquistar = true;                                                                 //O(1)
             }
             Conquista cq = new Conquista(consegue_conquistar, dificuldade, path);
             return cq;
@@ -129,7 +130,7 @@ public class ControloDoJogo {
      */
     public void lerAlianca(String nomeFicheiro) {
         Ficheiro f = new Ficheiro();
-        f.lerPersonagensAliancas(nomeFicheiro, this);
+        f.lerPersonagensAliancas(nomeFicheiro, this); //Total O(n*Vpers)
     }
 
     //===================================2 B====================================
@@ -284,10 +285,16 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
      * @param target Local a ser conquistado
      * @return
      */
-    public ConquistaComAliado conquistarComAliados(Personagem pOrig, Local target) {
+    public ConquistaComAliado conquistarComAliados(Personagem pOrig, Local source, Local target) {
         final double INVALIDO = -1;
         if (!grafo_personagens_aliancas.validVertex(pOrig) || !grafo_locais_estradas.checkVertex(target)) {
             return null;
+        }
+        if (target.getDono() != null && target.getDono().equals(pOrig)) { //O(1)
+            return new ConquistaComAliado(false, -1, null,null);          //O(1)
+        }
+        if (source.getDono() != null && !source.getDono().equals(pOrig)) { //O(1)
+             return new ConquistaComAliado(false, -1, null,null);           //O(1)
         }
 
         int forca_antiga = pOrig.getForca();
@@ -295,7 +302,7 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
             AdjacencyMatrixGraph<Local, Double> grafo_sem_locais_aliados = gerarGrafoSemLocaisAliados(pOrig, aliado);
             pOrig.setForca(forca_antiga);
             pOrig.setForca(determinarForcaAlianca(pOrig, aliado));
-            Conquista cq = verificarConquista(pOrig, target, grafo_sem_locais_aliados);
+            Conquista cq = verificarConquista(pOrig,source,target, grafo_sem_locais_aliados);
             if (cq.consegueConquistar()) {
                 pOrig.setForca(forca_antiga);
                 ConquistaComAliado cqal = new ConquistaComAliado(cq, aliado);
@@ -386,7 +393,7 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
             }
         }
         return false;
-    }
+    }                                                                           //Total O(1)
 
     /**
      * Método para obter o custo de uma estrada entre dois locais
