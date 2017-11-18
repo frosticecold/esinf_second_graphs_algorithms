@@ -6,7 +6,9 @@
 package model;
 
 import graph.AdjacencyMatrixGraph;
+import graphbase.Edge;
 import graphbase.Graph;
+import java.util.Iterator;
 import java.util.LinkedList;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -17,7 +19,7 @@ import static org.junit.Assert.*;
  */
 public class ControloDoJogoTest {
 
-        /**
+    /**
      * Test of adicionarLocal method, of class ControloDoJogo.
      */
     @Test
@@ -82,7 +84,7 @@ public class ControloDoJogoTest {
         int result = instance.numEstradas();
         assertEquals(expResult, result);
     }
-    
+
     /**
      * Test of lerAlianca method, of class ControloDoJogo.
      */
@@ -567,25 +569,11 @@ public class ControloDoJogoTest {
         instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_L);
         result = instance.possiveisNovasAliancas();
-        p0 = instance.obterPersonagemPorNome("Pers0");
-        p1 = instance.obterPersonagemPorNome("Pers1");
-        p2 = instance.obterPersonagemPorNome("Pers2");
-        p3 = instance.obterPersonagemPorNome("Pers3");
-        p4 = instance.obterPersonagemPorNome("Pers4");
-        //p5 = instance.obterPersonagemPorNome("Pers5");
-        assertNotNull(result.getEdge(p0, p1));
-        assertNotNull(result.getEdge(p0, p2));
-        assertNotNull(result.getEdge(p0, p3));
-        assertNotNull(result.getEdge(p0, p4));
 
-        assertNotNull(result.getEdge(p1, p2));
-        assertNotNull(result.getEdge(p1, p3));
-        assertNotNull(result.getEdge(p1, p4));
-
-        assertNotNull(result.getEdge(p2, p3));
-        assertNotNull(result.getEdge(p2, p4));
-
-        assertNotNull(result.getEdge(p3, p4));
+        // Sabendo que existem 30 personagems, cada uma pode fazer aliança com as outras 29 e o grafo é bidirecional:
+        // Total de possiveis novas alianças:
+        int expResult = 29 * 30 * 2;
+        assertEquals(expResult, result.numEdges());
 
     }
 

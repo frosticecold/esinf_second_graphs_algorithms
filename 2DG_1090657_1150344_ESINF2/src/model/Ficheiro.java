@@ -148,7 +148,7 @@ public class Ficheiro {
                 final int CAMPO_LOCAL_A = 0;                                    //O(1)
                 final int CAMPO_LOCAL_B = 1;                                    //O(1)
                 final int CAMPO_DIF_ESTRADA = 2;                                //O(1)
-                
+
                 linhaSplit = linha.split(",");                                  //O(m)
 
                 String string_local_a = linhaSplit[CAMPO_LOCAL_A];              //O(1)
