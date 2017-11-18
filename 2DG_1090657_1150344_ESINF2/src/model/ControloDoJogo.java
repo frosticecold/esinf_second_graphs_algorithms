@@ -79,6 +79,7 @@ public class ControloDoJogo {
      * percorrendo o caminho com menor esforço
      *
      * @param pers Personagem a Conquistar
+     * @param source Local de onde começa
      * @param target Local a conquistar
      * @param grafo_locais_alternativo Grafo de locais alternativo, Dependência
      * para satisfazer o 3F para poder conquistar com aliados, caso o grafo
@@ -87,8 +88,8 @@ public class ControloDoJogo {
      */
     public Conquista verificarConquista(Personagem pers, Local source, Local target, AdjacencyMatrixGraph<Local, Double> grafo_locais_alternativo) {
         AdjacencyMatrixGraph<Local, Double> grafo_locais_a_utilizar = grafo_locais_estradas;
-        if (grafo_locais_alternativo != null) {                                 //O(1)
-            grafo_locais_a_utilizar = grafo_locais_alternativo;                 //O(1)
+        if (grafo_locais_alternativo != null) {                                                             //O(1)
+            grafo_locais_a_utilizar = grafo_locais_alternativo;                                             //O(1)
         }
         if (!grafo_personagens_aliancas.validVertex(pers) || !grafo_locais_a_utilizar.checkVertex(target)) {//O(1)
             return new Conquista(false, -1, null);                                                          //O(1)
@@ -114,11 +115,11 @@ public class ControloDoJogo {
             if (pers.getForca() > dificuldade) {                                                            //O(1)
                 consegue_conquistar = true;                                                                 //O(1)
             }
-            Conquista cq = new Conquista(consegue_conquistar, dificuldade, path);
-            return cq;
-        }
-        return new Conquista(false, -1, path);
-    }
+            Conquista cq = new Conquista(consegue_conquistar, dificuldade, path);                           //O(1)
+            return cq;                                                                                      //O(1)
+        }   
+        return new Conquista(false, -1, path);                                                              //O(1)
+    }                                                                                                       //Total: O(V^2)
 
     //===================================2 A====================================
     //Construir	o grafo a partir de um ficheiro de texto com a informação estruturada
@@ -134,12 +135,17 @@ public class ControloDoJogo {
     }
 
     //===================================2 B====================================
+    /**
+     * Método que devolve todos os aliados diretos de uma dada personagem
+     * @param source Personagem qual se quer os aliados
+     * @return Iterable de Personagens aliadas
+     */
     public Iterable<Personagem> devolverTodosAliados(Personagem source) {
-        if (!grafo_personagens_aliancas.validVertex(source)) {
+        if (!grafo_personagens_aliancas.validVertex(source)) {  //O(1)
             return null;
         }
-        return grafo_personagens_aliancas.adjVertices(source);
-    }
+        return grafo_personagens_aliancas.adjVertices(source); //O(1)
+    }                                                          //Total: O(1)
 
     ////===================================2 C====================================
     //Determinar qual a aliança mais forte, retornando a força e as personagens dessa aliança
@@ -151,34 +157,34 @@ public class ControloDoJogo {
      * @return AliancaMaisForte
      */
     public AliancaMaisForte determinarAliancaMaisForte() {
-        Personagem p_a = null;
-        Personagem p_b = null;
+        Personagem p_a = null;                                                  //O(1)
+        Personagem p_b = null;                                                  //O(1)
 
-        double forca_alianca = -1;
-        for (Personagem p : grafo_personagens_aliancas.vertices()) {
-            for (Personagem pAdj : grafo_personagens_aliancas.adjVertices(p)) {
-                if (forca_alianca == -1) {
-                    p_a = p;
-                    p_b = pAdj;
-                    forca_alianca = (p.getForca() + pAdj.getForca()) * grafo_personagens_aliancas.getEdge(p, pAdj).getWeight();
+        double forca_alianca = -1;                                              //O(1)
+        for (Personagem p : grafo_personagens_aliancas.vertices()) {            //O(V)
+            for (Personagem pAdj : grafo_personagens_aliancas.adjVertices(p)) { //O(V)
+                if (forca_alianca == -1) {                                      //O(1)
+                    p_a = p;                                                    //O(1)
+                    p_b = pAdj;                                                 //O(1)
+                    forca_alianca = (p.getForca() + pAdj.getForca()) * grafo_personagens_aliancas.getEdge(p, pAdj).getWeight();//O(1)
                 } else {
-                    double outra_forca = (p.getForca() + pAdj.getForca()) * grafo_personagens_aliancas.getEdge(p, pAdj).getWeight();
-                    if (outra_forca > forca_alianca) {
-                        p_a = p;
-                        p_b = pAdj;
-                        forca_alianca = outra_forca;
+                    double outra_forca = (p.getForca() + pAdj.getForca()) * grafo_personagens_aliancas.getEdge(p, pAdj).getWeight(); //O(1)
+                    if (outra_forca > forca_alianca) {                          //O(1)
+                        p_a = p;                                                //O(1)
+                        p_b = pAdj;                                             //O(1)
+                        forca_alianca = outra_forca;                            //O(1)
                     }
 
                 }
             }
-        }
+        }                                                                       //Total bloco : O(V^2)
         if (p_a != null && p_b != null) {
-            AliancaMaisForte amf = new AliancaMaisForte(forca_alianca, p_a, p_b);
-            return amf;
+            AliancaMaisForte amf = new AliancaMaisForte(forca_alianca, p_a, p_b);//O(1)
+            return amf;                                                         //O(1)
 
         }
-        return null;
-    }
+        return null;                                                            //O(1)
+    }                                                                           //Total O(V^2)
 
     //===================================2 D====================================
     //Realizar	uma nova aliança entre	uma personagem A e uma personagem B.
@@ -201,45 +207,45 @@ public class ControloDoJogo {
      */
     public boolean novaAlianca(Personagem p_source, Personagem p_target, boolean tipoalianca, double fator_compatibilidade) {
         final double SEM_CAMINHO = -1;
-        if (!grafo_personagens_aliancas.validVertex(p_source) || !grafo_personagens_aliancas.validVertex(p_target)) {
-            return false;
+        if (!grafo_personagens_aliancas.validVertex(p_source) || !grafo_personagens_aliancas.validVertex(p_target)) {   //O(1)
+            return false;                                                                                               //O(1)
         }
 
-        LinkedList<Personagem> path = new LinkedList<>();
-        double dist = 0;
+        LinkedList<Personagem> path = new LinkedList<>();                                                               //O(1)
+        double dist = 0;                                                                                                //O(1)
 
         //Vamos ver o caminho de p_source para p_target
-        Graph<Personagem, Boolean> grafo_aliancas_publicas_sem_peso = gerarGrafoAliancasApenasPublicasSemPeso();
-        dist = graphbase.GraphAlgorithms.shortestPath(grafo_aliancas_publicas_sem_peso, p_source, p_target, path);
+        Graph<Personagem, Boolean> grafo_aliancas_publicas_sem_peso = gerarGrafoAliancasApenasPublicasSemPeso();        //O(V^2)
+        dist = graphbase.GraphAlgorithms.shortestPath(grafo_aliancas_publicas_sem_peso, p_source, p_target, path);      //O(V^2)
 
-        if (dist == SEM_CAMINHO) {
-            return adicionarAlianca(p_source, p_target, tipoalianca, fator_compatibilidade);
+        if (dist == SEM_CAMINHO) {                                                                                      //O(1)
+            return adicionarAlianca(p_source, p_target, tipoalianca, fator_compatibilidade);                            //O(1)
 
         } else {
-            int numPers = path.size();
+            int numPers = path.size();                                                                                  //O(1)
             //Se o número de Personagens é maior do que 1, então é n-1 ramos
-            if (numPers > 1) {
-                numPers--;
+            if (numPers > 1) {                                                                                          //O(1)
+                numPers--;                                                                                              //O(1)
             }
-            double fator_comp = 0;
-            Personagem a = null;
-            Personagem b = null;
-            while (!path.isEmpty()) {
-                if (a == null && b == null) {
-                    a = path.pop();
-                    b = path.pop();
-                    fator_comp = grafo_personagens_aliancas.getEdge(a, b).getWeight();
+            double fator_comp = 0;                                                                                      //O(1)
+            Personagem a = null;                                                                                        //O(1)
+            Personagem b = null;                                                                                        //O(1)
+            while (!path.isEmpty()) {                                                                                   //O(V)
+                if (a == null && b == null) {                                                                           //O(1)
+                    a = path.pop();                                                                                     //O(1)
+                    b = path.pop();                                                                                     //O(1)
+                    fator_comp = grafo_personagens_aliancas.getEdge(a, b).getWeight();                                  //O(1)
                 } else {
-                    a = b;
-                    b = path.pop();
-                    fator_comp += grafo_personagens_aliancas.getEdge(a, b).getWeight();
+                    a = b;                                                                                              //O(1)
+                    b = path.pop();                                                                                     //O(1)
+                    fator_comp += grafo_personagens_aliancas.getEdge(a, b).getWeight();                                 //O(1)
                 }
             }
-            double mediaComp = fator_comp / numPers;
-            grafo_personagens_aliancas.insertEdge(p_source, p_target, tipoalianca, mediaComp);
-            return true;
-        }
-    }
+            double mediaComp = fator_comp / numPers;                                                                    //O(1)
+            grafo_personagens_aliancas.insertEdge(p_source, p_target, tipoalianca, mediaComp);                          //O(1)
+            return true;                                                                                                //O(1)
+        }                                                                                                               
+    }                                                                                                                   //Total:O(V^2)
 
     //===================================2 E====================================
     //Criar um novo grafo representando todas as novas alianças que podem ser realizadas entre todas as personagens
@@ -253,15 +259,15 @@ public class ControloDoJogo {
     public Graph<Personagem, Boolean> possiveisNovasAliancas() {
 
         Graph<Personagem, Boolean> ng = (Graph<Personagem, Boolean>) grafo_personagens_aliancas.clone();
-        for (Personagem p_a : ng.vertices()) {
-            for (Personagem p_b : ng.vertices()) {
-                if (!p_a.equals(p_b) && ng.getEdge(p_a, p_b) != null) {
-                    for (Personagem p_c : ng.vertices()) {
-                        if (!p_b.equals(p_c) && !p_c.equals(p_a) && ng.getEdge(p_a, p_c) != null) {
-                            if (ng.getEdge(p_b, p_c) == null) {
-                                double fator = determinarFatorCompatibilidade(p_b, p_c, false);
+        for (Personagem p_a : ng.vertices()) {                                  //O(V)
+            for (Personagem p_b : ng.vertices()) {                              //O(V)
+                if (!p_a.equals(p_b) && ng.getEdge(p_a, p_b) != null) {         //O(1)
+                    for (Personagem p_c : ng.vertices()) {                      //O(V)
+                        if (!p_b.equals(p_c) && !p_c.equals(p_a) && ng.getEdge(p_a, p_c) != null) {//O(1)
+                            if (ng.getEdge(p_b, p_c) == null) {                                    //O(1)
+                                double fator = determinarFatorCompatibilidade(p_b, p_c, false);    //O(V^2)
                                 if (fator != -1) {
-                                    ng.insertEdge(p_b, p_c, Boolean.TRUE, fator);
+                                    ng.insertEdge(p_b, p_c, Boolean.TRUE, fator);                  //O(1)
                                 }
                             }
                         }
@@ -269,8 +275,9 @@ public class ControloDoJogo {
                 }
             }
         }
-        return ng;
-    }
+        return ng;                                                              //O(1)
+    }                                                                           //O(V^2) * O(V) * O(V) * O(V)
+                                                                                //O(V^5)
     //===================================3F====================================
 
     /*Verificar	se uma personagem pode conquistar, junto com um dos seus aliados, um determinado local	X 
@@ -287,33 +294,33 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
      */
     public ConquistaComAliado conquistarComAliados(Personagem pOrig, Local source, Local target) {
         final double INVALIDO = -1;
-        if (!grafo_personagens_aliancas.validVertex(pOrig) || !grafo_locais_estradas.checkVertex(target)) {
+        if (!grafo_personagens_aliancas.validVertex(pOrig) || !grafo_locais_estradas.checkVertex(target)) { //O(v)
             return null;
         }
-        if (target.getDono() != null && target.getDono().equals(pOrig)) { //O(1)
-            return new ConquistaComAliado(false, -1, null,null);          //O(1)
+        if (target.getDono() != null && target.getDono().equals(pOrig)) {       //O(1)
+            return new ConquistaComAliado(false, -1, null,null);                //O(1)
         }
-        if (source.getDono() != null && !source.getDono().equals(pOrig)) { //O(1)
-             return new ConquistaComAliado(false, -1, null,null);           //O(1)
+        if (source.getDono() != null && !source.getDono().equals(pOrig)) {      //O(1)
+             return new ConquistaComAliado(false, -1, null,null);               //O(1)
         }
 
-        int forca_antiga = pOrig.getForca();
-        for (Personagem aliado : grafo_personagens_aliancas.adjVertices(pOrig)) {
-            AdjacencyMatrixGraph<Local, Double> grafo_sem_locais_aliados = gerarGrafoSemLocaisAliados(pOrig, aliado);
-            pOrig.setForca(forca_antiga);
-            pOrig.setForca(determinarForcaAlianca(pOrig, aliado));
-            Conquista cq = verificarConquista(pOrig,source,target, grafo_sem_locais_aliados);
-            if (cq.consegueConquistar()) {
-                pOrig.setForca(forca_antiga);
-                ConquistaComAliado cqal = new ConquistaComAliado(cq, aliado);
-                return cqal;
+        int forca_antiga = pOrig.getForca();                                    //O(1)
+        for (Personagem aliado : grafo_personagens_aliancas.adjVertices(pOrig)) {                                   //O(V)
+            AdjacencyMatrixGraph<Local, Double> grafo_sem_locais_aliados = gerarGrafoSemLocaisAliados(pOrig, aliado);//O(V^2)
+            pOrig.setForca(forca_antiga);                                                                           //O(1)
+            pOrig.setForca(determinarForcaAlianca(pOrig, aliado));                                                  //O(1)
+            Conquista cq = verificarConquista(pOrig,source,target, grafo_sem_locais_aliados);                       //O(V_locais_^2)
+            if (cq.consegueConquistar()) {                                                                          //O(1)
+                pOrig.setForca(forca_antiga);                                                                       //O(1)
+                ConquistaComAliado cqal = new ConquistaComAliado(cq, aliado);                                       //O(1)
+                return cqal;                                                                                        //O(1)
             }
         }
-        pOrig.setForca(forca_antiga);
+        pOrig.setForca(forca_antiga);                                                                               //O(1)
 
-        return new ConquistaComAliado(false, INVALIDO, new LinkedList<Local>(), null);
+        return new ConquistaComAliado(false, INVALIDO, new LinkedList<Local>(), null);                              //O(1)
 
-    }
+    }                                                                                                               //O(Vpersonagens) * (O(V^2 Locais) + O(V^2 Locais))
 
     /**
      * Método para adicionar um local ao grafo_locais_estradas;
@@ -657,16 +664,16 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
      */
     public Graph<Personagem, Boolean> gerarGrafoAliancasApenasPublicasSemPeso() {
         Graph<Personagem, Boolean> grafo_aliancas_publicas = new Graph<>(false);
-        for (Personagem pOrig : grafo_personagens_aliancas.vertices()) {
-            for (Personagem pAdj : grafo_personagens_aliancas.adjVertices(pOrig)) {
-                if (grafo_personagens_aliancas.getEdge(pOrig, pAdj) != null && grafo_personagens_aliancas.getEdge(pOrig, pAdj).getElement() == true) {
-                    grafo_aliancas_publicas.insertEdge(pOrig, pAdj, true, 1);
+        for (Personagem pOrig : grafo_personagens_aliancas.vertices()) {        //O(V)
+            for (Personagem pAdj : grafo_personagens_aliancas.adjVertices(pOrig)) {//O(V)
+                if (grafo_personagens_aliancas.getEdge(pOrig, pAdj) != null && grafo_personagens_aliancas.getEdge(pOrig, pAdj).getElement() == true) {//O(1)
+                    grafo_aliancas_publicas.insertEdge(pOrig, pAdj, true, 1);//O(1)
                 }
             }
         }
 
         return grafo_aliancas_publicas;
-    }
+    }                                                                           //O(V^2)
 
     /**
      * Método que gera um grafo de alianças para as alianças como se fossem
@@ -696,18 +703,18 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
      * @return
      */
     public AdjacencyMatrixGraph<Local, Double> gerarGrafoSemLocaisAliados(Personagem orig, Personagem aliado) {
-        AdjacencyMatrixGraph<Local, Double> grafo_locais_sem_o_aliado = (AdjacencyMatrixGraph<Local, Double>) grafo_locais_estradas.clone();
+        AdjacencyMatrixGraph<Local, Double> grafo_locais_sem_o_aliado = (AdjacencyMatrixGraph<Local, Double>) grafo_locais_estradas.clone();//O(V^2)
 
-        for (Local loc : grafo_locais_estradas.vertices()) {
-            if (loc.getDono() != null) {
-                if (loc.getDono().equals(aliado)) {
-                    grafo_locais_sem_o_aliado.removeVertex(loc);
+        for (Local loc : grafo_locais_estradas.vertices()) {                    //O(n)
+            if (loc.getDono() != null) {                                        //O(1)
+                if (loc.getDono().equals(aliado)) {                             //O(1)
+                    grafo_locais_sem_o_aliado.removeVertex(loc);                //O(V)
                 }
             }
 
         }
         return grafo_locais_sem_o_aliado;
-    }
+    }                                                                           //O(V^2)
 
     /**
      * Método que determina o fator de compatibilidade entre uma rede de
@@ -720,43 +727,43 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
      * @return Média de fator de compatibilidade de uma aliança
      */
     public double determinarFatorCompatibilidade(Personagem pers_a, Personagem pers_b, boolean apenas_publicas) {
-        LinkedList<Personagem> path = new LinkedList<>();
+        LinkedList<Personagem> path = new LinkedList<>();                       //O(1)
 
-        Graph<Personagem, Boolean> grafo = null;
-        if (apenas_publicas) {
-            grafo = gerarGrafoAliancasApenasPublicasSemPeso();
+        Graph<Personagem, Boolean> grafo = null;                                //O(1)
+        if (apenas_publicas) {                                                  //O(1)
+            grafo = gerarGrafoAliancasApenasPublicasSemPeso();                  //O(1)
         } else {
-            grafo = gerarGrafoAliancasTodasPublicasSemPeso();
+            grafo = gerarGrafoAliancasTodasPublicasSemPeso();                   //O(1)
         }
-        GraphAlgorithms.shortestPath(grafo, pers_a, pers_b, path);
+        GraphAlgorithms.shortestPath(grafo, pers_a, pers_b, path);              //O(V^2)
 
-        if (path.isEmpty()) {
+        if (path.isEmpty()) {                                                   //O(1)
             return -1;
         }
-        int numPers = path.size();
+        int numPers = path.size();                                              //O(1)
         //Se o número de Personagens é maior do que 1, então é n-1 ramos
-        if (numPers > 1) {
-            numPers--;
-        }
-        double fator_comp = 0.0;
-        Personagem a = null;
-        Personagem b = null;
-        LinkedList<Personagem> clone = (LinkedList<Personagem>) path.clone();
-        while (!clone.isEmpty()) {
-            if (a == null && b == null) {
-                a = clone.pop();
-                b = clone.pop();
-                fator_comp = grafo_personagens_aliancas.getEdge(a, b).getWeight();
+        if (numPers > 1) {                                                      //O(1)
+            numPers--;                                                          //O(1)
+        }   
+        double fator_comp = 0.0;                                                //O(1)
+        Personagem a = null;                                                    //O(1)
+        Personagem b = null;                                                    //O(1)
+        LinkedList<Personagem> clone = (LinkedList<Personagem>) path.clone();   //O(n)
+        while (!clone.isEmpty()) {                                              //O(n)
+            if (a == null && b == null) {                                       //O(1)
+                a = clone.pop();                                                //O(1)
+                b = clone.pop();                                                //O(1)
+                fator_comp = grafo_personagens_aliancas.getEdge(a, b).getWeight();//O(1)
             } else {
-                a = b;
-                b = clone.pop();
-                fator_comp += grafo_personagens_aliancas.getEdge(a, b).getWeight();
+                a = b;                                                          //O(1)
+                b = clone.pop();                                                //O(1)
+                fator_comp += grafo_personagens_aliancas.getEdge(a, b).getWeight();//O(1)
             }
         }
-        double rt = fator_comp / numPers;
-        return rt;
+        double rt = fator_comp / numPers;                                       //O(1)
+        return rt;                                                              //O(1)
 
-    }
+    }                                                                           //O(V^2)
 
     /**
      * Método que determina a força de uma aliança
@@ -766,9 +773,9 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
      * @return a força da aliança em função do fator de compatibilidade
      */
     public int determinarForcaAlianca(Personagem a, Personagem b) {
-        if (!grafo_personagens_aliancas.validVertex(a) || !grafo_personagens_aliancas.validVertex(b)) {
+        if (!grafo_personagens_aliancas.validVertex(a) || !grafo_personagens_aliancas.validVertex(b)) {//O(1)
             return -1;
         }
-        return (int) ((a.getForca() + b.getForca()) * grafo_personagens_aliancas.getEdge(a, b).getWeight());
+        return (int) ((a.getForca() + b.getForca()) * grafo_personagens_aliancas.getEdge(a, b).getWeight());//O(1)
     }
 }

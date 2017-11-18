@@ -44,7 +44,7 @@ public class AlgoritmosJogo {
                             verticesIndex[vAdj] = sourceIdx;
                         }
                     } else {
-                        if (vx.getDono() == pers) {
+                        if (vx.getDono().equals(pers)) {
                             if (!knownVertices[vAdj] && minDist[vAdj] > minDist[sourceIdx] + edge) {
                                 minDist[vAdj] = minDist[sourceIdx] + edge;
                                 verticesIndex[vAdj] = sourceIdx;

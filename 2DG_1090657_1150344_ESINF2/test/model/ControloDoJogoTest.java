@@ -593,14 +593,13 @@ public class ControloDoJogoTest {
         ControloDoJogo instance = new ControloDoJogo();
         double forca_necessaria = 0;
         instance.lerDados(ControloDoJogo.FICH_TESTE);
-        
+
         Local source = instance.obterLocalPorNome("Local0");
         Personagem porig = instance.obterPersonagemPorNome("Pers0");
         Local target = instance.obterLocalPorNome("Local0");
         ConquistaComAliado result = instance.conquistarComAliados(porig, source, target);
         assertFalse("Não pode conquistar o próprio local", result.consegueConquistar());
-        
-        
+
         source = instance.obterLocalPorNome("Local0");
         porig = instance.obterPersonagemPorNome("Pers0");
         target = instance.obterLocalPorNome("Local9");
