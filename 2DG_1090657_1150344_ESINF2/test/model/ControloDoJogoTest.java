@@ -577,25 +577,10 @@ public class ControloDoJogoTest {
         instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_L);
         result = instance.possiveisNovasAliancas();
-        p0 = instance.obterPersonagemPorNome("Pers0");
-        p1 = instance.obterPersonagemPorNome("Pers1");
-        p2 = instance.obterPersonagemPorNome("Pers2");
-        p3 = instance.obterPersonagemPorNome("Pers3");
-        p4 = instance.obterPersonagemPorNome("Pers4");
-        //p5 = instance.obterPersonagemPorNome("Pers5");
-        assertNotNull(result.getEdge(p0, p1));
-        assertNotNull(result.getEdge(p0, p2));
-        assertNotNull(result.getEdge(p0, p3));
-        assertNotNull(result.getEdge(p0, p4));
-
-        assertNotNull(result.getEdge(p1, p2));
-        assertNotNull(result.getEdge(p1, p3));
-        assertNotNull(result.getEdge(p1, p4));
-
-        assertNotNull(result.getEdge(p2, p3));
-        assertNotNull(result.getEdge(p2, p4));
-
-        assertNotNull(result.getEdge(p3, p4));
+        // Existem 30 personagems, ou seja, 29 possíveis alianças entre uma e as restantes
+        // O grafo é bidirecional, logo o numero de possiveis novas alianças é:
+        int expResult = 29 * 30 * 2;
+        assertEquals(expResult, result.numEdges());
 
     }
 
