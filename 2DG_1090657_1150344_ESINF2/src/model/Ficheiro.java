@@ -91,7 +91,7 @@ public class Ficheiro {
                 Boolean tipoAlianca = Boolean.parseBoolean(linhaSplit[CAMPO_TIPO_ALIANCA]);//O(1)
                 Double fator_comp = Double.parseDouble(linhaSplit[CAMPO_ALIANCA_FATOR_COMPATIBILIDADE]);//O(1)
                 Personagem persA = null, persB = null;                          //O(1)
-                for (Personagem p : jg.devolverTodasPersonagens()) {            //O(n)
+                for (Personagem p : jg.devolverTodasPersonagens()) {            //O(V)
                     if (pers_a.equals(p.getNome())) {                           //O(1)
                         persA = p;                                              //O(1)
                         continue;
@@ -100,14 +100,14 @@ public class Ficheiro {
                         persB = p;                                              //O(1)
                     }
                     if (persA != null && persB != null) {                       //O(1)
-                        jg.adicionarAlianca(persA, persB, tipoAlianca, fator_comp);
+                        jg.adicionarAlianca(persA, persB, tipoAlianca, fator_comp);//O(1)
                         break;
                     }
                 }
 
             }
         }
-    }
+    }                                                                           //Total O(n*Vpers)
 
     /**
      * Método para ler Locais e as Suas Estradas Segundo método a ser

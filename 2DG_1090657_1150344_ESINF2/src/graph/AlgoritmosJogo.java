@@ -8,6 +8,7 @@ package graph;
 import java.util.Collections;
 import java.util.LinkedList;
 import model.Local;
+import model.Personagem;
 
 /**
  *
@@ -18,8 +19,9 @@ public class AlgoritmosJogo {
     /**
      * Determine the shortest path to all vertices from a vertex using
      * Dijkstra's algorithm To be called by public short method
-     * 
-     * Modificado para ter em consideração uma conquista o peso do vértice e a força de um dono, se tiver o mesmo.
+     *
+     * Modificado para ter em consideração uma conquista o peso do vértice e a
+     * força de um dono, se tiver o mesmo.
      *
      * @param graph Graph object
      * @param sourceIdx Source vertex
@@ -28,7 +30,7 @@ public class AlgoritmosJogo {
      * @param minDist minimum distances in the path
      *
      */
-    private static void shortestPathConquista(AdjacencyMatrixGraph<Local, Double> graph, int sourceIdx, boolean[] knownVertices, int[] verticesIndex, double[] minDist) {
+    private static void shortestPathConquista(AdjacencyMatrixGraph<Local, Double> graph, int sourceIdx, boolean[] knownVertices, int[] verticesIndex, double[] minDist, Personagem pers) {
         minDist[sourceIdx] = 0;
         while (sourceIdx != -1) {
             knownVertices[sourceIdx] = true;
@@ -41,12 +43,20 @@ public class AlgoritmosJogo {
                             minDist[vAdj] = minDist[sourceIdx] + edge + vx.getDificuldade();
                             verticesIndex[vAdj] = sourceIdx;
                         }
-                    }else{
-                    if (!knownVertices[vAdj] && minDist[vAdj] > minDist[sourceIdx] + edge + vx.getDificuldade() + vx.getDono().getForca()) {
-                        minDist[vAdj] = minDist[sourceIdx] + edge + vx.getDificuldade() + vx.getDono().getForca();
-                        verticesIndex[vAdj] = sourceIdx;
+                    } else {
+                        if (vx.getDono() == pers) {
+                            if (!knownVertices[vAdj] && minDist[vAdj] > minDist[sourceIdx] + edge) {
+                                minDist[vAdj] = minDist[sourceIdx] + edge;
+                                verticesIndex[vAdj] = sourceIdx;
+                            }
+                        } else {
+                            if (!knownVertices[vAdj] && minDist[vAdj] > minDist[sourceIdx] + edge + vx.getDificuldade() + vx.getDono().getForca()) {
+                                minDist[vAdj] = minDist[sourceIdx] + edge + vx.getDificuldade() + vx.getDono().getForca();
+                                verticesIndex[vAdj] = sourceIdx;
+                            }
+                        }
                     }
-                }}
+                }
             }
 
             Double min = Double.MAX_VALUE;
@@ -64,8 +74,9 @@ public class AlgoritmosJogo {
      * Determine the shortest path between two vertices using Dijkstra's
      * algorithm
      *
-     * Modificado para ter em consideração uma conquista o peso do vértice e a força de um dono, se tiver o mesmo.
-     * 
+     * Modificado para ter em consideração uma conquista o peso do vértice e a
+     * força de um dono, se tiver o mesmo.
+     *
      * @param graph Graph object
      * @param source Source vertex
      * @param dest Destination vertices
@@ -73,7 +84,7 @@ public class AlgoritmosJogo {
      * @return minimum distance, -1 if vertices not in graph or no path
      *
      */
-    public static double shortestPathConquista(AdjacencyMatrixGraph<Local, Double> graph, Local source, Local dest, LinkedList<Local> path) {
+    public static double shortestPathConquista(AdjacencyMatrixGraph<Local, Double> graph, Local source, Local dest, LinkedList<Local> path,Personagem pers) {
         int sourceIdx = graph.toIndex(source);
         if (sourceIdx == -1) {
             return -1;
@@ -96,7 +107,7 @@ public class AlgoritmosJogo {
             knownVertices[graph.toIndex(v)] = false;
         }
 
-        shortestPathConquista(graph, sourceIdx, knownVertices, verticesIndex, minDist);
+        shortestPathConquista(graph, sourceIdx, knownVertices, verticesIndex, minDist,pers);
 
         if (knownVertices[destIdx] == false) {
             return -1;
