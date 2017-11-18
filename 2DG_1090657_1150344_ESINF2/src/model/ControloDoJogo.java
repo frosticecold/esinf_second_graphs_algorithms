@@ -10,8 +10,6 @@ import graph.EdgeAsDoubleGraphAlgorithms;
 import java.util.LinkedList;
 import graphbase.Graph;
 import graphbase.GraphAlgorithms;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  *
@@ -193,10 +191,6 @@ public class ControloDoJogo {
      * aliança A e B e como novo critéiro, adicionou-se um parâmetro passado na
      * função com o valor da compatibilidade para facilitar os testes
      *
-     * --PONTO 2 Foi implementado o algoritmo de dijkstra para grafos não
-     * pesados Devolvendo assim o menor caminho em número de arestas É de notar
-     * quse corre o algoritmo duas vezes, para os vértices na ordem
-     * SOURCE-TARGET E TARGET-SOURCE e escolhe-se o caminho menor dos dois
      *
      * @param p_source Personagem A
      * @param p_target Personagem B
@@ -250,7 +244,8 @@ public class ControloDoJogo {
     //Criar um novo grafo representando todas as novas alianças que podem ser realizadas entre todas as personagens
     //caso todas as alianças existentes fossem públicas
     /**
-     * Método que dá todas as novas possíveis alianças entre personagens
+     * Método que dá todas as novas possíveis alianças entre personagens com os
+     * respetivos novos fatores de compatibilidade
      *
      * @return Grafo com as possíveis novas alianças
      */
@@ -630,7 +625,7 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
     }
 
     /**
-     * Método que gera o grafo de alianças para as alianças apenas públicas
+     * Método que gera um grafo de alianças para as alianças apenas públicas
      *
      * @return grafo com as alianças públicas
      */
@@ -647,6 +642,12 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
         return grafo_aliancas_publicas;
     }
 
+    /**
+     * Método que gera um grafo de alianças para as alianças apenas públicas,
+     * sem peso
+     *
+     * @return grafo com as alianças todas publicas
+     */
     public Graph<Personagem, Boolean> gerarGrafoAliancasApenasPublicasSemPeso() {
         Graph<Personagem, Boolean> grafo_aliancas_publicas = new Graph<>(false);
         for (Personagem pOrig : grafo_personagens_aliancas.vertices()) {
@@ -660,6 +661,12 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
         return grafo_aliancas_publicas;
     }
 
+    /**
+     * Método que gera um grafo de alianças para as alianças como se fossem
+     * públicas, com peso 1
+     *
+     * @return
+     */
     public Graph<Personagem, Boolean> gerarGrafoAliancasTodasPublicasSemPeso() {
         Graph<Personagem, Boolean> grafo = new Graph<>(false);
         for (Personagem pOrig : grafo_personagens_aliancas.vertices()) {
@@ -697,10 +704,7 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
 
     /**
      * Método que determina o fator de compatibilidade entre uma rede de
-     * alianças -- É de notar que se corre o algoritmo de dijkstra para grafos
-     * sem peso duas vezes, Na ordem pers_a -- pers_b e pers_b -- pers_a pois o
-     * algoritmo de dijkstra nem sempre dá a solução óptima Então escolhe-se o
-     * menor caminho de entre os dois
+     * alianças
      *
      * @param pers_a Personagem A
      * @param pers_b Personagem B

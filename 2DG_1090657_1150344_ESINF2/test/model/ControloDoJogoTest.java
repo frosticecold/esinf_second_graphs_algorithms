@@ -17,6 +17,72 @@ import static org.junit.Assert.*;
  */
 public class ControloDoJogoTest {
 
+        /**
+     * Test of adicionarLocal method, of class ControloDoJogo.
+     */
+    @Test
+    public void testAdicionarLocal_3args() {
+        System.out.println("adicionarLocal");
+        String nomeLocal = "Local a";
+        int dificuldade = 10;
+        Personagem p = new Personagem("Personagem a", 10);
+        ControloDoJogo instance = new ControloDoJogo();
+        boolean expResult = true;
+        boolean result = instance.adicionarLocal(nomeLocal, dificuldade, p);
+        assertEquals(expResult, result);
+        result = instance.adicionarLocal(nomeLocal, dificuldade, p);
+        assertFalse(result);
+    }
+
+    /**
+     * Test of adicionarLocal method, of class ControloDoJogo.
+     */
+    @Test
+    public void testAdicionarLocal_Local() {
+        System.out.println("adicionarLocal");
+        Local local = new Local("Local a", 10);
+        ControloDoJogo instance = new ControloDoJogo();
+        boolean expResult = true;
+        boolean result = instance.adicionarLocal(local);
+        assertEquals(expResult, result);
+        result = instance.adicionarLocal(local);
+        assertFalse(result);
+    }
+
+    /**
+     * Test of adicionarEstrada method, of class ControloDoJogo.
+     */
+    @Test
+    public void testAdicionarEstrada() {
+        System.out.println("adicionarEstrada");
+        Personagem p1 = new Personagem("Personagem a", 10);
+        Personagem p2 = new Personagem("Personagem b", 12);
+        Local a = new Local("Local a", 10, p1);
+        Local b = new Local("Local b", 15, p2);
+        double e = 3.7;
+        ControloDoJogo instance = new ControloDoJogo();
+        instance.adicionarLocal(a);
+        instance.adicionarLocal(b);
+        boolean expResult = true;
+        boolean result = instance.adicionarEstrada(a, b, e);
+        assertEquals(expResult, result);
+
+        result = instance.adicionarEstrada(a, b, e);
+        assertFalse(result);
+    }
+
+    /**
+     * Test of numEstradas method, of class ControloDoJogo.
+     */
+    @Test
+    public void testNumEstradas() {
+        System.out.println("numEstradas");
+        ControloDoJogo instance = new ControloDoJogo();
+        int expResult = 0;
+        int result = instance.numEstradas();
+        assertEquals(expResult, result);
+    }
+    
     /**
      * Test of lerAlianca method, of class ControloDoJogo.
      */
@@ -230,72 +296,6 @@ public class ControloDoJogoTest {
         assertTrue("Existe dificuldade", result.forcaNecessaria() != -1);
         dificuldade = 466;
         assertEquals(dificuldade, result.forcaNecessaria(), 0.1);
-    }
-
-    /**
-     * Test of adicionarLocal method, of class ControloDoJogo.
-     */
-    @Test
-    public void testAdicionarLocal_3args() {
-        System.out.println("adicionarLocal");
-        String nomeLocal = "Local a";
-        int dificuldade = 10;
-        Personagem p = new Personagem("Personagem a", 10);
-        ControloDoJogo instance = new ControloDoJogo();
-        boolean expResult = true;
-        boolean result = instance.adicionarLocal(nomeLocal, dificuldade, p);
-        assertEquals(expResult, result);
-        result = instance.adicionarLocal(nomeLocal, dificuldade, p);
-        assertFalse(result);
-    }
-
-    /**
-     * Test of adicionarLocal method, of class ControloDoJogo.
-     */
-    @Test
-    public void testAdicionarLocal_Local() {
-        System.out.println("adicionarLocal");
-        Local local = new Local("Local a", 10);
-        ControloDoJogo instance = new ControloDoJogo();
-        boolean expResult = true;
-        boolean result = instance.adicionarLocal(local);
-        assertEquals(expResult, result);
-        result = instance.adicionarLocal(local);
-        assertFalse(result);
-    }
-
-    /**
-     * Test of adicionarEstrada method, of class ControloDoJogo.
-     */
-    @Test
-    public void testAdicionarEstrada() {
-        System.out.println("adicionarEstrada");
-        Personagem p1 = new Personagem("Personagem a", 10);
-        Personagem p2 = new Personagem("Personagem b", 12);
-        Local a = new Local("Local a", 10, p1);
-        Local b = new Local("Local b", 15, p2);
-        double e = 3.7;
-        ControloDoJogo instance = new ControloDoJogo();
-        instance.adicionarLocal(a);
-        instance.adicionarLocal(b);
-        boolean expResult = true;
-        boolean result = instance.adicionarEstrada(a, b, e);
-        assertEquals(expResult, result);
-
-        result = instance.adicionarEstrada(a, b, e);
-        assertFalse(result);
-    }
-
-    /**
-     * Test of numEstradas method, of class ControloDoJogo.
-     */
-    @Test
-    public void testNumEstradas() {
-        System.out.println("numEstradas");
-        ControloDoJogo instance = new ControloDoJogo();
-        int expResult = 0;
-        int result = instance.numEstradas();
-        assertEquals(expResult, result);
     }
 
     /**
@@ -532,21 +532,21 @@ public class ControloDoJogoTest {
         ControloDoJogo instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_TESTE);
         Graph<Personagem, Boolean> result = instance.possiveisNovasAliancas();
-        
-        Personagem p0 = instance.obterPersonagemPorNome("Pers0");
-        Personagem p1 = instance.obterPersonagemPorNome("Pers1");
+
+        Personagem p0;//= instance.obterPersonagemPorNome("Pers0");
+        Personagem p1;//= instance.obterPersonagemPorNome("Pers1");
         Personagem p2 = instance.obterPersonagemPorNome("Pers2");
         Personagem p3 = instance.obterPersonagemPorNome("Pers3");
-        Personagem p4 = instance.obterPersonagemPorNome("Pers4");
+        Personagem p4;//= instance.obterPersonagemPorNome("Pers4");
         Personagem p5 = instance.obterPersonagemPorNome("Pers5");
         Personagem p6 = instance.obterPersonagemPorNome("Pers6");
         Personagem p7 = instance.obterPersonagemPorNome("Pers7");
         Personagem p8 = instance.obterPersonagemPorNome("Pers8");
         Personagem p9 = instance.obterPersonagemPorNome("Pers9");
         Personagem p10 = instance.obterPersonagemPorNome("Pers10");
-        
+
         //Não existe possível aliança entre p5-p10
-        double expWeight = 0;
+        double expWeight;
 
         //Caminho entre p5-p8-p10
         expWeight = (0.9 + 0.8) / 2;
@@ -572,7 +572,7 @@ public class ControloDoJogoTest {
         p2 = instance.obterPersonagemPorNome("Pers2");
         p3 = instance.obterPersonagemPorNome("Pers3");
         p4 = instance.obterPersonagemPorNome("Pers4");
-        p5 = instance.obterPersonagemPorNome("Pers5");
+        //p5 = instance.obterPersonagemPorNome("Pers5");
         assertNotNull(result.getEdge(p0, p1));
         assertNotNull(result.getEdge(p0, p2));
         assertNotNull(result.getEdge(p0, p3));
