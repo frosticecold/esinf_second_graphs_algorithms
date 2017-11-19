@@ -223,10 +223,10 @@ public class ControloDoJogo {
             return adicionarAlianca(p_source, p_target, tipoalianca, fator_compatibilidade);                            //O(1)
 
         } else {
-            int numPers = path.size();                                                                                  //O(1)
+            int numRamos = path.size();                                                                                  //O(1)
             //Se o número de Personagens é maior do que 1, então é n-1 ramos
-            if (numPers > 1) {                                                                                          //O(1)
-                numPers--;                                                                                              //O(1)
+            if (numRamos > 1) {                                                                                          //O(1)
+                numRamos--;                                                                                              //O(1)
             }
             double fator_comp = 0;                                                                                      //O(1)
             Personagem a = null;                                                                                        //O(1)
@@ -242,7 +242,7 @@ public class ControloDoJogo {
                     fator_comp += grafo_personagens_aliancas.getEdge(a, b).getWeight();                                 //O(1)
                 }
             }
-            double mediaComp = fator_comp / numPers;                                                                    //O(1)
+            double mediaComp = fator_comp / numRamos;                                                                    //O(1)
             grafo_personagens_aliancas.insertEdge(p_source, p_target, tipoalianca, mediaComp);                          //O(1)
             return true;                                                                                                //O(1)
         }
@@ -260,16 +260,16 @@ public class ControloDoJogo {
     public Graph<Personagem, Boolean> possiveisNovasAliancas() {
 
         Graph<Personagem, Boolean> ng = (Graph<Personagem, Boolean>) grafo_personagens_aliancas.clone();
-        for (Personagem p_k : grafo_personagens_aliancas.vertices()) {
-            for (Personagem p_i : grafo_personagens_aliancas.vertices()) {
+        for (Personagem p_k : grafo_personagens_aliancas.vertices()) {          //O(v)
+            for (Personagem p_i : grafo_personagens_aliancas.vertices()) {      //O(v)
                 if (!p_i.equals(p_k) && ng.getEdge(p_i, p_k) != null) {
-                    for (Personagem p_j : grafo_personagens_aliancas.vertices()) {
+                    for (Personagem p_j : grafo_personagens_aliancas.vertices()) {//O(v)
                         if (!p_i.equals(p_j) && !p_j.equals(p_k) && ng.getEdge(p_k, p_j) == null) {
-                            if (ng.getEdge(p_i, p_j) != null) {
-                                double ed1 = ng.getEdge(p_k, p_i).getWeight();    //O(V^2)
-                                double ed2 = ng.getEdge(p_i, p_j).getWeight();    //O(V^2)
-                                double media = (ed1 + ed2) / 2;
-                                ng.insertEdge(p_k, p_j, Boolean.TRUE, media);
+                            if (ng.getEdge(p_i, p_j) != null) {                   //O(1)
+                                double ed1 = ng.getEdge(p_k, p_i).getWeight();    //O(1)
+                                double ed2 = ng.getEdge(p_i, p_j).getWeight();    //O(1)
+                                double media = (ed1 + ed2) / 2;                   //O(1)
+                                ng.insertEdge(p_k, p_j, Boolean.TRUE, media);     //O(1)
                             }
                         }
                     }
@@ -277,8 +277,7 @@ public class ControloDoJogo {
             }
         }
         return ng;                                                              //O(1)
-    }                                                                           //O(V^2) * O(V) * O(V) * O(V)
-    //O(V^5)
+    }                                                                           //O(V) * O(V) * O(V)
     //===================================3F====================================
 
     /*Verificar	se uma personagem pode conquistar, junto com um dos seus aliados, um determinado local	X 
@@ -645,11 +644,11 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
      * @return grafo com as alianças públicas
      */
     public Graph<Personagem, Boolean> gerarGrafoAliancasPublicas() {
-        Graph<Personagem, Boolean> grafo_aliancas_publicas = new Graph<>(false);
+        Graph<Personagem, Boolean> grafo_aliancas_publicas = grafo_personagens_aliancas.clone();
         for (Personagem pOrig : grafo_personagens_aliancas.vertices()) {
             for (Personagem pAdj : grafo_personagens_aliancas.adjVertices(pOrig)) {
-                if (grafo_personagens_aliancas.getEdge(pOrig, pAdj) != null && grafo_personagens_aliancas.getEdge(pOrig, pAdj).getElement() == true) {
-                    grafo_aliancas_publicas.insertEdge(pOrig, pAdj, true, grafo_personagens_aliancas.getEdge(pOrig, pAdj).getWeight());
+                if (grafo_personagens_aliancas.getEdge(pOrig, pAdj) != null && grafo_personagens_aliancas.getEdge(pOrig, pAdj).getElement() == false) {
+                    grafo_aliancas_publicas.removeEdge(pOrig, pAdj);
                 }
             }
         }
@@ -664,11 +663,16 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
      * @return grafo com as alianças todas publicas
      */
     public Graph<Personagem, Boolean> gerarGrafoAliancasApenasPublicasSemPeso() {
-        Graph<Personagem, Boolean> grafo_aliancas_publicas = new Graph<>(false);
-        for (Personagem pOrig : grafo_personagens_aliancas.vertices()) {        //O(V)
-            for (Personagem pAdj : grafo_personagens_aliancas.adjVertices(pOrig)) {//O(V)
-                if (grafo_personagens_aliancas.getEdge(pOrig, pAdj) != null && grafo_personagens_aliancas.getEdge(pOrig, pAdj).getElement() == true) {//O(1)
-                    grafo_aliancas_publicas.insertEdge(pOrig, pAdj, true, 1);//O(1)
+        Graph<Personagem, Boolean> grafo_aliancas_publicas = grafo_personagens_aliancas.clone();
+        for (Personagem pOrig : grafo_personagens_aliancas.vertices()) {                    //O(V)
+            for (Personagem pAdj : grafo_personagens_aliancas.adjVertices(pOrig)) {         //O(V)
+                if (grafo_personagens_aliancas.getEdge(pOrig, pAdj) != null && grafo_personagens_aliancas.getEdge(pOrig, pAdj).getElement() == false) {//O(1)
+                    grafo_aliancas_publicas.removeEdge(pOrig, pAdj);                        //O(1)
+                } else {
+                    if (grafo_personagens_aliancas.getEdge(pOrig, pAdj) != null && grafo_personagens_aliancas.getEdge(pOrig, pAdj).getElement() == true) {//O(1)
+                        grafo_aliancas_publicas.getEdge(pOrig, pAdj).setWeight(1);          //O(1)
+                    }
+
                 }
             }
         }
@@ -683,11 +687,12 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
      * @return
      */
     public Graph<Personagem, Boolean> gerarGrafoAliancasTodasPublicasSemPeso() {
-        Graph<Personagem, Boolean> grafo = new Graph<>(false);
+        Graph<Personagem, Boolean> grafo = grafo_personagens_aliancas.clone();
         for (Personagem pOrig : grafo_personagens_aliancas.vertices()) {
             for (Personagem pAdj : grafo_personagens_aliancas.adjVertices(pOrig)) {
                 if (grafo_personagens_aliancas.getEdge(pOrig, pAdj) != null) {
-                    grafo.insertEdge(pOrig, pAdj, true, 1);
+                    grafo.getEdge(pOrig, pAdj).setElement(Boolean.TRUE);
+                    grafo.getEdge(pOrig, pAdj).setWeight(1);
                 }
             }
         }
