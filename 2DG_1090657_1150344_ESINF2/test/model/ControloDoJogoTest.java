@@ -543,11 +543,11 @@ public class ControloDoJogoTest {
         instance.lerDados(ControloDoJogo.FICH_TESTE);
         Graph<Personagem, Boolean> result = instance.possiveisNovasAliancas();
 
-        Personagem p0;//= instance.obterPersonagemPorNome("Pers0");
-        Personagem p1;//= instance.obterPersonagemPorNome("Pers1");
+        Personagem p0 = instance.obterPersonagemPorNome("Pers0");
+        Personagem p1 = instance.obterPersonagemPorNome("Pers1");
         Personagem p2 = instance.obterPersonagemPorNome("Pers2");
         Personagem p3 = instance.obterPersonagemPorNome("Pers3");
-        Personagem p4;//= instance.obterPersonagemPorNome("Pers4");
+        Personagem p4 = instance.obterPersonagemPorNome("Pers4");
         Personagem p5 = instance.obterPersonagemPorNome("Pers5");
         Personagem p6 = instance.obterPersonagemPorNome("Pers6");
         Personagem p7 = instance.obterPersonagemPorNome("Pers7");
@@ -558,29 +558,38 @@ public class ControloDoJogoTest {
         //Não existe possível aliança entre p5-p10
         double expWeight;
 
-        //Caminho entre p5-p8-p10
-        expWeight = (0.9 + 0.8) / 2;
-        assertEquals(expWeight, result.getEdge(p5, p10).getWeight(), 0.05);
+        //Caminho entre p0-p1-p7
+        expWeight = (0.3 + 0.7) / 2;
+        assertEquals(expWeight, result.getEdge(p0, p7).getWeight(), 0.05);
 
-        //Caminho é p2-p8-p0-p4-p6
-        expWeight = (0.1 + 0.9 + 0.7 + 0.8) / 4;
+        //Caminho é p2-p6
+        expWeight = 0.625;
         assertEquals(expWeight, result.getEdge(p2, p6).getWeight(), 0.05);
 
-        //Para este caso especifico, o caminho escolhido é p2-p8-p3
-        expWeight = (0.1 + 0.2) / 2;
+        //Para este caso especifico, o caminho escolhido é p2-p3
+        expWeight = 0.6;
         assertEquals(expWeight, result.getEdge(p2, p3).getWeight(), 0.05);
 
         //Caminho entre p6-p4-p3-p5
-        expWeight = (0.8 + 0.7 + 0.8) / 3;
+        expWeight = 0.825;
         assertEquals(expWeight, result.getEdge(p6, p5).getWeight(), 0.05);
 
         instance = new ControloDoJogo();
         instance.lerDados(ControloDoJogo.FICH_L);
         result = instance.possiveisNovasAliancas();
-        // Existem 30 personagems, ou seja, 29 possíveis alianças entre uma e as restantes
-        // O grafo é bidirecional, logo o numero de possiveis novas alianças é:
-        int expResult = 29 * 30 * 2;
-        assertEquals(expResult, result.numEdges());
+        p0 = instance.obterPersonagemPorNome("Pers0");
+        p6 = instance.obterPersonagemPorNome("Pers6");
+        expWeight = 0.2;
+        assertEquals(expWeight, result.getEdge(p0, p6).getWeight(), 0.05);
+
+        instance = new ControloDoJogo();
+        instance.lerDados(ControloDoJogo.FICH_XL);
+        result = instance.possiveisNovasAliancas();
+        p0 = instance.obterPersonagemPorNome("Pers0");
+        p9 = instance.obterPersonagemPorNome("Pers9");
+        Personagem p13 = instance.obterPersonagemPorNome(("Pers13"));
+        expWeight = (0.2+0.5)/2;
+        assertEquals(expWeight, result.getEdge(p0, p13).getWeight(), 0.05);
 
     }
 

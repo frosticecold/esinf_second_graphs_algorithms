@@ -103,7 +103,7 @@ public class ControloDoJogo {
         final double SEM_CAMINHO = -1;                                                                      //O(1)
         LinkedList<Local> path = new LinkedList<>();                                                        //O(1)
 
-        double dificuldade = graph.AlgoritmosJogo.shortestPathConquista(grafo_locais_a_utilizar, source, target, path,pers); //O(V^2)
+        double dificuldade = graph.AlgoritmosJogo.shortestPathConquista(grafo_locais_a_utilizar, source, target, path, pers); //O(V^2)
         if (dificuldade != SEM_CAMINHO) {                                                                   //O(1)
             if (path.peekFirst() == source) {                                                               //O(1)
                 path.removeFirst();                                                                         //O(1)
@@ -117,7 +117,7 @@ public class ControloDoJogo {
             }
             Conquista cq = new Conquista(consegue_conquistar, dificuldade, path);                           //O(1)
             return cq;                                                                                      //O(1)
-        }   
+        }
         return new Conquista(false, -1, path);                                                              //O(1)
     }                                                                                                       //Total: O(V^2)
 
@@ -137,6 +137,7 @@ public class ControloDoJogo {
     //===================================2 B====================================
     /**
      * Método que devolve todos os aliados diretos de uma dada personagem
+     *
      * @param source Personagem qual se quer os aliados
      * @return Iterable de Personagens aliadas
      */
@@ -244,7 +245,7 @@ public class ControloDoJogo {
             double mediaComp = fator_comp / numPers;                                                                    //O(1)
             grafo_personagens_aliancas.insertEdge(p_source, p_target, tipoalianca, mediaComp);                          //O(1)
             return true;                                                                                                //O(1)
-        }                                                                                                               
+        }
     }                                                                                                                   //Total:O(V^2)
 
     //===================================2 E====================================
@@ -259,16 +260,16 @@ public class ControloDoJogo {
     public Graph<Personagem, Boolean> possiveisNovasAliancas() {
 
         Graph<Personagem, Boolean> ng = (Graph<Personagem, Boolean>) grafo_personagens_aliancas.clone();
-        for (Personagem p_a : ng.vertices()) {                                  //O(V)
-            for (Personagem p_b : ng.vertices()) {                              //O(V)
-                if (!p_a.equals(p_b) && ng.getEdge(p_a, p_b) != null) {         //O(1)
-                    for (Personagem p_c : ng.vertices()) {                      //O(V)
-                        if (!p_b.equals(p_c) && !p_c.equals(p_a) && ng.getEdge(p_a, p_c) != null) {//O(1)
-                            if (ng.getEdge(p_b, p_c) == null) {                                    //O(1)
-                                double fator = determinarFatorCompatibilidade(p_b, p_c, false);    //O(V^2)
-                                if (fator != -1) {
-                                    ng.insertEdge(p_b, p_c, Boolean.TRUE, fator);                  //O(1)
-                                }
+        for (Personagem p_k : grafo_personagens_aliancas.vertices()) {
+            for (Personagem p_i : grafo_personagens_aliancas.vertices()) {
+                if (!p_i.equals(p_k) && ng.getEdge(p_i, p_k) != null) {
+                    for (Personagem p_j : grafo_personagens_aliancas.vertices()) {
+                        if (!p_i.equals(p_j) && !p_j.equals(p_k) && ng.getEdge(p_k, p_j) == null) {
+                            if (ng.getEdge(p_i, p_j) != null) {
+                                double ed1 = ng.getEdge(p_k, p_i).getWeight();    //O(V^2)
+                                double ed2 = ng.getEdge(p_i, p_j).getWeight();    //O(V^2)
+                                double media = (ed1 + ed2) / 2;
+                                ng.insertEdge(p_k, p_j, Boolean.TRUE, media);
                             }
                         }
                     }
@@ -277,7 +278,7 @@ public class ControloDoJogo {
         }
         return ng;                                                              //O(1)
     }                                                                           //O(V^2) * O(V) * O(V) * O(V)
-                                                                                //O(V^5)
+    //O(V^5)
     //===================================3F====================================
 
     /*Verificar	se uma personagem pode conquistar, junto com um dos seus aliados, um determinado local	X 
@@ -298,10 +299,10 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
             return null;
         }
         if (target.getDono() != null && target.getDono().equals(pOrig)) {       //O(1)
-            return new ConquistaComAliado(false, -1, null,null);                //O(1)
+            return new ConquistaComAliado(false, -1, null, null);                //O(1)
         }
         if (source.getDono() != null && !source.getDono().equals(pOrig)) {      //O(1)
-             return new ConquistaComAliado(false, -1, null,null);               //O(1)
+            return new ConquistaComAliado(false, -1, null, null);               //O(1)
         }
 
         int forca_antiga = pOrig.getForca();                                    //O(1)
@@ -309,7 +310,7 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
             AdjacencyMatrixGraph<Local, Double> grafo_sem_locais_aliados = gerarGrafoSemLocaisAliados(pOrig, aliado);//O(V^2)
             pOrig.setForca(forca_antiga);                                                                           //O(1)
             pOrig.setForca(determinarForcaAlianca(pOrig, aliado));                                                  //O(1)
-            Conquista cq = verificarConquista(pOrig,source,target, grafo_sem_locais_aliados);                       //O(V_locais_^2)
+            Conquista cq = verificarConquista(pOrig, source, target, grafo_sem_locais_aliados);                       //O(V_locais_^2)
             if (cq.consegueConquistar()) {                                                                          //O(1)
                 pOrig.setForca(forca_antiga);                                                                       //O(1)
                 ConquistaComAliado cqal = new ConquistaComAliado(cq, aliado);                                       //O(1)
@@ -744,7 +745,7 @@ aliado não pode ser dono de X nem de nenhum dos locais intermédios.*/
         //Se o número de Personagens é maior do que 1, então é n-1 ramos
         if (numPers > 1) {                                                      //O(1)
             numPers--;                                                          //O(1)
-        }   
+        }
         double fator_comp = 0.0;                                                //O(1)
         Personagem a = null;                                                    //O(1)
         Personagem b = null;                                                    //O(1)
